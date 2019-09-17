@@ -1011,7 +1011,7 @@
   padding: 0;
 }
 .logo {
-  margin: 50px 0;
+  margin: 10px 0;
 }
 .logo-2 {
   margin: 29px 0;
@@ -1057,6 +1057,7 @@
 /* Shipping */
 .sin-shipping-1 {
   padding: 0 20px;
+    margin-top: 20px;
 }
 .sin-shipping-1 + .sin-shipping-1 {
   margin-top: 20px;

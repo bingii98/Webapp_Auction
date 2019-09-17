@@ -256,11 +256,11 @@ $('.qtybtn').on('click', function() {
 	var $button = $(this);
 	var oldValue = $button.parent().find('input').val();
 	if ($button.hasClass('inc')) {
-	  var newVal = parseFloat(oldValue) + 1;
+	  var newVal = parseFloat(oldValue) + 1000;
 	} else {
 	   // Don't allow decrementing below zero
 	  if (oldValue > 0) {
-		var newVal = parseFloat(oldValue) - 1;
+		var newVal = parseFloat(oldValue) - 1000;
 		} else {
 		newVal = 0;
 	  }
@@ -273,11 +273,11 @@ $('.qtybtn-2').on('click', function() {
 	var $button = $(this);
 	var oldValue = $button.parent().find('input').val();
 	if ($button.hasClass('inc')) {
-	  var newVal = parseFloat(oldValue) + 1;
+	  var newVal = parseFloat(oldValue) + 1000;
 	} else {
 	   // Don't allow decrementing below zero
 	  if (oldValue > 0) {
-		var newVal = parseFloat(oldValue) - 1;
+		var newVal = parseFloat(oldValue) - 1000;
 		} else {
 		newVal = 0;
 	  }
