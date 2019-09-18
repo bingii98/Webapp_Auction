@@ -52,6 +52,15 @@ body {
     line-height: 24px;
     visibility: visible;
 }
+
+.tag-a{
+    color: #ff9900;
+    font-weight: 600;
+    line-height: 16px;
+    margin: 0;
+    text-transform: capitalize;
+}
+
 img {
     max-width: 100%;
     height: auto
@@ -5588,9 +5597,6 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     float: left;
     margin-right: 25px;
     width: 93px;
-}
-.cart-table .cart-product .details {
-    margin-top: 20px;
 }
 .cart-table .cart-product .details a {
     color: #606060;
