@@ -25,7 +25,9 @@
 <!-- Responsive CSS -->
 <link rel="stylesheet" href="css/responsive.css">
 <link href="css/color/color-1.css" rel="stylesheet">
-
+<link rel="stylesheet" href="css/addNews.css">
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.css'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.min.css'>
 <!-- Modernizer JS -->
 <script src="js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
@@ -122,6 +124,55 @@
     <div class="cart-area pb-90 pt-90 mt-100">
         <div class="container">
             <div class="row">
+                <div class="procced-checkout col-md-12 col-xs-12">
+                <button class="btn btn-open checkout-link">
+                <span>Thêm khách hàng</span>
+                </div>
+                <section class="modal">
+                    <div class="wrapper">
+                        <div class="container">
+                            <span class="icon-close"></span>
+                            <div class="right">
+                                <div class="form">
+                                    <h2 class="title">Thêm khách hàng</h2>
+                                    <form>
+                                    <div class="input-wrapper">
+                                        <label for="">Họ tên khách hàng</label>
+                                        <input id="name" type="text" placeholder="Name">
+                                    </div>
+                                    <div class="input-wrapper">
+                                        <label for="">Tên người dùng:</label>
+                                        <input id="user" type="text" placeholder="User">
+                                    </div>
+                                    <div class="input-wrapper">
+                                        <label for="">Mật khẩu:</label>
+                                        <input id="pass" type="text" placeholder="Password">
+                                    </div>
+                                    <div class="input-wrapper">
+                                        <label for="">Nhập lại mật khẩu:</label>
+                                        <input id="re-pass" type="text" placeholder="Re-Password">
+                                    </div>
+                                    <div class="input-wrapper">
+                                        <label for="">Địa chỉ:</label>
+                                        <input id="address" type="text" placeholder="Address">
+                                    </div>
+                                    <div class="input-wrapper">
+                                        <label for="">Số điện thoại:</label>
+                                        <input id="tel" type="text" placeholder="Telephone Number">
+                                    </div>
+                                    <div class="input-wrapper">
+                                        <label for="">Email:</label>
+                                        <input id="mail" type="email" placeholder="Name">
+                                    </div>
+                                    </form>
+                                    <button class="btn"><span>Xác nhận</span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="row" style="margin-top: 20px;">
                 <div class="col-xs-12">
                     <div class="cart-table table-responsive mb-50">
                         <table class="table">
@@ -181,11 +232,6 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="procced-checkout col-md-12 col-xs-12">
-                    <a href="#" class="checkout-link">Thêm khách hàng</a>
                 </div>
             </div>
         </div>
@@ -265,5 +311,8 @@
 <!-- Main JS
 ============================================ -->
 <script src="js/main.js"></script>
+<script src="js/addNews.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/js/swiper.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/js/swiper.min.js'></script>
 </body>
 </html>

@@ -5798,6 +5798,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     float: right;
 }
 .procced-checkout .checkout-link {
+    margin-bottom: 20px;
     background-color: #ff9900;
     border: 1px solid #ff9900;
     border-radius: 3px;
