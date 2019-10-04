@@ -9,15 +9,15 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 
 const table = 'Business';
 
-const businessID = 'BSN84590003';
-const businessName = 'A New Book';
+const businessID = 'BSN84590002';
+const businessName = 'ABC';
 const adress = 'Thiếu Nhi';
 const phone = 'Tran Trung Nam';
 const email = 'Tran Trung Nam';
-const username = 'Tran Trung Nam';
+const username = 'Không xe xe không cổ';
 const password = 'Tran Trung Nam';
 const productid = 'Tran Trung Nam';
-const productName = 'Tran Trung Nam';
+const productName = 'Không xe xe không cổ';
 const catID = 'Tran Trung Nam';
 const productDescribe = 'Tran Trung Nam';
 const productImage = 'Tran Trung Nam';
@@ -37,14 +37,32 @@ const params = {
       username,
       password
     ],
-    product : {
-      productid,
-      productName,
-      catID,
-      productDescribe,
-      productImage,
-      productPrice,
-    }
+    product : [
+      {
+        productid,
+        productName,
+        catID,
+        productDescribe,
+        productImage,
+        productPrice,
+      },
+      {
+        productid,
+        productName,
+        catID,
+        productDescribe,
+        productImage,
+        productPrice,
+      },
+      {
+        productid,
+        productName,
+        catID,
+        productDescribe,
+        productImage,
+        productPrice,
+      }
+    ]
   },
 };
 
