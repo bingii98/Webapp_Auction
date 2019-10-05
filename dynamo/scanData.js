@@ -18,8 +18,11 @@ function onScan(err, data) {
     } else {
         console.log('Scan succeeded.');
         data.Items.forEach((item) => {
-            console.log(item.businessID);
-
+            item.product.forEach((product) => {
+                var d = new Date(product.dateAuc);
+                var nd = new Date();
+                console.log(`${JSON.stringify(((d.getTime() - nd.getTime()) + product.timeRun*1000))}`);
+            })
         });
 
         if (typeof data.LastEvaluatedKey !== 'undefined') {

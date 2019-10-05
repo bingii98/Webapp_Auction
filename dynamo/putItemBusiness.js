@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 
 AWS.config.update({
-    region: "CNM",
+  region: "CNM",
   endpoint: 'http://localhost:8000',
 });
 
@@ -9,68 +9,68 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 
 const table = 'Business';
 
-const businessID = 'BSN84590002';
-const businessName = 'ABC';
-const adress = 'Thiếu Nhi';
-const phone = 'Tran Trung Nam';
-const email = 'Tran Trung Nam';
-const username = 'Không xe xe không cổ';
-const password = 'Tran Trung Nam';
-const productid = 'Tran Trung Nam';
-const productName = 'Không xe xe không cổ';
-const catID = 'Tran Trung Nam';
-const productDescribe = 'Tran Trung Nam';
-const productImage = 'Tran Trung Nam';
-const productPrice = 'Tran Trung Nam';
-
-const params = {
-  TableName: table,
-  Item: {
-    businessID,
-    businessName,
-    contact : [
+for (let index = 0; index < 40; index++) {
+  const businessID = 'BSN8459000' + index.toString();
+  const businessName = makeid(20);
+  const dateAuc = "Fri Oct 07 2019 01:42:00 GMT+0700 (Indochina Time)";
+  const timeRun = 120;
+  const adress = makeid(20);
+  const phone = makeid(20);
+  const email = makeid(20);
+  const username = makeid(20);
+  const password = makeid(20);
+  const productid = makeid(20);
+  const productName = makeid(20);
+  const catID = makeid(20);
+  const productDescribe = makeid(300);
+  const productImage = makeid(20);
+  const productPrice = makeid(20);
+  const params = {
+    TableName: table,
+    Item: {
+      businessID,
+      businessName,
+      contact: [
         adress,
         phone,
         email
-    ],
-    account : [
-      username,
-      password
-    ],
-    product : [
-      {
-        productid,
-        productName,
-        catID,
-        productDescribe,
-        productImage,
-        productPrice,
-      },
-      {
-        productid,
-        productName,
-        catID,
-        productDescribe,
-        productImage,
-        productPrice,
-      },
-      {
-        productid,
-        productName,
-        catID,
-        productDescribe,
-        productImage,
-        productPrice,
-      }
-    ]
-  },
-};
+      ],
+      account: [
+        username,
+        password
+      ],
+      product: [
+        {
+          productid,
+          productName,
+          dateAuc,
+          timeRun,
+          catID,
+          productDescribe,
+          productImage,
+          productPrice,
+        }
+      ]
+    },
+  };
 
-console.log('Adding a new business...');
-docClient.put(params, (err, data) => {
-  if (err) {
-    console.error('Unable to add item. Error JSON:', JSON.stringify(err, null, 2));
-  } else {
-    console.log('Added An Item', JSON.stringify(params));
+  console.log('Adding a new business...');
+  docClient.put(params, (err, data) => {
+    if (err) {
+      console.error('Unable to add item. Error JSON:', JSON.stringify(err, null, 2));
+    } else {
+      console.log('Added An Item', JSON.stringify(params));
+    }
+  });
+}
+
+function makeid(length) {
+  var result = '';
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
-});
+  return result;
+}
+

@@ -1,24 +1,28 @@
 const express = require('express');
-const session = require('express-session')
 const app = express();
-var bodyParser = require('body-parser');
-app.use(session({ login: false }));
 
 //set view engine for project
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
 const AWS = require('aws-sdk');
+
+AWS.config.update({
+    region: "CNM",
+    endpoint: 'http://localhost:8000',
+});
+
 let docClient = new AWS.DynamoDB.DocumentClient();
 
 //static thư mục view để sử dụng css
-app.use(express.static(__dirname + '/views'));
+app.use(express.static('./views'));
 
 //router trang chủ
 app.get('/', function (req, res) {
+    var page = req.params.page || 1;
     let params = {
-        TableName: 'Business',
-    };
+        TableName: 'Business'
+    }
     let scanObject = {};
     docClient.scan(params, (err, data) => {
         if (err) {

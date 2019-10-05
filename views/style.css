@@ -2644,9 +2644,8 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 }
 .pro-details .pro-ratting span {
     color: #CB2326;
-    display: block;
     float: left;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     line-height: 16px;
     margin-left: 2px;
@@ -2746,7 +2745,6 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 }
 .list-pro-details .pro-ratting span {
     color: #CB2326;
-    display: block;
     float: left;
     font-size: 14px;
     font-weight: bold;

@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="css/responsive.css">
     <link href="css/color/color-1.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="css/style.css">
+
     <!-- Modernizer JS-->
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
@@ -331,6 +333,9 @@
                             <!--START Content PAGE PRODUCT-->
                             <% _uG.forEach((item) => { %>
                             <% item.product.forEach((product) => { %>
+                            <% var date = new Date(product.dateAuc); %>
+                            <% var nowdate = new Date(); %>
+                            <% if((nowdate.getTime() - date.getTime()) < product.timeRun*1000){ %>
                             <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="sin-product">
                                     <div class="pro-image fix">
@@ -343,24 +348,107 @@
                                         </div>
                                     </div>
                                     <div class="pro-details text-center">
+                                        <% if((date.getTime() - nowdate.getTime()) > 0){ %>
                                         <div class="top fix">
                                             <p class="pro-cat float-left">Xe</p>
                                             <p class="pro-ratting float-right">
-                                                <span class="time-due">00:23:56</span>
+                                                <!--Format time-->
+                                                <% if(date.getHours() < 10){ %>
+                                                    <% if(date.getMinutes() < 10){ %>
+                                                        <% if(date.getDate() < 10){ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% }else{ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% } %>
+                                                    <% }else{ %>
+                                                        <% if(date.getDate() < 10){ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% }else{ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% } %>
+                                                    <% } %>
+                                                <% }else{ %>
+                                                    <% if(date.getMinutes() < 10){ %>
+                                                        <% if(date.getDate() < 10){ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% }else{ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% } %>
+                                                    <% }else{ %>
+                                                        <% if(date.getDate() < 10){ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% }else{ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% } %>
+                                                    <% } %>
+                                                <% } %>
+                                                <!--Format time-->
+                                            </p>
+                                        </div>
+                                        <div style="color:green;">
+                                            <a href="auction-page.html" class="pro-title"><%= product.productName%></a>
+                                            <i class="zmdi zmdi-chart"></i><span>&nbsp;Sắp đấu giá</span>
+                                        </div>
+                                        <% }else { %>
+                                        <div class="top fix">
+                                            <p class="pro-cat float-left">Xe</p>
+                                            <p class="pro-ratting float-right">
+                                                <span class="timer"
+                                                    data-seconds-left="<%= product.timeRun - ((nowdate.getTime() - date.getTime())/1000) %>">Còn&nbsp;</span>
                                             </p>
                                         </div>
                                         <div style="color:red;">
                                             <a href="auction-page.html" class="pro-title"><%= product.productName %></a>
-                                            <i class="zmdi zmdi-chart"></i><span> Đang đấu giá</span>
+                                            <i class="zmdi zmdi-chart"></i><span>&nbsp;Đang đấu giá</span>
                                         </div>
+                                        <% } %>
                                     </div>
                                 </div>
                             </div>
+                            <% } %>
                             <% }); %>
                             <% }); %>
                             <!--END Content PAGE PRODUCT-->
                         </div>
                         <div class="product-tab tab-pane" id="list-view">
+                            <!--START Content PAGE PRODUCT-->
+                            <% _uG.forEach((item) => { %>
+                            <% item.product.forEach((product) => { %>
+                            <% var date = new Date(product.dateAuc); %>
+                            <% var nowdate = new Date(); %>
+                            <% if((nowdate.getTime() - date.getTime()) < product.timeRun*1000){ %>
                             <div class="sin-list-product clearfix">
                                 <div class="pro-image col-md-3 col-sm-5 col-xs-12">
                                     <a href="#" class="image fix">
@@ -372,147 +460,102 @@
                                     </div>
                                 </div>
                                 <div class="list-pro-details col-md-9 col-sm-7 col-xs-12">
+                                    <% if((date.getTime() - nowdate.getTime()) > 0){ %>
                                     <div class="top fix">
-                                        <div style="color:red;">
-                                            <a href="auction-page.html" class="pro-title">Xe cổ thời Minh Mạng</a>
-                                            <i class="zmdi zmdi-chart"></i><span> Đang đấu giá</span>
+                                        <div style="color:green;">
+                                            <a href="auction-page.html" class="pro-title"><%= product.productName %></a>
+                                            <i class="zmdi zmdi-chart"></i><span>&nbsp;Sắp đấu giá</span>
                                         </div>
                                         <p class="pro-ratting float-right">
-                                            <span class="time-due">00:23:56</span>
+                                            <!--Format time-->
+                                                <% if(date.getHours() < 10){ %>
+                                                    <% if(date.getMinutes() < 10){ %>
+                                                        <% if(date.getDate() < 10){ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% }else{ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% } %>
+                                                    <% }else{ %>
+                                                        <% if(date.getDate() < 10){ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% }else{ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: 0<%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% } %>
+                                                    <% } %>
+                                                <% }else{ %>
+                                                    <% if(date.getMinutes() < 10){ %>
+                                                        <% if(date.getDate() < 10){ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% }else{ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% } %>
+                                                    <% }else{ %>
+                                                        <% if(date.getDate() < 10){ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: 0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% }else{ %>
+                                                            <% if(date.getMonth() < 10){ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% }else{ %>
+                                                                <span style="color:green;">Giờ: <%=date.getHours()%>:<%=date.getMinutes()%> - Ngày: <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                            <% } %>
+                                                        <% } %>
+                                                    <% } %>
+                                                <% } %>
+                                                <!--Format time-->
                                         </p>
                                     </div>
                                     <div class="list-pro-dec">
-                                        <p>Node.js là một hệ thống phần mềm được thiết kế để viết các ứng dụng internet
-                                            có khả năng mở rộng, đặc biệt là máy chủ web.[1] Chương trình được viết bằng
-                                            JavaScript, sử dụng kỹ thuật điều khiển theo sự kiện, nhập/xuất không đồng
-                                            bộ để tối tiểu tổng chi phí và tối đại khả năng mở rộng.[2] Node.js bao gồm
-                                            có V8 JavaScript engine của Google, libUV, và vài thư viện khác. Node.js
-                                            được tạo bởi Ryan Dahl từ năm 2009, và phát triển dưới sự bảo trợ của
-                                            Joyent. </p>
+                                        <p> <%= product.productDescribe %> </p>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="sin-list-product clearfix">
-                                <div class="pro-image col-md-3 col-sm-5 col-xs-12">
-                                    <a href="#" class="image fix">
-                                        <img src="img/product/2.jpg" alt="" />
-                                    </a>
-                                    <div class="pro-action">
-                                        <a href="auction-page.html" class="action-btn wishlist"><i
-                                                class="zmdi zmdi-mouse"></i></a>
-                                    </div>
-                                </div>
-                                <div class="list-pro-details col-md-9 col-sm-7 col-xs-12">
+                                    <% }else { %>
                                     <div class="top fix">
                                         <div style="color:red;">
-                                            <a href="auction-page.html" class="pro-title">Xe cổ thời Minh Mạng</a>
-                                            <i class="zmdi zmdi-chart"></i><span> Đang đấu giá</span>
+                                            <a href="auction-page.html" class="pro-title"><%= product.productName %></a>
+                                            <i class="zmdi zmdi-chart"></i><span>&nbsp;Đang đấu giá</span>
                                         </div>
                                         <p class="pro-ratting float-right">
-                                            <span class="time-due">00:23:56</span>
+                                            <span class="timer"
+                                                data-seconds-left="<%= product.timeRun - ((nowdate.getTime() - date.getTime())/1000) %>">Còn&nbsp;</span>
                                         </p>
                                     </div>
                                     <div class="list-pro-dec">
-                                        <p>Node.js là một hệ thống phần mềm được thiết kế để viết các ứng dụng internet
-                                            có khả năng mở rộng, đặc biệt là máy chủ web.[1] Chương trình được viết bằng
-                                            JavaScript, sử dụng kỹ thuật điều khiển theo sự kiện, nhập/xuất không đồng
-                                            bộ để tối tiểu tổng chi phí và tối đại khả năng mở rộng.[2] Node.js bao gồm
-                                            có V8 JavaScript engine của Google, libUV, và vài thư viện khác. Node.js
-                                            được tạo bởi Ryan Dahl từ năm 2009, và phát triển dưới sự bảo trợ của
-                                            Joyent. </p>
+                                        <p> <%= product.productDescribe %> </p>
                                     </div>
+                                    <% } %>
                                 </div>
                             </div>
-                            <div class="sin-list-product clearfix">
-                                <div class="pro-image col-md-3 col-sm-5 col-xs-12">
-                                    <a href="#" class="image fix">
-                                        <img src="img/product/6.jpg" alt="" />
-                                    </a>
-                                    <div class="pro-action">
-                                        <a href="auction-page.html" class="action-btn wishlist"><i
-                                                class="zmdi zmdi-mouse"></i></a>
-                                    </div>
-                                </div>
-                                <div class="list-pro-details col-md-9 col-sm-7 col-xs-12">
-                                    <div class="top fix">
-                                        <div style="color:red;">
-                                            <a href="auction-page.html" class="pro-title">Xe cổ thời Minh Mạng</a>
-                                            <i class="zmdi zmdi-chart"></i><span> Đang đấu giá</span>
-                                        </div>
-                                        <p class="pro-ratting float-right">
-                                            <span class="time-due">00:23:56</span>
-                                        </p>
-                                    </div>
-                                    <div class="list-pro-dec">
-                                        <p>Node.js là một hệ thống phần mềm được thiết kế để viết các ứng dụng internet
-                                            có khả năng mở rộng, đặc biệt là máy chủ web.[1] Chương trình được viết bằng
-                                            JavaScript, sử dụng kỹ thuật điều khiển theo sự kiện, nhập/xuất không đồng
-                                            bộ để tối tiểu tổng chi phí và tối đại khả năng mở rộng.[2] Node.js bao gồm
-                                            có V8 JavaScript engine của Google, libUV, và vài thư viện khác. Node.js
-                                            được tạo bởi Ryan Dahl từ năm 2009, và phát triển dưới sự bảo trợ của
-                                            Joyent. </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="sin-list-product clearfix">
-                                <div class="pro-image col-md-3 col-sm-5 col-xs-12">
-                                    <a href="#" class="image fix">
-                                        <img src="img/product/7.jpg" alt="" />
-                                    </a>
-                                    <div class="pro-action">
-                                        <a href="auction-page.html" class="action-btn wishlist"><i
-                                                class="zmdi zmdi-mouse"></i></a>
-                                    </div>
-                                </div>
-                                <div class="list-pro-details col-md-9 col-sm-7 col-xs-12">
-                                    <div class="top fix">
-                                        <div style="color:red;">
-                                            <a href="auction-page.html" class="pro-title">Xe cổ thời Minh Mạng</a>
-                                            <i class="zmdi zmdi-chart"></i><span> Đang đấu giá</span>
-                                        </div>
-                                        <p class="pro-ratting float-right">
-                                            <span class="time-due">00:23:56</span>
-                                        </p>
-                                    </div>
-                                    <div class="list-pro-dec">
-                                        <p>Node.js là một hệ thống phần mềm được thiết kế để viết các ứng dụng internet
-                                            có khả năng mở rộng, đặc biệt là máy chủ web.[1] Chương trình được viết bằng
-                                            JavaScript, sử dụng kỹ thuật điều khiển theo sự kiện, nhập/xuất không đồng
-                                            bộ để tối tiểu tổng chi phí và tối đại khả năng mở rộng.[2] Node.js bao gồm
-                                            có V8 JavaScript engine của Google, libUV, và vài thư viện khác. Node.js
-                                            được tạo bởi Ryan Dahl từ năm 2009, và phát triển dưới sự bảo trợ của
-                                            Joyent. </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="sin-list-product clearfix">
-                                <div class="pro-image col-md-3 col-sm-5 col-xs-12">
-                                    <a href="#" class="image fix">
-                                        <img src="img/product/9.jpg" alt="" />
-                                    </a>
-                                    <div class="pro-action">
-                                        <a href="auction-page.html" class="action-btn wishlist"><i
-                                                class="zmdi zmdi-mouse"></i></a>
-                                    </div>
-                                </div>
-                                <div class="list-pro-details col-md-9 col-sm-7 col-xs-12">
-                                    <div class="top fix">
-                                        <a href="#" class="pro-title">ABC</a>
-                                        <p class="pro-ratting float-right">
-                                            <span class="time-due">00:23:56</span>
-                                        </p>
-                                    </div>
-                                    <div class="list-pro-dec">
-                                        <p>Node.js là một hệ thống phần mềm được thiết kế để viết các ứng dụng internet
-                                            có khả năng mở rộng, đặc biệt là máy chủ web.[1] Chương trình được viết bằng
-                                            JavaScript, sử dụng kỹ thuật điều khiển theo sự kiện, nhập/xuất không đồng
-                                            bộ để tối tiểu tổng chi phí và tối đại khả năng mở rộng.[2] Node.js bao gồm
-                                            có V8 JavaScript engine của Google, libUV, và vài thư viện khác. Node.js
-                                            được tạo bởi Ryan Dahl từ năm 2009, và phát triển dưới sự bảo trợ của
-                                            Joyent. </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <% } %>
+                            <% }); %>
+                            <% }); %>
+                            <!--END Content PAGE PRODUCT-->
                         </div>
                     </div>
                 </div>
@@ -602,7 +645,6 @@
             </div>
         </div>
     </div>
-
     <!-- jQuery JS -->
     <script src="js/vendor/jquery-1.12.0.min.js"></script>
     <!-- Bootstrap JS -->
@@ -611,6 +653,9 @@
     <script src="js/plugins.js"></script>
     <!-- Main JS -->
     <script src="js/main.js"></script>
+    <!-- partial -->
+    <script src='https://code.jquery.com/jquery-3.3.1.slim.min.js'></script>
+    <script src="js/countdown.js"></script>
 </body>
 
 </html>

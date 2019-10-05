@@ -1,29 +1,28 @@
 {
-  "name": "cmn_sourcecode",
+  "name": "Webapp_Auction",
   "version": "1.0.0",
-  "description": "This is ours project. Group 5 in The New Technology",
-  "main": "index.js",
+  "description": "WebApp (Node.js - DynamoDB), use SocketIO for Auction in realtime!",
+  "main": "routes.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --exec babel-node ./app/routes.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bingii98/Webapp_Auction.git"
+  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bingii98/Webapp_Auction/issues"
+  },
+  "homepage": "https://github.com/bingii98/Webapp_Auction#readme",
   "dependencies": {
-    "aws-sdk": "^2.541.0",
-    "bcrypt-nodejs": "0.0.3",
-    "body-parser": "^1.19.0",
-    "connect-flash": "^0.1.1",
-    "cookie-parser": "^1.4.4",
+    "aws-sdk": "^2.542.0",
+    "date-and-time": "^0.10.0",
     "ejs": "^2.7.1",
     "express": "^4.17.1",
-    "express-session": "^1.16.2",
-    "method-override": "^3.0.0",
-    "mongoose": "^5.7.3",
-    "morgan": "^1.9.1",
-    "passport": "^0.4.0",
-    "passport-facebook": "^3.0.0",
-    "passport-google-oauth": "^2.0.0",
-    "passport-local": "^1.0.0",
-    "passport-twitter": "^1.0.4"
+    "nodemon": "^1.19.3"
   }
 }
