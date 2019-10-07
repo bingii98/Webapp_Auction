@@ -9,9 +9,9 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 
 const table = 'Business';
 
-for (let index = 0; index < 40; index++) {
-  const businessID = 'BSN8459000' + index.toString();
-  const businessName = makeid(20);
+for (let index = 0; index < 10; index++) {
+  const businessID = 'BSN000' + index.toString();
+  const businessName = makeid(5);
   const dateAuc = "Fri Oct 07 2019 01:42:00 GMT+0700 (Indochina Time)";
   const timeRun = 120;
   const adress = makeid(20);
@@ -19,12 +19,12 @@ for (let index = 0; index < 40; index++) {
   const email = makeid(20);
   const username = makeid(20);
   const password = makeid(20);
-  const productid = makeid(20);
-  const productName = makeid(20);
-  const catID = makeid(20);
+  const productid = businessID.toString() + "_0";
+  const productName = makeid(10);
+  const catID = "cat1";
   const productDescribe = makeid(300);
   const productImage = makeid(20);
-  const productPrice = makeid(20);
+  const productPrice = 20000;
   const params = {
     TableName: table,
     Item: {
@@ -40,6 +40,16 @@ for (let index = 0; index < 40; index++) {
         password
       ],
       product: [
+        {
+          productid,
+          productName,
+          dateAuc,
+          timeRun,
+          catID,
+          productDescribe,
+          productImage,
+          productPrice,
+        },
         {
           productid,
           productName,
