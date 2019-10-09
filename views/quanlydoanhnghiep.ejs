@@ -1,0 +1,186 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Admin site</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+
+    <!-- Google Fonts -->
+    <link href="css/googleapisFont.css" rel="stylesheet">
+
+    <!-- CSS -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Icon Font CSS-->
+    <link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+    <!-- Plugins Import CSS -->
+    <link rel="stylesheet" href="css/import.css">
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="css/color/color-1.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/addNews.css">
+    <link rel='stylesheet' href='css/swiper.css'>
+    <link rel='stylesheet' href='css/swiper.min.css'>
+    <!-- Modernizer JS -->
+    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+</head>
+
+<body>
+    <!-- Pre Loader -->
+    <div class="preloader">
+        <div class="loading-center">
+            <div class="loading-center-absolute">
+                <div class="object object_one">
+                </div>
+                <div class="object object_two">
+                </div>
+                <div class="object object_three">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Body main wrapper start -->
+    <div class="wrapper bg-white fix">
+
+        <!-- Header 4 -->
+        <% include element/header %>
+        <!-- Cart Area -->
+        <div class="cart-area pb-90 pt-90 mt-100">
+            <div class="container">
+                <div class="row">
+                    <div class="procced-checkout col-md-12 col-xs-12">
+                        <button class="btn btn-open checkout-link">
+                            <span>Thêm doanh nghiệp</span>
+                    </div>
+                    <section class="modal">
+                        <div class="wrapper">
+                            <div class="container">
+                                <span class="icon-close"></span>
+                                <div class="right">
+                                    <div class="form">
+                                        <h2 class="title">Thêm doanh nghiệp</h2>
+                                        <form action="createbusiness" method="get">
+                                            <div class="input-wrapper">
+                                                <label for="">Tên doanh nghiệp</label>
+                                                <input name="businessName" type="text" placeholder="Name">
+                                            </div>
+                                            <div class="input-wrapper">
+                                                <label for="">Tên người dùng:</label>
+                                                <input name="username" type="text" placeholder="User">
+                                            </div>
+                                            <div class="input-wrapper">
+                                                <label for="">Mật khẩu:</label>
+                                                <input name="password" type="text" placeholder="Password">
+                                            </div>
+                                            <div class="input-wrapper">
+                                                <label for="">Nhập lại mật khẩu:</label>
+                                                <input name="re-password" type="text" placeholder="Re-Password">
+                                            </div>
+                                            <div class="input-wrapper">
+                                                <label for="">Địa chỉ:</label>
+                                                <input name="adress" type="text" placeholder="Address">
+                                            </div>
+                                            <div class="input-wrapper">
+                                                <label for="">Số điện thoại:</label>
+                                                <input name="phone" type="text" placeholder="Telephone Number">
+                                            </div>
+                                            <div class="input-wrapper">
+                                                <label for="">Email:</label>
+                                                <input name="email" type="email" placeholder="Name">
+                                            </div>
+                                            <button type="submit" class="btn"><span>Xác nhận</span></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="row" style="margin-top: 20px;">
+                    <div class="col-xs-12">
+                        <div class="cart-table table-responsive mb-50">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col" style="text-align: left; padding-left: 10px;"> #</th>
+                                        <th scope="col" style="text-align: left;">Mã DN</th>
+                                        <th scope="col" style="text-align: left;">Tên DN</th>
+                                        <th scope="col" style="text-align: left;">Địa chỉ</th>
+                                        <th scope="col" style="text-align: left;">Số điện thoại</th>
+                                        <th scope="col" style="text-align: left;">Mail</th>
+                                        <th scope="col" style="text-align: left;">Username</th>
+                                        <th scope="col" style="text-align: left;">SP</th>
+                                        <th scope="col" style="text-align: left;">Sửa</th>
+                                        <th scope="col" style="text-align: left;">Xoá</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% var i = 1; %>
+                                    <% if(_uG.length != 0){ %>
+                                    <% _uG.forEach((item) => { %>
+                                    <tr>
+                                        <td scope="row" style="font-weight: 700; padding-left: 10px;"><%= i %></td>
+                                        <td><%= item.businessID %></td>
+                                        <td style="font-weight: 700;"><%= item.businessName %></td>
+                                        <td><%= item.contact.adress %></td>
+                                        <td><%= item.contact.phone %></td>
+                                        <td><%= item.contact.email %></td>
+                                        <td><%= item.account.username %></td>
+                                        <td><a
+                                                href="/quanlydoanhnghiep_sanpham?businessID=<%= item.businessID %>&businessName=<%= item.businessName %>"><button
+                                                    class="cart-pro-remove"><i class="zmdi zmdi-eye"></i></button></a>
+                                        </td>
+                                        <td><a href=""><button class="cart-pro-remove"><i
+                                                        class="zmdi zmdi-edit"></i></button></a></td>
+                                        <td><a
+                                                href="/deletebusiness?businessid=<%= item.businessID %>&businessname=<%= item.businessName %>"><button
+                                                    class="cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a>
+                                        </td>
+                                    </tr>
+                                    <% i++ %>
+                                    <% });%>
+                                    <% } else { %>
+                                    <tr>
+                                        <td colspan="10"
+                                            style="text-align: center;font-size: 18px;font-weight: bold;color: red;">
+                                            Notthing to show!</td>
+                                    </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Footer-->
+        <% include element/footer %>
+    </div>
+    <!-- Body main wrapper end -->
+
+    <!-- JS -->
+
+    <!-- jQuery JS  -->
+    <script src="js/vendor/jquery-1.12.0.min.js"></script>
+    <!-- Bootstrap JS  -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- Plugins JS  -->
+    <script src="js/plugins.js"></script>
+    <!-- Particles Active JS  -->
+    <script src="js/app.js"></script>
+    <!-- Main JS  -->
+    <script src="js/main.js"></script>
+    <script src="js/addNews.js"></script>
+    <script src='js/swiper.js'> </script>
+    <script src='js/swiper.min.js'></script>
+</body>
+
+</html>

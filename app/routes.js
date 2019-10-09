@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const ctlBsn = require('../controller/ctl_Business');
 
 //set view engine for project
 app.set('view engine', 'ejs');
@@ -9,7 +10,7 @@ const AWS = require('aws-sdk');
 
 AWS.config.update({
     region: "CNM",
-    endpoint: 'http://localhost:8000',
+    endpoint: 'http://localhost:8000'
 });
 
 let docClient = new AWS.DynamoDB.DocumentClient();
@@ -41,18 +42,14 @@ app.get('/admin', function (req, res) {
 
 //router admib
 app.get('/quanlysanpham', function (req, res) {
-    let params = {
-        TableName: 'Admins'
-    }
-    let scanObject = {};
-    docClient.scan(params, (err, data) => {
-        if (err) {
-            scanObject.err = err;
-        } else {
-            scanObject.data = data;
-        }
-        res.render('quanlysanpham', { _uG: scanObject.data.Items });
-    });
+    ctlBsn.getAll_Items_Business('quanlysanpham',res);
+});
+
+//router admib
+app.get('/quanlydoanhnghiep_sanpham', function (req, res) {
+    var id = req.query.businessID;
+    var name = req.query.businessName;
+    ctlBsn.get_Items_Business_Key(id,name,'quanlysanpham_business',res);
 });
 
 //router admib
@@ -63,6 +60,17 @@ app.get('/quanlyhoadon', function (req, res) {
 //router admib
 app.get('/quanlykhachhang', function (req, res) {
     res.render('quanlykhachhang');
+});
+
+//router admib
+app.get('/quanlydoanhnghiep', function (req, res) {
+    ctlBsn.getAll_Items_Business('quanlydoanhnghiep',res);
+});
+
+//router admib
+app.get('/quanlysanpham', function (req, res) {
+    var id = req.query.businessID;
+    ctlBsn.get_Items_Business_Key(id,'quanlysanpham_business',res);
 });
 
 //router admib
@@ -155,15 +163,34 @@ app.get('/deleteproduct', function (req, res) {
     });
 });
 
+// Thêm doanh nghiệp
+app.get('/createbusiness', function (req, res) {
 
-// route middleware để kiểm tra một user đã đăng nhập hay chưa?
-function isLoggedIn(req, res, next) {
-    // Nếu một user đã xác thực, cho đi tiếp
-    if (req.isAuthenticated())
-        return next();
-    // Nếu chưa, đưa về trang chủ
-    res.redirect('/');
-}
+    const businessName = req.query.businessName;
+    const adress = req.query.adress;
+    const phone = req.query.phone;
+    const email = req.query.email;
+    const username = req.query.username;
+    const password = req.query.password;
+
+    const Object = {
+        businessName : businessName,
+        adress : adress,
+        phone : phone,
+        email : email,
+        username : username,
+        password : password
+    }
+
+    ctlBsn.add_Item_Business(Object,'quanlydoanhnghiep',res);
+});
+
+// Xoá doanh nghiệp
+app.get('/deletebusiness', function (req, res) {
+    var businessid = req.query.businessid;
+    var businessname = req.query.businessname;
+    ctlBsn.delete_Item_Business_Key(businessid, businessname, '/quanlydoanhnghiep', res);
+});
 
 app.post('/login', function (req, res) {
 

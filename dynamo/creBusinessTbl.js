@@ -10,12 +10,12 @@ let dynamodb = new AWS.DynamoDB();
 let params = {
   TableName: "Business",
   KeySchema: [
-    {AttributeName: "businessID", KeyType: "HASH"},
-    {AttributeName: "businessName", KeyType: "RANGE"}
+    {AttributeName: "businessName", KeyType: "HASH"},
+    {AttributeName: "businessID", KeyType: "SORT"},
   ],
   AttributeDefinitions: [
-    {AttributeName: "businessID", AttributeType: "S"},
-    {AttributeName: "businessName", AttributeType: "S"}
+    {AttributeName: "businessName", AttributeType: "S"},
+    {AttributeName: "businessID", AttributeType: "S"}
   ],
   ProvisionedThroughput: {
     ReadCapacityUnits: 10,
