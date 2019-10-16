@@ -7,7 +7,7 @@ AWS.config.update({
 
 let docClient = new AWS.DynamoDB.DocumentClient();
 
-function getAll_Items_Business(location, res) {
+function getAll_Items_Business(ejs, res) {
     let params = {
         TableName: 'Business'
     }
@@ -18,7 +18,7 @@ function getAll_Items_Business(location, res) {
         } else {
             scanObject.data = data;
         }
-        res.render(location, { _uG: scanObject.data.Items });
+        res.render(ejs, { _uG: scanObject.data.Items });
     });
 }
 
@@ -41,7 +41,7 @@ function get_Items_Business_Key(id, name, location, res) {
 }
 
 
-function delete_Item_Business_Key(businessid, businessname, location, res) {
+function delete_Item_Business_Key(businessid, businessname, router, res) {
 
     var table = "Business";
     var docClient = new AWS.DynamoDB.DocumentClient();
@@ -58,7 +58,7 @@ function delete_Item_Business_Key(businessid, businessname, location, res) {
         if (err) {
             console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
-            res.writeHead(302, { 'Location': location });
+            res.writeHead(302, { 'Location': router });
             console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
         }
         res.end();

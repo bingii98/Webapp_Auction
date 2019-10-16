@@ -20,7 +20,6 @@ app.use(express.static('./views'));
 
 //router trang chủ
 app.get('/', function (req, res) {
-    var page = req.params.page || 1;
     let params = {
         TableName: 'Business'
     }

@@ -34,8 +34,8 @@ docClient.scan(params1, (err, data) => {
       console.log('Count: ' + count);
     }
 
-    const dateAuc = "Fri Oct 07 2019 01:42:00 GMT+0700 (Indochina Time)";
-    const timeRun = 120;
+    const dateAuc = Date(); 
+    const timeRun = 120000;
     const businessName = makeid(5);
     const adress = makeid(20);
     const phone = makeid(20);
