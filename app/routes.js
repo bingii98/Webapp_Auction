@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const ctlBsn = require('../controller/ctl_Business');
+const ctlBsn = require('../controller/controller_Business');
 
 //set view engine for project
 app.set('view engine', 'ejs');
@@ -20,18 +20,15 @@ app.use(express.static('./views'));
 
 //router trang chủ
 app.get('/', function (req, res) {
-    let params = {
-        TableName: 'Business'
-    }
-    let scanObject = {};
-    docClient.scan(params, (err, data) => {
-        if (err) {
-            scanObject.err = err;
-        } else {
-            scanObject.data = data;
-        }
-        res.render('index', { _uG: scanObject.data.Items });
+    res.writeHead(302, {
+        'Location': '/daugia'
     });
+    res.end();
+});
+
+//router trang chủ
+app.get('/daugia', function (req, res) {
+    ctlBsn.getAll_Product_Business('index',res);
 });
 
 //router admib
@@ -41,14 +38,14 @@ app.get('/admin', function (req, res) {
 
 //router admib
 app.get('/quanlysanpham', function (req, res) {
-    ctlBsn.getAll_Items_Business('quanlysanpham',res);
+    ctlBsn.getAll_Items_Business('quanlysanpham', res);
 });
 
 //router admib
 app.get('/quanlydoanhnghiep_sanpham', function (req, res) {
     var id = req.query.businessID;
     var name = req.query.businessName;
-    ctlBsn.get_Items_Business_Key(id,name,'quanlysanpham_business',res);
+    ctlBsn.get_Items_Business_Key(id, name, 'quanlysanpham_business', res);
 });
 
 //router admib
@@ -63,13 +60,13 @@ app.get('/quanlykhachhang', function (req, res) {
 
 //router admib
 app.get('/quanlydoanhnghiep', function (req, res) {
-    ctlBsn.getAll_Items_Business('quanlydoanhnghiep',res);
+    ctlBsn.getAll_Business('quanlydoanhnghiep', res);
 });
 
 //router admib
 app.get('/quanlysanpham', function (req, res) {
     var id = req.query.businessID;
-    ctlBsn.get_Items_Business_Key(id,'quanlysanpham_business',res);
+    ctlBsn.get_Items_Business_Key(id, 'quanlysanpham_business', res);
 });
 
 //router admib
@@ -172,16 +169,16 @@ app.get('/createbusiness', function (req, res) {
     const username = req.query.username;
     const password = req.query.password;
 
-    const Object = {
-        businessName : businessName,
-        adress : adress,
-        phone : phone,
-        email : email,
-        username : username,
-        password : password
+    const ObjectB = {
+        businessName: businessName,
+        adress: adress,
+        phone: phone,
+        email: email,
+        username: username,
+        password: password
     }
 
-    ctlBsn.add_Item_Business(Object,'quanlydoanhnghiep',res);
+    ctlBsn.add_Item_Business(ObjectB, 'quanlydoanhnghiep', res);
 });
 
 // Xoá doanh nghiệp

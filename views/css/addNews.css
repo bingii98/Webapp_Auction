@@ -40,24 +40,6 @@ h3 {
   }
 }
 
-.btn {
-  height: 50px;
-  border-radius: 6px;
-  background-color: #404145;
-  color: white;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 19px;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  font-family: "Barlow", sans-serif;
-  padding: 0 30px;
-  position: relative;
-  display: flex;
-  cursor: pointer;
-  border: 0;
-  margin-top: 15px;
-}
 @media screen and (max-width: 511px) {
   .btn {
     margin-top: 5px;
@@ -67,18 +49,7 @@ h3 {
   z-index: 1;
   display: block;
 }
-.btn:after {
-  content: "";
-  position: absolute;
-  height: 3px;
-  width: calc(100% - 6px);
-  border-radius: 4px;
-  background-color: #1c1c1e;
-  bottom: 3px;
-  left: 3px;
-  transition: all 0.4s ease;
-  opacity: 0.8;
-}
+
 .btn:hover:after {
   height: calc(100% - 6px);
 }
@@ -410,7 +381,7 @@ h3 {
 }
 .modal.open .wrapper .container .right .form .input-wrapper {
   position: relative;
-  margin-bottom: 25px;
+  margin-top: 25px;
 }
 .modal.open .wrapper .container .right .form .input-wrapper:after, .modal.open .wrapper .container .right .form .input-wrapper:before {
   content: "";
@@ -423,9 +394,10 @@ h3 {
   transition: all 0.4s ease;
   right: 0;
 }
+
 .modal.open .wrapper .container .right .form .input-wrapper:after {
   width: 0;
-  background-color: #9c9c9c;
+  background-color: #ff9900;
 }
 .modal.open .wrapper .container .right .form .input-wrapper select {
   width: 100%;
@@ -504,3 +476,4 @@ h3 {
     transform: translateX(0%);
   }
 }
+

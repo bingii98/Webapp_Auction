@@ -7,7 +7,7 @@ AWS.config.update({
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 const params = {
-    TableName: 'Business',
+    TableName: 'Businesss',
 };
 console.log('Scanning Books table.');
 
@@ -18,7 +18,7 @@ function onScan(err, data) {
     } else {
         console.log('Scan succeeded.');
         data.Items.forEach((item) => {
-            var table = "Business";
+            var table = "Businesss";
 
             var id = item.businessID;
             var name = item.businessName;

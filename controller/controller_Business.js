@@ -7,26 +7,64 @@ AWS.config.update({
 
 let docClient = new AWS.DynamoDB.DocumentClient();
 
-function getAll_Items_Business(ejs, res) {
+function getAll_Business(ejs, res) {
     let params = {
-        TableName: 'Business'
+        TableName: 'Businesss'
     }
-    let scanObject = {};
+
     docClient.scan(params, (err, data) => {
         if (err) {
-            scanObject.err = err;
+            console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
         } else {
-            scanObject.data = data;
+            res.render(ejs, { _uG: data.Items });
         }
-        res.render(ejs, { _uG: scanObject.data.Items });
     });
+}
+
+function getAll_Product_Business(ejs, res) {
+    let params = {
+        TableName: 'Businesss'
+    }
+
+    docClient.scan(params, (err, data) => {
+        if (err) {
+            console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+        } else {
+            var productList = [];
+
+            data.Items.forEach(item => {
+                item.category.forEach(cat => {
+                    cat.product.forEach(element => {
+                        productList.push(element);
+                    });
+                });
+            });
+
+            productList.sort(function (a, b) {
+                var nameA = a.productName.toLowerCase(), nameB = b.productName.toLowerCase()
+                if (nameA < nameB) //sort string ascending
+                    return -1
+                if (nameA > nameB)
+                    return 1
+                return 0 //default return value (no sorting)
+            })
+
+            productList.sort(function (a, b) {
+                var dateA = new Date(a.auction.startDate), dateB = new Date(b.auction.startDate)
+                return dateA - dateB //sort by date ascending
+            });
+
+            res.render(ejs, { _uG: productList });
+        }
+    });
+
 }
 
 function get_Items_Business_Key(id, name, location, res) {
     let params = {
-        TableName: 'Business',
-        Key:{
-            "businessID": id,   
+        TableName: 'Businesss',
+        Key: {
+            "business": id,
         }
     }
     let scanObject = {};
@@ -36,14 +74,14 @@ function get_Items_Business_Key(id, name, location, res) {
         } else {
             scanObject.data = data;
         }
-        res.render(location, { _uG: scanObject.data.Items, _name : name });
+        res.render(location, { _uG: scanObject.data.Items, _name: name });
     });
 }
 
 
 function delete_Item_Business_Key(businessid, businessname, router, res) {
 
-    var table = "Business";
+    var table = "Businesss";
     var docClient = new AWS.DynamoDB.DocumentClient();
 
     var params = {
@@ -66,18 +104,18 @@ function delete_Item_Business_Key(businessid, businessname, router, res) {
 }
 
 function add_Item_Business(ObjectB, location, res) {
-
-    let params1 = {
-        TableName: 'Business'
+    let params = {
+        TableName: 'Businesss'
     }
 
-    docClient.scan(params1, (err, data) => {
-
+    docClient.scan(params, (err, data) => {
+        //Thêm items mới với ID tăng dần
         var businessID = '';
-
+        //Lấy ra ID items cuối cùng 
         if (err) {
             console.error('Error JSON:', JSON.stringify(err, null, 2));
         } else {
+            //Tạo ra biến BusinessID mới
             var count = Number(data.Items.length);
             if (count != 0) {
                 var max = 0;
@@ -94,28 +132,25 @@ function add_Item_Business(ObjectB, location, res) {
                 console.log('Count: ' + count);
             }
 
-            console.log("ID: " + businessID);
-            const businessName = ObjectB.businessName;
-            const adress = ObjectB.adress;
-            const phone = ObjectB.phone;
-            const email = ObjectB.email;
-            const username = ObjectB.username;
-            const password = ObjectB.password;
-            const params = {
-                TableName: 'Business',
+            //Import
+            let params = {
+                TableName: 'Businesss',
                 Item: {
-                    businessID,
-                    businessName,
-                    contact: {
-                        adress,
-                        phone,
-                        email
-                    },
-                    account: {
-                        username,
-                        password
-                    },
-                    product: [
+                    businessID: businessID,
+                    businessName: ObjectB.businessName,
+                    adress: ObjectB.adress,
+                    email: ObjectB.email,
+                    phone: ObjectB.phone,
+                    username: ObjectB.username,
+                    password: ObjectB.password,
+                    category: [
+                        {
+                            catID: "CR_1",
+                            catName: "Đồ điện tử",
+                            product: [
+
+                            ],
+                        }
                     ]
                 },
             };
@@ -135,7 +170,8 @@ function add_Item_Business(ObjectB, location, res) {
 
 
 module.exports = {
-    getAll_Items_Business: getAll_Items_Business,
+    getAll_Business: getAll_Business,
+    getAll_Product_Business: getAll_Product_Business,
     get_Items_Business_Key: get_Items_Business_Key,
     delete_Item_Business_Key: delete_Item_Business_Key,
     add_Item_Business: add_Item_Business,

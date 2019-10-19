@@ -332,10 +332,9 @@
                         <div class="product-tab tab-pane active" id="grid-view">
                             <!--START Content PAGE PRODUCT-->
                             <% _uG.forEach((item) => { %>
-                            <% item.product.forEach((product) => { %>
-                            <% var date = new Date(product.dateAuc); %>
+                            <% var date = new Date(item.auction.startDate); %>
                             <% var nowdate = new Date(); %>
-                            <% if((nowdate.getTime() - date.getTime()) < product.timeRun*1000){ %>
+                            <% if((nowdate.getTime() - date.getTime()) < item.auction.timeRun*1000){ %>
                             <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="sin-product">
                                     <div class="pro-image fix">
@@ -418,7 +417,7 @@
                                             </p>
                                         </div>
                                         <div style="color:green;">
-                                            <a href="auction-page.html" class="pro-title"><%= product.productName%></a>
+                                            <a href="auction-page.html" class="pro-title"><%= item.productName%></a>
                                             <i class="zmdi zmdi-chart"></i><span>&nbsp;Sắp đấu giá</span>
                                         </div>
                                         <% }else { %>
@@ -426,11 +425,11 @@
                                             <p class="pro-cat float-left">Xe</p>
                                             <p class="pro-ratting float-right">
                                                 <span class="timer"
-                                                    data-seconds-left="<%= product.timeRun - ((nowdate.getTime() - date.getTime())/1000) %>">Còn&nbsp;</span>
+                                                    data-seconds-left="<%= item.auction.timeRun - ((nowdate.getTime() - date.getTime())/1000) %>">Còn&nbsp;</span>
                                             </p>
                                         </div>
                                         <div style="color:red;">
-                                            <a href="auction-page.html" class="pro-title"><%= product.productName %></a>
+                                            <a href="auction-page.html" class="pro-title"><%= item.productName %></a>
                                             <i class="zmdi zmdi-chart"></i><span>&nbsp;Đang đấu giá</span>
                                         </div>
                                         <% } %>
@@ -439,16 +438,14 @@
                             </div>
                             <% } %>
                             <% }); %>
-                            <% }); %>
                             <!--END Content PAGE PRODUCT-->
                         </div>
                         <div class="product-tab tab-pane" id="list-view">
                             <!--START Content PAGE PRODUCT-->
                             <% _uG.forEach((item) => { %>
-                            <% item.product.forEach((product) => { %>
-                            <% var date = new Date(product.dateAuc); %>
+                            <% var date = new Date(item.auction.dateAuc); %>
                             <% var nowdate = new Date(); %>
-                            <% if((nowdate.getTime() - date.getTime()) < product.timeRun*1000){ %>
+                            <% if((nowdate.getTime() - date.getTime()) < item.auction.timeRun*1000){ %>
                             <div class="sin-list-product clearfix">
                                 <div class="pro-image col-md-3 col-sm-5 col-xs-12">
                                     <a href="#" class="image fix">
@@ -463,7 +460,7 @@
                                     <% if((date.getTime() - nowdate.getTime()) > 0){ %>
                                     <div class="top fix">
                                         <div style="color:green;">
-                                            <a href="auction-page.html" class="pro-title"><%= product.productName %></a>
+                                            <a href="auction-page.html" class="pro-title"><%= item.productName %></a>
                                             <i class="zmdi zmdi-chart"></i><span>&nbsp;Sắp đấu giá</span>
                                         </div>
                                         <p class="pro-ratting float-right">
@@ -533,12 +530,12 @@
                                         </p>
                                     </div>
                                     <div class="list-pro-dec">
-                                        <p> <%= product.productDescribe %> </p>
+                                        <p> <%= item.productDescribe %> </p>
                                     </div>
                                     <% }else { %>
                                     <div class="top fix">
                                         <div style="color:red;">
-                                            <a href="auction-page.html" class="pro-title"><%= product.productName %></a>
+                                            <a href="auction-page.html" class="pro-title"><%= itme.productName %></a>
                                             <i class="zmdi zmdi-chart"></i><span>&nbsp;Đang đấu giá</span>
                                         </div>
                                         <p class="pro-ratting float-right">
@@ -547,13 +544,12 @@
                                         </p>
                                     </div>
                                     <div class="list-pro-dec">
-                                        <p> <%= product.productDescribe %> </p>
+                                        <p> <%= item.productDescribe %> </p>
                                     </div>
                                     <% } %>
                                 </div>
                             </div>
                             <% } %>
-                            <% }); %>
                             <% }); %>
                             <!--END Content PAGE PRODUCT-->
                         </div>

@@ -20,9 +20,10 @@
   "homepage": "https://github.com/bingii98/Webapp_Auction#readme",
   "dependencies": {
     "aws-sdk": "^2.542.0",
+    "babel-node": "0.0.1-security",
     "date-and-time": "^0.10.0",
     "ejs": "^2.7.1",
     "express": "^4.17.1",
-    "nodemon": "^1.19.3"
+    "nodemon": "^1.19.4"
   }
 }
