@@ -13,9 +13,25 @@ let params = {
     { AttributeName: "businessID", KeyType: "HASH" },
     { AttributeName: "businessName", KeyType: "RANGE" },
   ],
+  GlobalSecondaryIndexes: [
+    {
+      IndexName: 'username_index',
+      KeySchema: [
+        { AttributeName: 'username', KeyType: 'HASH' }
+      ],
+      Projection: {
+        ProjectionType: "ALL"
+      },
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 10,
+        WriteCapacityUnits: 10
+      }
+    }
+  ],
   AttributeDefinitions: [
     { AttributeName: "businessID", AttributeType: "S" },
-    { AttributeName: "businessName", AttributeType: "S" }
+    { AttributeName: "businessName", AttributeType: "S" },
+    { AttributeName: "username", AttributeType: "S" }
   ],
   ProvisionedThroughput: {
     ReadCapacityUnits: 10,

@@ -78,6 +78,26 @@ function get_Items_Business_Key(id, name, location, res) {
     });
 }
 
+function get_Account_Business_Exist_UserName(username) {
+    let params = {
+        TableName: 'Businesss',
+        IndexName: "username_index",
+        FilterExpression: "#username = :username",
+        ExpressionAttributeNames: {
+            "#username": "username",
+        },
+        ExpressionAttributeValues: { ":username": username }
+    }
+    docClient.scan(params, (err, data) => {
+        if (!err) {
+            if(data.Items.length != 0)
+                return true;
+            else
+                return false;
+        }
+    });
+}
+
 
 function delete_Item_Business_Key(businessid, businessname, router, res) {
 
@@ -175,4 +195,5 @@ module.exports = {
     get_Items_Business_Key: get_Items_Business_Key,
     delete_Item_Business_Key: delete_Item_Business_Key,
     add_Item_Business: add_Item_Business,
+    get_Account_Business_Exist_UserName : get_Account_Business_Exist_UserName,
 };
