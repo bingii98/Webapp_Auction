@@ -86,16 +86,17 @@ function get_Account_Business_Exist_UserName(username) {
         ExpressionAttributeNames: {
             "#username": "username",
         },
-        ExpressionAttributeValues: { ":username": username }
+        ExpressionAttributeValues: { ":username": "bingii9811" }
     }
     docClient.scan(params, (err, data) => {
-        if (!err) {
-            if(data.Items.length != 0)
-                return true;
-            else
-                return false;
-        }
+        if (err) {
+            console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+        }else{
+            return data;
+        } 
     });
+    
+    console.log(this.data)
 }
 
 
@@ -195,5 +196,5 @@ module.exports = {
     get_Items_Business_Key: get_Items_Business_Key,
     delete_Item_Business_Key: delete_Item_Business_Key,
     add_Item_Business: add_Item_Business,
-    get_Account_Business_Exist_UserName : get_Account_Business_Exist_UserName,
+    get_Account_Business_Exist_UserName: get_Account_Business_Exist_UserName,
 };
