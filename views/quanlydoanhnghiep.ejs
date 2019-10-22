@@ -7,13 +7,35 @@
     <title>Admin site</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--SOCKETIO for Sign up-->
+    <script src="socket.io/socket.io.js"></script>
+    <script> var socket = io('http://localhost:3000'); </script>
+    <script>
+        function checkBusiness() {
+            var name = checkBusinessName(document.getElementById('businessName').value);
+            var username = checkUsername(document.getElementById('username').value);
+            var pass = checkPassword(document.getElementById('passwordA').value);
+            var repass = checkConfirmPassword(document.getElementById('re-password').value);
+            var adress = checkAdress(document.getElementById('adress').value);
+            var phone = checkPhone(document.getElementById('phoneA').value);
+            var mail = checkEmail(document.getElementById('email').value);
+            if (name && username && pass && repass && adress && phone && mail) {
+                socket.emit("Client_sent_data", document.getElementById('username').value);
+                socket.on("Server_sent_data", function (data) {
+                    if (data) {
+                        document.getElementById("autopass").submit();
+                    } else {
+                        document.getElementById("error_username").innerHTML = "Username đã tồn tại";
+                    }
+                });
+            }
+        }
 
+    </script>
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
-
     <!-- Google Fonts -->
     <link href="css/googleapisFont.css" rel="stylesheet">
-
     <!-- CSS -->
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -31,7 +53,6 @@
     <link rel='stylesheet' href='css/swiper.min.css'>
     <!-- Modernizer JS -->
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>
-
     <!-- Delete CSS -->
     <link rel="stylesheet" href="css/styleDel.css">
 </head>
@@ -52,16 +73,14 @@
     </div>
     <!-- Body main wrapper start -->
     <div class="wrapper bg-white fix">
-
-        <!-- Header 4 -->
-        <% include element/header %>
+        <!-- Header 4 --> <% include element/header %>
         <!-- Cart Area -->
         <div class="cart-area pb-90 pt-90 mt-100">
             <div class="container">
                 <div class="row">
                     <div class="procced-checkout col-md-12 col-xs-12">
                         <button class="btn btn-open checkout-link">
-                            <span>Thêm doanh nghiệp</span>
+                            <span>Thêm doanh nghiệp</span></button>
                     </div>
                     <section class="modal">
                         <div class="wrapper">
@@ -70,7 +89,7 @@
                                 <div class="right">
                                     <div class="form">
                                         <h2 class="title">Thêm doanh nghiệp</h2>
-                                        <form action="createbusiness" method="get" id="autopass" onsubmit="return checkBusiness(this);" >
+                                        <form action="createbusiness" method="get" id="autopass">
                                             <div class="input-wrapper">
                                                 <label for="">Tên doanh nghiệp</label>
                                                 <input name="businessName" id="businessName" type="text" placeholder="Name" onblur="checkBusinessName(this.value)">
@@ -106,13 +125,47 @@
                                                 <input name="email" id="email" type="email" placeholder="Name" id="email" onblur="checkEmail(this.value)">
                                             </div>
                                             <label id="error_email" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <button class="btn btn-success" type="submit"><span>Xác nhận</span></button>
+                                            <button class="btn btn-success" type="button" onclick="checkBusiness();"><span>Xác nhận</span></button>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </section>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="editBusiness" style="margin: 20px;" id="formEdit">
+                                        <input name="businessName" id="businessNameEdit" type="hidden">
+                                        <input name="businessID" id="businessIDEdit" type="hidden">
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Địa chỉ</label>
+                                            <input name="adress" class="txtEdit" id="edit_bnAdress" type="text" onblur="checkAdressEdit(this.value)">
+                                            <label id="error_adress_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                        </div>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Số điện thoại</label>
+                                            <input name="phone" class="txtEdit" id="edit_bnPhone" type="text" onblur="checkPhoneEdit(this.value)">
+                                            <label id="error_phone_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                        </div>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Email</label>
+                                            <input name="email" class="txtEdit" id="edit_bnEmail" type="text" onblur="checkEmailEdit(this.value)"><br>
+                                            <label id="error_email_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                        </div>
+                                        <button onclick="checkEditBusiness();" class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px;">Xác nhận</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row" style="margin-top: 20px;">
                     <div class="col-xs-12">
@@ -132,11 +185,7 @@
                                         <th scope="col" style="text-align: left;">Xoá</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <% var i = 1; %>
-                                    <% if(_uG.length != 0){ %>
-                                    <% _uG.forEach((item) => { %>
-                                    <tr>
+                                <tbody> <% var i = 1; %> <% if(_uG.length != 0){ %> <% _uG.forEach((item) => { %> <tr>
                                         <td scope="row" style="font-weight: 700; padding-left: 10px;"><%= i %></td>
                                         <td><%= item.businessID %></td>
                                         <td style="font-weight: 700;"><%= item.businessName %></td>
@@ -144,52 +193,36 @@
                                         <td><%= item.phone %></td>
                                         <td><%= item.email %></td>
                                         <td><%= item.username %></td>
-                                        <td><a
-                                                href="/quanlydoanhnghiep_sanpham?businessID=<%= item.businessID %>&businessName=<%= item.businessName %>"><button
-                                                    class="cart-pro-remove"><i class="zmdi zmdi-eye"></i></button></a>
+                                        <td><a href="/quanlydoanhnghiep_sanpham?businessID=<%= item.businessID %>&businessName=<%= item.businessName %>"><button class="cart-pro-remove"><i class="zmdi zmdi-eye"></i></button></a>
                                         </td>
-                                        <td><a href=""><button class="cart-pro-remove"><i
-                                                        class="zmdi zmdi-edit"></i></button></a></td>
+                                        <td><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setBusinessID_Input('<%= item.businessID %>','<%= item.businessName %>')"><i class="zmdi zmdi-edit"></i></button></td>
                                         <td>
                                             <!-- partial:index.partial.html -->
-                                            <a><button class="cd-popup-trigger cart-pro-remove"><i
-                                                        class="zmdi zmdi-close"></i></button></a>
+                                            <a><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a>
                                             <div class="cd-popup" role="alert">
                                                 <div class="cd-popup-container">
                                                     <p>Are you sure you want to delete this element?</p>
                                                     <ul class="cd-buttons">
-                                                        <li><a
-                                                                href="/deletebusiness?businessid=<%= item.businessID %>&businessname=<%= item.businessName %>">Yes</a>
+                                                        <li><a href="/deletebusiness?businessid=<%= item.businessID %>&businessname=<%= item.businessName %>">Yes</a>
                                                         </li>
-                                                        <li><a class="btn cd-popup-close1"
-                                                                style="padding-top: 0px;">No</a></li>
+                                                        <li><a class="btn cd-popup-close1" style="padding-top: 0px;">No</a></li>
                                                     </ul>
                                                     <a class="cd-popup-close img-replace"></a>
                                                 </div> <!-- cd-popup-container -->
                                             </div> <!-- cd-popup -->
                                         </td>
-                                    </tr>
-                                    <% i++ %>
-                                    <% });%>
-                                    <% } else { %>
-                                    <tr>
-                                        <td colspan="10"
-                                            style="text-align: center;font-size: 18px;font-weight: bold;color: red;">
-                                            Notthing to show!</td>
-                                    </tr>
-                                    <% } %>
-                                </tbody>
+                                    </tr> <% i++ %> <% });%> <% } else { %> <tr>
+                                        <td colspan="10" style="text-align: center;font-size: 18px;font-weight: bold;color: red;"> Notthing to show!</td>
+                                    </tr> <% } %> </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!--Footer-->
-        <% include element/footer %>
+        <!--Footer--> <% include element/footer %>
     </div>
     <!-- Body main wrapper end -->
-
     <!-- JS -->
     <script src="js/checkForm.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/5.0.7/sweetalert2.min.js'></script>
@@ -206,11 +239,9 @@
     <script src="js/addNews.js"></script>
     <script src='js/swiper.js'> </script>
     <script src='js/swiper.min.js'></script>
-
     <!-- partial -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src="js/scriptDel.js"></script>
-
 </body>
 
 </html>

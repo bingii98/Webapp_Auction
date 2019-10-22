@@ -25,6 +25,8 @@
     "ejs": "^2.7.1",
     "express": "^4.17.1",
     "nodemon": "^1.19.4",
-    "perf_hooks": "0.0.1"
+    "perf_hooks": "0.0.1",
+    "socket.io": "^2.3.0",
+    "socketio": "^1.0.0"
   }
 }

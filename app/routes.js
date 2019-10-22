@@ -1,12 +1,17 @@
-const express = require('express');
-const app = express();
-const ctlBsn = require('../controller/controller_Business');
+//============START CONFIG=============//
+var express = require('express');
+var app = express();
+var server = app.listen(3000, function () {
+    console.log("Server running at port 3000!")
+});
+var io = require('socket.io').listen(server);
+var ctlBsn = require('../controller/controller_Business');
 
 //set view engine for project
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
-const AWS = require('aws-sdk');
+var AWS = require('aws-sdk');
 
 AWS.config.update({
     region: "CNM",
@@ -18,17 +23,51 @@ let docClient = new AWS.DynamoDB.DocumentClient();
 //static thư mục view để sử dụng css
 app.use(express.static('./views'));
 
+//============END CONFIG=============//
+
+
+//SocketIO FUNCTION START
+io.on("connection", function (socket) {
+    console.log("CONNECT: New connection at ID : " + socket.id + " - !");
+
+    socket.on("disconnect", function () {
+        console.log("DISCONNECT: ID " + socket.id + " was disconnect!");
+    });
+
+    //CHECK BUSINESS USER EXIST
+    socket.on("Client_sent_data", function (username) {
+        let params = {
+            TableName: 'Businesss',
+            IndexName: "username_index",
+            FilterExpression: "#username = :username",
+            ExpressionAttributeNames: {
+                "#username": "username",
+            },
+            ExpressionAttributeValues: { ":username": username }
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                if (data.Items.length == 0) {
+                    socket.emit("Server_sent_data", true);
+                } else { 
+                    socket.emit("Server_sent_data", false);
+                };
+            }
+        });
+    });
+
+});
+
 //router trang chủ
 app.get('/', function (req, res) {
-    res.writeHead(302, {
-        'Location': '/daugia'
-    });
-    res.end();
+    ctlBsn.getAll_Product_Business('index', res);
 });
 
 //router trang chủ
 app.get('/daugia', function (req, res) {
-    ctlBsn.getAll_Product_Business('index',res);
+    ctlBsn.getAll_Product_Business('index', res);
 });
 
 //router admib
@@ -38,7 +77,7 @@ app.get('/admin', function (req, res) {
 
 //router admib
 app.get('/quanlysanpham', function (req, res) {
-    ctlBsn.getAll_Items_Business('quanlysanpham', res);
+    ctlBsn.getAll_Product_Business('quanlysanpham', res);
 });
 
 //router admib
@@ -188,13 +227,28 @@ app.get('/deletebusiness', function (req, res) {
     ctlBsn.delete_Item_Business_Key(businessid, businessname, '/quanlydoanhnghiep', res);
 });
 
-app.post('/login', function (req, res) {
+// Sửa doanh nghiệp
+app.get('/editBusiness', function (req, res) {
+    const businessID = req.query.businessID;
+    const businessName = req.query.businessName;
+    const adress = req.query.adress;
+    const phone = req.query.phone;
+    const email = req.query.email;
 
+    const ObjectB = {
+        businessID : businessID,
+        businessName: businessName,
+        adress: adress,
+        phone: phone,
+        email: email,
+    }
+
+    ctlBsn.edit_Item_Business(ObjectB, '/quanlydoanhnghiep', res);
 });
 
-//webapp run at port 3000
-app.listen(3000, function () {
-    console.log('Server running in port 3000! Now ....');
+
+app.post('/login', function (req, res) {
+
 });
 
 function makeid(length) {

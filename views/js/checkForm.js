@@ -67,18 +67,50 @@ function checkPhone(str) {
     return re.test(str);
 }
 
-function checkBusiness() {
-    var name = checkBusinessName(document.getElementById('businessName').value);
-    var user = checkUsername(document.getElementById('username').value);
-    var pass = checkPassword(document.getElementById('passwordA').value);
-    var repass = checkConfirmPassword(document.getElementById('re-password').value);
-    var adress = checkAdress(document.getElementById('adress').value);
-    var phone = checkPhone(document.getElementById('phoneA').value);
-    var mail = checkEmail(document.getElementById('email').value);
-    if (name && user && pass && repass && adress && phone && mail) {
-        return true;
+
+
+//CHECK FOR EDIT
+
+function checkAdressEdit(str) {
+    var re = /^((?![\^!@#$*~ <>?]).)((?![\^!@#$*~<>?]).){0,73}((?![\^!@#$*~ <>?]).)$/;
+    if (!re.test(str)) {
+        $('#error_adress_edit').text('Địa chỉ lớn hơn 3 ký tự!');
     } else {
-        return false;
+        $('#error_adress_edit').text('');
+    }
+    return re.test(str);
+}
+
+function checkPhoneEdit(str) {
+    var re = /^\+?\d{1,3}?[- .]?\(?(?:\d{2,3})\)?[- .]?\d\d\d[- .]?\d\d\d\d$/;
+    if (!re.test(str)) {
+        $('#error_phone_edit').text('Số điện thoại không đúng!');
+    } else {
+        $('#error_phone_edit').text('');
+    }
+    return re.test(str);
+}
+
+function checkEmailEdit(str) {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!re.test(str)) {
+        $('#error_email_edit').text('Email sai định dạng!');
+    } else {
+        $('#error_email_edit').text('');
+    }
+    return re.test(str);
+}
+
+function checkEditBusiness() {
+    let adress = checkAdressEdit(document.getElementById('edit_bnAdress').value);
+    let phone = checkPhoneEdit(document.getElementById('edit_bnPhone').value);
+    let mail = checkEmailEdit(document.getElementById('edit_bnEmail').value);
+    if (adress && phone && mail) {
+        document.getElementById("formEdit").submit();
     }
 }
 
+function setBusinessID_Input(BusinessID,BusinessName){
+    document.getElementById("businessIDEdit").value = BusinessID;
+    document.getElementById("businessNameEdit").value = BusinessName;
+}

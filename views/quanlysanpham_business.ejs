@@ -59,7 +59,6 @@
                 <div class="row" style="margin-top: 20px;">
                     <div class="col-xs-12">
                         <div class="cart-table table-responsive mb-50">
-                            <h3 style="font-weight: 600; padding-bottom: 20px;">Tất cả sản phẩm của <%= _name %></h3>
                             <table class="table text-center">
                                 <thead>
                                     <tr>
@@ -75,28 +74,27 @@
                                     <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %>
                                     <% _uG.forEach((item) => { %>
                                     <% var index = 0;%>
-                                    <% item.product.forEach((product) => { %>
-                                    <%let current_datetime = new Date(product.dateAuc);%>
+                                    <%let current_datetime = new Date(item.auction.startDate);%>
                                     <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%>
                                     <tr>
                                         <td>
                                             <div class="cart-product text-left fix">
                                                 <img src="img/product/2.jpg" alt="" />
                                                 <div class="details fix">
-                                                    <a href="#"> <%=product.productName%></a>
-                                                    <p><%=product.productid%></p>
+                                                    <a href="#"> <%=item.productName%></a>
+                                                    <p><%=item.productid%></p>
                                                     <p>Loại : Đồ cổ</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <p class="cart-price"><%=product.productPrice%></p>
+                                            <p class="cart-price"><%=item.auction.startDate%></p>
                                         </td>
                                         <td>
                                             <p class="cart-stock"><%=formatted_date%></p>
                                         </td>
                                         <td>
-                                            <p class="cart-stock"><%=product.timeRun%></p>
+                                            <p class="cart-stock"><%=item.auction.timeRun%></p>
                                         </td>
                                         <td><a
                                                 href="/deleteproduct?businessid=<%=item.businessID%>&businessname=<%=item.businessName%>&index=<%=index%>"><button
@@ -109,7 +107,6 @@
                                         </td>
                                     </tr>
                                     <% index++;%>
-                                    <% }); %>
                                     <% }); %>
                                 </tbody>
                             </table>
