@@ -1,0 +1,276 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap");
+*, :before, :after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #edeece;
+  font-family: "Montserrat", sans-serif;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+input {
+  font-family: "Montserrat", sans-serif;
+}
+input:focus {
+  outline: none;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+.card {
+  position: relative;
+  width: 400px;
+  min-width: 400px;
+  min-height: 800px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.card__top {
+  position: relative;
+  height: 200px;
+  background-color: #e9d250;
+  background-image: url(https://raw.githubusercontent.com/KitCarver/kitcarver.github.io/master/img/codepen/card-hero-001.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+.card__top::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: linear-gradient(135deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+}
+
+.card__content {
+  display: flex;
+  position: absolute;
+  top: 200px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.card__tab {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
+}
+.card__tab:first-child .card__tab-label {
+  left: 0;
+  border-radius: 0 3px 0 0;
+}
+.card__tab:last-child .card__tab-label {
+  right: 0;
+  border-radius: 3px 0 0 0;
+}
+
+.card__tab-input:checked ~ .card__tab-inner {
+  display: block;
+  z-index: 1;
+}
+.card__tab-input:checked + .card__tab-label {
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #333;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
+}
+.card__tab-input:checked + .card__tab-label::after {
+  display: block;
+}
+
+.card__tab-label {
+  position: absolute;
+  top: -55px;
+  display: block;
+  height: 55px;
+  width: 50%;
+  padding: 15px 0 0 20px;
+  font-size: 12px;
+  color: white;
+  word-spacing: 9999999px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.card__tab-label::after {
+  display: none;
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  width: 35px;
+  height: 3px;
+  background-color: #e9d250;
+  box-shadow: 0 0 10px #e9d250;
+}
+
+.card__tab-inner {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 20px;
+}
+
+.card__input-group {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.card__input-group-label {
+  position: absolute;
+  top: 23px;
+  left: 0;
+  font-size: 13px;
+  font-weight: bold;
+  color: #333;
+  transition: top 0.2s, font-size 0.2s, color 0.2s;
+  pointer-events: none;
+}
+
+.card__input-group-input {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  margin: 10px 0 0;
+  font-size: 13px;
+  font-weight: bold;
+  border: none;
+  border-bottom: 1px solid #e7ebec;
+  transition: border-color 0.2s;
+}
+.card__input-group-input::-moz-selection {
+  background-color: #e9d250;
+  color: white;
+}
+.card__input-group-input::selection {
+  background-color: #e9d250;
+  color: white;
+}
+.card__input-group-input:focus, .card__input-group-input:valid {
+  border-color: #e9d250;
+}
+.card__input-group-input:focus + .card__input-group-label, .card__input-group-input:valid + .card__input-group-label {
+  top: 0;
+  font-size: 8px;
+  color: #e9d250;
+}
+.card__input-group-input[type="password"] ~ .card__view-password {
+  opacity: 0.6;
+}
+
+.card__view-password {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 20px;
+  height: 15px;
+  margin-top: -3px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAyMCAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTkuNzkzOSA2LjEzNDc4TDIwIDUuNzk4MzdMMTkuNzkzOSA1LjQ2MThDMTkuNzU5NCA1LjQwNTYyIDE4LjkzMDIgNC4wNjczOCAxNy4zMTk1IDIuNzI2MjlDMTUuMTc3MSAwLjk0MjgwNiAxMi42NTMzIDAgMTAuMDIwNSAwQzcuMzg4NSAwIDQuODU4NDIgMC45NDIzMDMgMi43MDM4MiAyLjcyNDk1QzEuMDgzODQgNC4wNjUzNyAwLjI0NTM0NCA1LjQwMjYgMC4yMTA0NjMgNS40NTg5NUwwIDUuNzk4MzdMMC4yMTA0NjMgNi4xMzc4QzAuMjQ1MzQ0IDYuMTk0MTUgMS4wODM4NCA3LjUzMTM4IDIuNzAzODIgOC44NzE4QzQuODU4NDIgMTAuNjU0NCA3LjM4ODUgMTEuNTk2NyAxMC4wMjA1IDExLjU5NjdDMTIuNjUzMyAxMS41OTY3IDE1LjE3NzEgMTAuNjUzOSAxNy4zMTk1IDguODcwNDZDMTguOTMwMiA3LjUyOTM3IDE5Ljc1OTQgNi4xOTExMyAxOS43OTM5IDYuMTM0NzhaTTE2LjQ2MTIgNy45MDg4N0MxNC41MzQgOS41MDEzNSAxMi4zNjcgMTAuMzA4NyAxMC4wMjA1IDEwLjMwODdDNy42NzMyNSAxMC4zMDg3IDUuNDk5MiA5LjUwMDg0IDMuNTU4OTIgNy45MDczNkMyLjU1NTQgNy4wODMyOSAxLjg3NTA1IDYuMjQ4ODIgMS41NDE4MyA1Ljc5ODM3QzEuODc1MjEgNS4zNDc2IDIuNTU1NTcgNC41MTMyOSAzLjU1ODkyIDMuNjg5MjJDNS40OTkyIDIuMDk1OTEgNy42NzMwOSAxLjI4NzkzIDEwLjAyMDUgMS4yODc5M0MxMi4zNjcgMS4yODc5MyAxNC41MzM4IDIuMDk1NCAxNi40NjEyIDMuNjg3NzFDMTcuNDYwMiA0LjUxMzEzIDE4LjEzNDcgNS4zNDg3NyAxOC40NjM0IDUuNzk4MzdDMTguMTM0MyA2LjI0ODE0IDE3LjQ2IDcuMDgzNzkgMTYuNDYxMiA3LjkwODg3WiIgZmlsbD0iIzc1RTJDRiIvPjxwYXRoIGQ9Ik0xMC4wMDEzIDEuOTI4ODhDNy44Njc2MiAxLjkyODg4IDYuMTMxNzYgMy42NjQ3NCA2LjEzMTc2IDUuNzk4MzdDNi4xMzE3NiA3LjkzMjAxIDcuODY3NjIgOS42Njc4NyAxMC4wMDEzIDkuNjY3ODdDMTIuMTM0OSA5LjY2Nzg3IDEzLjg3MDggNy45MzIwMSAxMy44NzA4IDUuNzk4MzdDMTMuODcwOCAzLjY2NDc0IDEyLjEzNDkgMS45Mjg4OCAxMC4wMDEzIDEuOTI4ODhaTTEwLjAwMTMgOC4zNzk5NEM4LjU3NzgzIDguMzc5OTQgNy40MTk2OSA3LjIyMTgxIDcuNDE5NjkgNS43OTgzN0M3LjQxOTY5IDQuMzc0OTQgOC41Nzc4MyAzLjIxNjgxIDEwLjAwMTMgMy4yMTY4MUMxMS40MjQ3IDMuMjE2ODEgMTIuNTgyOCA0LjM3NDk0IDEyLjU4MjggNS43OTgzN0MxMi41ODI4IDcuMjIxODEgMTEuNDI0NyA4LjM3OTk0IDEwLjAwMTMgOC4zNzk5NFoiIGZpbGw9IiM3NUUyQ0YiLz48L3N2Zz4=);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+.card__view-password:hover {
+  opacity: 1 !important;
+}
+.card__view-password:focus {
+  outline: none;
+}
+
+.card__btn-group {
+  margin-top: 35px;
+  text-align: center;
+}
+
+.card__btn {
+  position: relative;
+  width: 150px;
+  height: 40px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+  background-color: #e9d250;
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(54, 213, 185, 0.7));
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: text-shadow 0.2s;
+}
+.card__btn span {
+  position: relative;
+  z-index: 1;
+}
+.card__btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-image: linear-gradient(135deg, rgba(54, 213, 185, 0.1), #36d5b9);
+  opacity: 0;
+  transition: opacity 0.2s, box-shadow 0.2s;
+}
+.card__btn:hover::after, .card__btn:focus::after {
+  opacity: 1;
+}
+.card__btn:active {
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+.card__btn:active::after {
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
+}
+.card__btn:focus {
+  outline: none;
+}
+
+.card__link {
+  display: block;
+  margin: 30px 0;
+  font-size: 8px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  color: #e9d250;
+  transition: color 0.2s;
+}
+.card__link:hover, .card__link:focus {
+  color: #e9d250;
+}
+.card__link:active {
+  color: #e9d250;
+}
+.card__link:focus {
+  outline: none;
+}

@@ -30,6 +30,7 @@ function onScan(err, data) {
             console.log('=========== Business: ' + item.businessName + " ===========");
             console.log('| -- ID: ' + item.businessID);
             console.log('| -- Username: ' + item.username);
+            console.log('| -- Password: ' + item.password);
             item.category.forEach(cat => {
                 console.log('| -- Category: ' + cat.catName);
                 cat.product.forEach(element => {
@@ -43,5 +44,3 @@ function onScan(err, data) {
 }
 var t1 = performance.now();
 console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.");
-
-console.log(ctlBsn.get_Account_Business_Exist_UserName());

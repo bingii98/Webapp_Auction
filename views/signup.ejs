@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login / Sign up</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="css/styleLogin.css">
+</head>
+
+<body>
+    <!-- partial:index.partial.html -->
+    <div class="wrapper">
+        <div class="card">
+            <div class="card__top"></div>
+            <div class="card__content">
+                <div class="card__tab">
+                    <input class="card__tab-input" id="tab-1" type="radio" name="card-tab" checked="checked" />
+                    <label class="card__tab-label" for="tab-1">Đăng ký</label>
+                    <div class="card__tab-inner">
+                        <div class="card__form">
+                            <form action="/signup" method="POST">
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="text" required="required" name="customerName"/>
+                                    <label class="card__input-group-label">Họ và tên</label>
+                                </div>
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="text" required="required" name="username"/>
+                                    <label class="card__input-group-label">Username</label>
+                                </div>
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="password" required="required" name="password"/>
+                                    <label class="card__input-group-label">Mật khẩu</label>
+                                    <button class="card__view-password"></button>
+                                </div>
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="password" required="required" name="re-password"/>
+                                    <label class="card__input-group-label">Nhập lại mật khẩu</label>
+                                    <button class="card__view-password"></button>
+                                </div>
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="text" required="required" name="email"/>
+                                    <label class="card__input-group-label">Email</label>
+                                </div>
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="text" required="required" name="phone"/>
+                                    <label class="card__input-group-label">Số điện thoại</label>
+                                </div>
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="text" required="required" name="address"/>
+                                    <label class="card__input-group-label">Địa chỉ</label>
+                                </div>
+                                <div class="card__btn-group">
+                                    <button class="card__btn" type="submit"><span>Đăng ký</span></button>
+                                </div>
+                                <a class="card__link" href="/login">Login</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- partial -->
+    <script src="js/scriptLogin.js"></script>
+</body>
+
+</html>

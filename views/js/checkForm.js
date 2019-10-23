@@ -114,3 +114,14 @@ function setBusinessID_Input(BusinessID,BusinessName){
     document.getElementById("businessIDEdit").value = BusinessID;
     document.getElementById("businessNameEdit").value = BusinessName;
 }
+
+//Check form for Customerr - sign up
+function checkCustomerName(str) {
+    var re = /^((?![\^!@#$*~ <>?]).)((?![\^!@#$*~<>?]).){0,73}((?![\^!@#$*~ <>?]).)$/;
+    if (!re.test(str)) {
+        $('#error_customerName').text('Tên lớn hơn 1 ký tự!');
+    } else {
+        $('#error_customerName').text('');
+    }
+    return re.test(str);
+}

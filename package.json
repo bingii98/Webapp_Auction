@@ -2,7 +2,7 @@
   "name": "Webapp_Auction",
   "version": "1.0.0",
   "description": "WebApp (Node.js - DynamoDB), use SocketIO for Auction in realtime!",
-  "main": "routes.js",
+  "main": "./app/routes.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --exec babel-node ./app/routes.js"
@@ -21,10 +21,17 @@
   "dependencies": {
     "aws-sdk": "^2.542.0",
     "babel-node": "0.0.1-security",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.19.0",
+    "connect-flash": "^0.1.1",
     "date-and-time": "^0.10.0",
     "ejs": "^2.7.1",
     "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "fs": "0.0.1-security",
     "nodemon": "^1.19.4",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "perf_hooks": "0.0.1",
     "socket.io": "^2.3.0",
     "socketio": "^1.0.0"

@@ -1,54 +1,124 @@
-<!-- views/login.ejs -->
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>Node Authentication</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <!-- load bootstrap css -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-    <!-- load fontawesome -->
-    <style>
-        body {
-            padding-top: 80px;
+    <meta charset="UTF-8">
+    <title>Login / Sign up</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="css/styleLogin.css">
+    <script src="socket.io/socket.io.js"></script>
+    <script> var socket = io('http://localhost:3000'); </script>
+    <script>
+        function checkCustomer() {
+            var name = checkCustomerName(document.getElementById('txtCustomername').value);
+            var username = checkUsername(document.getElementById('txtCustomerUsername').value);
+            var pass = checkPassword(document.getElementById('passwordA').value);
+            var repass = checkConfirmPassword(document.getElementById('re-password').value);
+            var adress = checkAdress(document.getElementById('txtCustomerAddress').value);
+            var phone = checkPhone(document.getElementById('txtCustomerPhone').value);
+            var mail = checkEmail(document.getElementById('txtCustomerEmail').value);
+            if (name && username && pass && repass && adress && phone && mail) {
+                socket.emit("Customer_check_username", document.getElementById('txtCustomerUsername').value);
+                socket.on("Server_reply_username", function (data) {
+                    if (data) {
+                        document.getElementById("formSignUp").submit();
+                    } else {
+                        document.getElementById("error_username").innerHTML = "Username đã tồn tại";
+                    }
+                });
+            }
         }
-    </style>
+
+    </script>
 </head>
 
 <body>
-    <div class="container">
-
-        <div class="col-sm-6 col-sm-offset-3">
-
-            <h1><span class="fa fa-sign-in"></span> Login</h1>
-
-            <!-- hiển thị mọi tin nhắn được trả lại từ việc đăng nhập -->
-            <% if (message.length > 0) { %>
-            <div class="alert alert-danger"><%= message %></div>
-            <% } %>
-
-            <!-- LOGIN FORM -->
-            <form action="/login" method="post">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="text" class="form-control" name="email">
+    <!-- partial:index.partial.html -->
+    <div class="wrapper">
+        <div class="card">
+            <div class="card__top"></div>
+            <div class="card__content">
+                <div class="card__tab">
+                    <input class="card__tab-input" id="tab-1" type="radio" name="card-tab" checked="checked" />
+                    <label class="card__tab-label" for="tab-1">Đăng nhập</label>
+                    <div class="card__tab-inner">
+                        <div class="card__form">
+                            <form action="/login" method="POST">
+                                <div class="card__input-group">
+                                    <input name="username" class="card__input-group-input" type="text" required="required" />
+                                    <label class="card__input-group-label">Username</label>
+                                </div>
+                                <div class="card__input-group">
+                                    <input name="password" class="card__input-group-input" type="password" required="required" />
+                                    <label class="card__input-group-label">Mật khẩu</label>
+                                    <button class="card__view-password" type="button"></button>
+                                </div>
+                                <div class="card__btn-group">
+                                    <button type="submit" class="card__btn"><span>Đăng nhập</span></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" class="form-control" name="password">
+                <div class="card__tab">
+                    <input class="card__tab-input" id="tab-2" type="radio" name="card-tab"/>
+                    <label class="card__tab-label" for="tab-2">Đăng ký</label>
+                    <div class="card__tab-inner">
+                        <div class="card__form">
+                            <form action="/signup" method="get" id="formSignUp">
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="text" required="required" name="customerName"  id="txtCustomername" onblur="checkCustomerName(this.value)"/>
+                                    <label class="card__input-group-label">Họ và tên</label>
+                                    <label id="error_customerName" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                </div>
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="text" required="required" name="username" id="txtCustomerUsername" onblur="checkUsername(this.value)"/>
+                                    <label class="card__input-group-label">Username</label>
+                                    <label id="error_username" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                </div>
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="password" required="required" name="password" id="passwordA" onblur="checkPassword(this.value)"/>
+                                    <label class="card__input-group-label">Mật khẩu</label>
+                                    <button class="card__view-password" type="button" ></button>
+                                    <label id="error_password" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                </div>
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="password" required="required" name="re-password" id="re-password" onblur="checkConfirmPassword(this.value)"/>
+                                    <label class="card__input-group-label">Nhập lại mật khẩu</label>
+                                    <button class="card__view-password" type="button" ></button>
+                                    <label id="error_repassword" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                </div>
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="text" required="required" name="email" id="txtCustomerEmail" onblur="checkEmail(this.value)"/>
+                                    <label class="card__input-group-label">Email</label>
+                                    <label id="error_email" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                </div>
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="text" required="required" name="phone" id="txtCustomerPhone" onblur="checkPhone(this.value)"/>
+                                    <label class="card__input-group-label">Số điện thoại</label>
+                                    <label id="error_phone" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                </div>
+                                <div class="card__input-group">
+                                    <input class="card__input-group-input" type="text" required="required" name="address" id="txtCustomerAddress" onblur="checkAdress(this.value)"/>
+                                    <label class="card__input-group-label">Địa chỉ</label>
+                                    <label id="error_adress" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                </div>
+                                <div class="card__btn-group">
+                                    <button class="card__btn" type="button" id="confirmSignUp" onclick="checkCustomer()"><span>Đăng ký</span></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-
-                <button type="submit" class="btn btn-warning btn-lg">Login</button>
-            </form>
-
-            <hr>
-
-            <p>Need an account? <a href="/signup">Signup</a></p>
-            <p>Or go <a href="/">home</a>.</p>
-
+            </div>
         </div>
-
     </div>
+    <!-- partial -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/checkForm.js"></script>
+    <script src="js/scriptLogin.js"></script>
 </body>
 
 </html>
