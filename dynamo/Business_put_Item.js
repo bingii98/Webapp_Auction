@@ -61,7 +61,7 @@ docClient.scan(params, (err, data) => {
                   auctionID: "AC_1",
                   auctionName: "Iphone 11 đầu tiên",
                   startDate: Date(),
-                  timeRun: 120,
+                  timeRun: 12000,
                   startPrice: 10000,
                   isRunning: true,
                 }

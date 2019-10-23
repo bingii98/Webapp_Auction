@@ -22,6 +22,7 @@ app.use(session({ secret: "mysecret" }));
 app.use(Passport.initialize());
 app.use(Passport.session());
 app.use(flash());
+
 AWS.config.update({
     region: "CNM",
     endpoint: 'http://localhost:8000'
@@ -33,16 +34,16 @@ const io = require('socket.io').listen(server);
 
 //SocketIO FUNCTION START
 io.on("connection", function (socket) {
-    console.log("CONNECT: New connection at ID : " + socket.id + " - !");
+    console.log("-------CONNECT: New connection at ID : " + socket.id + " - !");
 
     socket.on("disconnect", function () {
-        console.log("DISCONNECT: ID " + socket.id + " was disconnect!");
+        console.log("-------DISCONNECT: ID " + socket.id + " was disconnect!");
     });
 
     //CHECK BUSINESS USER EXIST
     socket.on("Client_sent_data", function (username) {
         let params = {
-            TableName: '    ',
+            TableName: 'Businesss',
             IndexName: "username_index",
             FilterExpression: "#username = :username",
             ExpressionAttributeNames: {
@@ -151,8 +152,6 @@ app.post('/login', (req, res) => {
                     res.end();
                 } else {
                     ctlCtm.get_Item_Customer_Username(username).then((data) => {
-                        console.log(bcrypt.hashSync(password));
-                        console.log(data[0].password);
                         if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
                             sess.permission = "customer";
                             res.writeHead(302, { 'Location': '/' });
@@ -382,28 +381,23 @@ app.get('/deleteproduct', function (req, res) {
 });
 
 // Thêm doanh nghiệp
-app.get('/createbusiness', function (req, res) {
-    sess = req.session
-    if (sess.permission === "admin") {
-        const businessName = req.query.businessName;
-        const adress = req.query.adress;
-        const phone = req.query.phone;
-        const email = req.query.email;
-        const username = req.query.username;
-        const password = req.query.password;
+app.post('/createbusiness', function (req, res) {
+    const businessName = req.body.businessName;
+    const adress = req.body.adress;
+    const phone = req.body.phone;
+    const email = req.body.email;
+    const username = req.body.username;
+    const password = req.body.password;
 
-        const ObjectB = {
-            businessName: businessName,
-            adress: adress,
-            phone: phone,
-            email: email,
-            username: username,
-            password: bcrypt.hashSync(ObjectB.password)
-        }
-        ctlBsn.add_Item_Business(ObjectB, 'quanlydoanhnghiep', res);
-    } else {
-        res.render('login');
+    const ObjectB = {
+        businessName: businessName,
+        adress: adress,
+        phone: phone,
+        email: email,
+        username: username,
+        password: bcrypt.hashSync(password)
     }
+    ctlBsn.add_Item_Business(ObjectB, 'quanlydoanhnghiep', res);
 });
 
 // Xoá doanh nghiệp
@@ -441,6 +435,18 @@ app.get('/editBusiness', function (req, res) {
     }
 });
 
+//Trnag dau gia
+app.get('/sanphamdaugia', (req, res) => {
+    res.render('auction-page');
+});
+
 app.get('/contact', (req, res) => {
     res.render('contact')
-})
+});
+
+
+//404
+app.use((req, res) => {
+    res.status(404);
+    res.render('404');
+});
