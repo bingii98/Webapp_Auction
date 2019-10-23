@@ -198,17 +198,17 @@ function edit_Item_Business(ObjectB, location, res) {
             "businessName": ObjectB.businessName,
         },
         UpdateExpression: "set adress =:a, phone =:p, email =:e",
-        ExpressionAttributeValues:{
+        ExpressionAttributeValues: {
             ":a": ObjectB.adress,
             ":p": ObjectB.phone,
-            ":e" : ObjectB.email
+            ":e": ObjectB.email
         },
-        ReturnValues:"UPDATED_NEW"
+        ReturnValues: "UPDATED_NEW"
     }
-    docClient.update(params, function(err, data) {
+    docClient.update(params, function (err, data) {
         if (err) {
-            console.log(`${JSON.stringify(err,null,2)}`);
-        } else{
+            console.log(`${JSON.stringify(err, null, 2)}`);
+        } else {
             res.writeHead(302, { 'Location': location });
         }
         res.end();
@@ -222,5 +222,5 @@ module.exports = {
     get_Items_Business_Key: get_Items_Business_Key,
     delete_Item_Business_Key: delete_Item_Business_Key,
     add_Item_Business: add_Item_Business,
-    edit_Item_Business : edit_Item_Business,
+    edit_Item_Business: edit_Item_Business,
 };

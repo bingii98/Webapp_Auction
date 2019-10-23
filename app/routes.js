@@ -4,14 +4,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const Passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcrypt-nodejs');
-const fs = require('fs');
 const app = express();
-const ctlBsn = require('../controller/controller_Business');
-const ctlCtm = require('../controller/controller_Customer');
+const ctlBsn = require('../controller/Business-controller');
+const ctlCtm = require('../controller/Customer-controller');
 const ppUser = require('../controller/userPassport');
-const dd = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
 const flash = require('connect-flash');
 
@@ -131,15 +127,15 @@ io.on("connection", function (socket) {
 
 
 // Hiển thị form login
-app.route('/login')
-    .get((req, res) => {
-        if(session.cookie.permission === 'customer'){
-            res.render('index');
-         }else{
-            res.writeHead(302, { 'Location': '/quanlydoanhnghiep' });
-         }
-    })
-    .post(Passport.authenticate('local-login', { failureRedirect: '/login', successRedirect: '/' }))
+app.get('/login',(req,res) => {
+    res.render('login');
+});
+
+app.post('/login',(req,res) => {
+    username = req.body.username;
+    password = req.body.password;
+    
+});
 
 app.get('/logout', function (req, res) {
     req.session.destroy(function (err) {
