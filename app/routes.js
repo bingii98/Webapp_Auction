@@ -378,6 +378,38 @@ app.post('/createCategory', function (req, res) {
     })
 });
 
+//Xoa loai san pham
+app.get('deleteCategory',(req,res) => {
+    let params = {
+        TableName: 'Admins',
+        Key: {
+            "adminID": "admin",
+            "adminName": "admin"
+        },
+        UpdateExpression: "SET #category = remove(#category, :categoryRemove)",
+        ExpressionAttributeNames: { "#category": "category" },
+        ExpressionAttributeValues: {
+            ':categoryRemove': [
+                {
+                    'categoryID': String(req.body.categoryID),
+                    'categoryName': String(req.body.categoryName)
+                }
+            ]
+
+        },
+        ReturnValues: "ALL_NEW"
+    };
+    docClient.update(params, function (err, data) {
+        if (err) {
+            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            res.writeHead(302, { 'Location': '/quanlyloaisanpham' });
+            console.log("UpdateItem succeeded:", JSON.stringify(data));
+        }
+        res.end();
+    });
+});
+
 
 // Xoá sản phẩm
 app.get('/deleteproduct', function (req, res) {
