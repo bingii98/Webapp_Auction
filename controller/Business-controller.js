@@ -58,7 +58,7 @@ function getAll_Product_Business(ejs, res) {
             res.render(ejs, { _uG: productList });
         }
     });
-
+    res.end();
 }
 
 function get_Items_Business_Key(id, name, location, res) {

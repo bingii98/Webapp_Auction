@@ -126,6 +126,29 @@ io.on("connection", function (socket) {
         });
     });
 
+    //CHECK CATEGORY USER EXIST
+    socket.on("Client_sent_data_category", function (categoryName) {
+        let params = {
+            TableName: 'Admins',
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                var abc = true;
+                data.Items[0].category.forEach(element => {
+                    if(categoryName === element.categoryName){
+                        abc = false;
+                    }
+                });
+                if(abc == false){
+                    socket.emit("Server_sent_data_category", false);
+                }else{
+                    socket.emit("Server_sent_data_category", true);
+                }
+            }
+        });
+    });
 });
 
 
@@ -285,65 +308,74 @@ app.get('/quanlysanpham', function (req, res) {
 app.get('/quanlyloaisanpham', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
-        res.render('quanlyloaisanpham');
+        ctlAdmin.getAll_Category('quanlyloaisanpham',res);
     } else {
         res.render('login');
     }
 });
 
 
-// Thêm sản phẩm ADMIN
-app.get('/createproduct', function (req, res) {
-    sess = req.session
-    if (sess.permission === "admin") {
-        const adminID = 'Admin';
-        const adminName = 'Admin';
-        const dateAuc = req.query.dateAuc;
-        const timeRun = req.query.timerun;
-        const productid = "_10";
-        const productName = req.query.name;;
-        const catID = "cat1";
-        const productDescribe = req.query.des;
-        const productImage = makeid(20);
-        const productPrice = Number(req.query.price);
-
-        let params = {
-            TableName: 'Admins',
-            Key: {
-                "adminID": adminID,
-                "adminName": adminName
-            },
-            UpdateExpression: "SET #product = list_append(#product, :productAdd)",
-            ExpressionAttributeNames: { "#product": "product" },
-            ExpressionAttributeValues: {
-                ':productAdd': [
-                    {
-                        'productid': String(productid),
-                        'productName': String(productName),
-                        'dateAuc': String(dateAuc),
-                        'timeRun': String(timeRun),
-                        'catID': String(catID),
-                        'productDescribe': String(productDescribe),
-                        'productImage': String(productImage),
-                        'productPrice': Number(productPrice)
-                    }
-                ]
-
-            },
-            ReturnValues: "ALL_NEW"
-        };
-
-        docClient.update(params, (err, data) => {
-            if (err) {
-                console.error(JSON.stringify(err, null, 2));
-            } else {
-                res.writeHead(302, { 'Location': '/quanlysanpham' });
-            }
-            res.end();
-        })
-    } else {
-        res.render('login');
+// Thêm loai sản phẩm ADMIN
+app.post('/createCategory', function (req, res) {
+    let params = {
+        TableName: 'Admins'
     }
+
+    docClient.scan(params, (err, data) => {
+
+        const categoryName = req.body.categoryName;
+        //Thêm items mới với ID tăng dần
+        var categoryID = '';
+        //Lấy ra ID items cuối cùng 
+        if (err) {
+            console.error('Error JSON:', JSON.stringify(err, null, 2));
+        } else {
+            //Tạo ra biến categoryID mới
+            var count = Number(data.Items[0].category.length);
+            console.log('Count: ' + count);
+            if (count != 0) {
+                var max = 0;
+                data.Items[0].category.forEach(item => {
+                    var index = Number(item.categoryID.match(/[^_]*$/));
+                    if (index > max) {
+                        max = index;
+                    }
+                });
+                var indexN = max + 1;
+                categoryID = "CG_" + indexN.toString();
+            } else {
+                categoryID = 'CG_1';
+            }
+            let params = {
+                TableName: 'Admins',
+                Key: {
+                    "adminID": "admin",
+                    "adminName": "admin"
+                },
+                UpdateExpression: "SET #category = list_append(#category, :categoryAdd)",
+                ExpressionAttributeNames: { "#category": "category" },
+                ExpressionAttributeValues: {
+                    ':categoryAdd': [
+                        {
+                            'categoryID': String(categoryID),
+                            'categoryName': String(categoryName)
+                        }
+                    ]
+
+                },
+                ReturnValues: "ALL_NEW"
+            };
+
+            docClient.update(params, (err, data) => {
+                if (err) {
+                    console.error(JSON.stringify(err, null, 2));
+                } else {
+                    res.writeHead(302, { 'Location': '/quanlyloaisanpham' });
+                }
+                res.end();
+            })
+        }
+    })
 });
 
 

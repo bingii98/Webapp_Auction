@@ -41,17 +41,14 @@ docClient.scan(params, (err, data) => {
     let params = {
       TableName: 'Admins',
       Item: {
-        adminID: adminID,
-        adminName: "ABC Cake",
+        adminID: "admin",
+        adminName: "admin",
         adress: "826 QUang Trung - Gò Vấp",
         email: "october15th98@gmail.com",
         phone: "0827374414",
         username: "admin",
         password: bcrypt.hashSync("admin"),
         category: [
-          {
-
-          }
         ]
       },
     };

@@ -22,8 +22,15 @@ function onScan(err, data) {
             console.log(' ');
             console.log('=========== Admins: ' + item.adminName + " ===========");
             console.log('| -- ID: ' + item.adminID);
+            console.log('| -- Name: ' + item.adminName);
             console.log('| -- Username: ' + item.username);
             console.log('| -- Password: ' + item.password);
+            item.category.forEach(cat => {
+                console.log('| -- Category: ' + cat.catName);
+                cat.product.forEach(element => {
+                    console.log('|    ---- Product: ' + element.productName);
+                });
+            });
             console.log('===========================================');
             console.log(' ');
         });
