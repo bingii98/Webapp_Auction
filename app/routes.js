@@ -6,10 +6,11 @@ const session = require('express-session');
 const Passport = require('passport');
 const app = express();
 const ctlBsn = require('../controller/Business-controller');
+const ctlAdmin = require('../controller/Admin-controller');
 const ctlCtm = require('../controller/Customer-controller');
-const ppUser = require('../controller/userPassport');
 const docClient = new AWS.DynamoDB.DocumentClient();
 const flash = require('connect-flash');
+const bcrypt = require('bcrypt-nodejs');
 
 //set view engine for project
 app.set('view engine', 'ejs');
@@ -26,6 +27,7 @@ AWS.config.update({
     endpoint: 'http://localhost:8000'
 });
 
+var sess;
 const server = app.listen(3000, () => { console.log("Server running at port 3000!") });
 const io = require('socket.io').listen(server);
 
@@ -127,14 +129,43 @@ io.on("connection", function (socket) {
 
 
 // Hiển thị form login
-app.get('/login',(req,res) => {
+app.get('/login', (req, res) => {
     res.render('login');
 });
 
-app.post('/login',(req,res) => {
+app.post('/login', (req, res) => {
+    sess = req.session
     username = req.body.username;
     password = req.body.password;
-    
+    console.log("Getting!");
+    ctlAdmin.get_Item_Admin_Username(username).then((data) => {
+        if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
+            sess.permission = "admin";
+            res.writeHead(302, { 'Location': '/quanlydoanhnghiep' });
+            res.end();
+        } else {
+            ctlBsn.get_Item_Business_Username(username).then((data) => {
+                if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
+                    sess.permission = "business";
+                    res.writeHead(302, { 'Location': '/quanlydoanhnghiep' });
+                    res.end();
+                } else {
+                    ctlCtm.get_Item_Customer_Username(username).then((data) => {
+                        console.log(bcrypt.hashSync(password));
+                        console.log(data[0].password);
+                        if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
+                            sess.permission = "customer";
+                            res.writeHead(302, { 'Location': '/' });
+                            res.end();
+                        } else {
+                            res.writeHead(302, { 'Location': '/login' });
+                            res.end();
+                        }
+                    });
+                }
+            });
+        }
+    });
 });
 
 app.get('/logout', function (req, res) {
@@ -163,8 +194,6 @@ app.get('/signup', function (req, res) {
     ctlCtm.add_Item_Customer(ObjectB, '/login', res);
 });
 
-ppUser.passportUser(Passport);
-
 //router trang chủ
 app.get('/', function (req, res) {
     ctlBsn.getAll_Product_Business('index', res);
@@ -172,7 +201,8 @@ app.get('/', function (req, res) {
 
 //router trang chủ
 app.get('/daugia', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "customer") {
         ctlBsn.getAll_Product_Business('index', res);
     } else {
         res.render('login');
@@ -181,7 +211,8 @@ app.get('/daugia', function (req, res) {
 
 //router admib
 app.get('/admin', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         res.render('quanlysanpham');
     } else {
         res.render('login');
@@ -190,7 +221,8 @@ app.get('/admin', function (req, res) {
 
 //router admib
 app.get('/quanlysanpham', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         ctlBsn.getAll_Product_Business('quanlysanpham', res);
     } else {
         res.render('login');
@@ -199,7 +231,8 @@ app.get('/quanlysanpham', function (req, res) {
 
 //router admib
 app.get('/quanlydoanhnghiep_sanpham', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         var id = req.query.businessID;
         var name = req.query.businessName;
         ctlBsn.get_Items_Business_Key(id, name, 'quanlysanpham_business', res);
@@ -210,7 +243,8 @@ app.get('/quanlydoanhnghiep_sanpham', function (req, res) {
 
 //router admib
 app.get('/quanlyhoadon', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         res.render('quanlyhoadon');
     } else {
         res.render('login');
@@ -219,7 +253,8 @@ app.get('/quanlyhoadon', function (req, res) {
 
 //router admib
 app.get('/quanlykhachhang', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         res.render('quanlykhachhang');
     } else {
         res.render('login');
@@ -228,7 +263,8 @@ app.get('/quanlykhachhang', function (req, res) {
 
 //router admib
 app.get('/quanlydoanhnghiep', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         ctlBsn.getAll_Business('quanlydoanhnghiep', res);
     } else {
         res.render('login');
@@ -237,7 +273,8 @@ app.get('/quanlydoanhnghiep', function (req, res) {
 
 //router admib
 app.get('/quanlysanpham', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         var id = req.query.businessID;
         ctlBsn.get_Items_Business_Key(id, 'quanlysanpham_business', res);
     } else {
@@ -247,7 +284,8 @@ app.get('/quanlysanpham', function (req, res) {
 
 //router admib
 app.get('/quanlyloaisanpham', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         res.render('quanlyloaisanpham');
     } else {
         res.render('login');
@@ -257,7 +295,8 @@ app.get('/quanlyloaisanpham', function (req, res) {
 
 // Thêm sản phẩm ADMIN
 app.get('/createproduct', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         const adminID = 'Admin';
         const adminName = 'Admin';
         const dateAuc = req.query.dateAuc;
@@ -311,7 +350,8 @@ app.get('/createproduct', function (req, res) {
 
 // Xoá sản phẩm
 app.get('/deleteproduct', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         var businessid = req.query.businessid;
         var businessname = req.query.businessname;
         var index = "REMOVE product[" + req.query.index + "]";
@@ -343,7 +383,8 @@ app.get('/deleteproduct', function (req, res) {
 
 // Thêm doanh nghiệp
 app.get('/createbusiness', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         const businessName = req.query.businessName;
         const adress = req.query.adress;
         const phone = req.query.phone;
@@ -357,9 +398,8 @@ app.get('/createbusiness', function (req, res) {
             phone: phone,
             email: email,
             username: username,
-            password: password
+            password: bcrypt.hashSync(ObjectB.password)
         }
-
         ctlBsn.add_Item_Business(ObjectB, 'quanlydoanhnghiep', res);
     } else {
         res.render('login');
@@ -368,7 +408,8 @@ app.get('/createbusiness', function (req, res) {
 
 // Xoá doanh nghiệp
 app.get('/deletebusiness', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         var businessid = req.query.businessid;
         var businessname = req.query.businessname;
         ctlBsn.delete_Item_Business_Key(businessid, businessname, '/quanlydoanhnghiep', res);
@@ -379,7 +420,8 @@ app.get('/deletebusiness', function (req, res) {
 
 // Sửa doanh nghiệp
 app.get('/editBusiness', function (req, res) {
-    if (req.isAuthenticated()) {
+    sess = req.session
+    if (sess.permission === "admin") {
         const businessID = req.query.businessID;
         const businessName = req.query.businessName;
         const adress = req.query.adress;
@@ -393,7 +435,6 @@ app.get('/editBusiness', function (req, res) {
             phone: phone,
             email: email,
         }
-
         ctlBsn.edit_Item_Business(ObjectB, '/quanlydoanhnghiep', res);
     } else {
         res.render('login');

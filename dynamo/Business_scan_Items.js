@@ -1,6 +1,5 @@
 const AWS = require('aws-sdk');
 const {performance} = require('perf_hooks');
-const ctlBsn = require('../controller/controller_Business');
 var t0 = performance.now();
 AWS.config.update({
     region: "CNM",
@@ -10,12 +9,6 @@ AWS.config.update({
 const docClient = new AWS.DynamoDB.DocumentClient();
 const params = {
     TableName: 'Businesss',
-    IndexName: "username_index",
-    FilterExpression: "#username = :username",
-    ExpressionAttributeNames: {
-        "#username": "username",
-    },
-    ExpressionAttributeValues: { ":username": 'bingii98' }
 };
 console.log('Scanning Table.');
 

@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const bcrypt = require('bcrypt-nodejs');
 
 AWS.config.update({
     region: "CNM",
@@ -215,6 +216,24 @@ function edit_Item_Business(ObjectB, location, res) {
     });
 }
 
+async function get_Item_Business_Username(username) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: "Businesss",
+            IndexName: 'username_index',
+            FilterExpression: 'username = :username',
+            ExpressionAttributeValues: { ":username": username }
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(data.Items);
+            }
+        });
+    });
+}
+
 
 module.exports = {
     getAll_Business: getAll_Business,
@@ -223,4 +242,5 @@ module.exports = {
     delete_Item_Business_Key: delete_Item_Business_Key,
     add_Item_Business: add_Item_Business,
     edit_Item_Business: edit_Item_Business,
+    get_Item_Business_Username : get_Item_Business_Username,
 };

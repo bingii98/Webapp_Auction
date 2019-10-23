@@ -89,41 +89,41 @@ dynamodb.createTable(params2, (err, data) => {
 
 //CREATE Admin TABLE
 let params3 = {
-    TableName: "Admins",
-    KeySchema: [
-      { AttributeName: "adminID", KeyType: "HASH" },
-      { AttributeName: "adminName", KeyType: "RANGE" },
-    ],
-    GlobalSecondaryIndexes: [
-      {
-        IndexName: 'username_index',
-        KeySchema: [
-          { AttributeName: 'username', KeyType: 'HASH' }
-        ],
-        Projection: {
-          ProjectionType: "ALL"
-        },
-        ProvisionedThroughput: {
-          ReadCapacityUnits: 10,
-          WriteCapacityUnits: 10
-        }
+  TableName: "Admins",
+  KeySchema: [
+    { AttributeName: "adminID", KeyType: "HASH" },
+    { AttributeName: "adminName", KeyType: "RANGE" },
+  ],
+  GlobalSecondaryIndexes: [
+    {
+      IndexName: 'username_index',
+      KeySchema: [
+        { AttributeName: 'username', KeyType: 'HASH' }
+      ],
+      Projection: {
+        ProjectionType: "ALL"
+      },
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 10,
+        WriteCapacityUnits: 10
       }
-    ],
-    AttributeDefinitions: [
-      { AttributeName: "adminID", AttributeType: "S" },
-      { AttributeName: "adminName", AttributeType: "S" },
-      { AttributeName: "username", AttributeType: "S" }
-    ],
-    ProvisionedThroughput: {
-      ReadCapacityUnits: 10,
-      WriteCapacityUnits: 10
     }
-  };
-  
-  dynamodb.createTable(params3, (err, data) => {
-    if (err) {
-      console.error(`Something went wrong : \n${JSON.stringify(err, null, 2)}`);
-    } else {
-      console.log(`Created ADMIN table -`);
-    }
-  });
+  ],
+  AttributeDefinitions: [
+    { AttributeName: "adminID", AttributeType: "S" },
+    { AttributeName: "adminName", AttributeType: "S" },
+    { AttributeName: "username", AttributeType: "S" }
+  ],
+  ProvisionedThroughput: {
+    ReadCapacityUnits: 10,
+    WriteCapacityUnits: 10
+  }
+};
+
+dynamodb.createTable(params3, (err, data) => {
+  if (err) {
+    console.error(`Something went wrong : \n${JSON.stringify(err, null, 2)}`);
+  } else {
+    console.log(`Created ADMIN table -`);
+  }
+});

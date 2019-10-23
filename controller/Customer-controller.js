@@ -127,20 +127,15 @@ function edit_Item_Business(ObjectB, location, res) {
 async function get_Item_Customer_Username(username) {
     return new Promise((resolve, reject) => {
         let params = {
-            "TableName": "Customers",
-            "IndexName": "username_index",
-            "KeyConditions": {
-                "username": {
-                    "ComparisonOperator": "EQ",
-                    "AttributeValueList": [{ "S": username }]
-                }
-            }
+            TableName: "Customers",
+            FilterExpression: 'username = :username',
+            ExpressionAttributeValues: { ":username": username }
         }
         docClient.scan(params, (err, data) => {
             if (err) {
                 console.error('Error JSON:', JSON.stringify(err, null, 2));
             } else {
-                resolve(data.Items.length);
+                resolve(data.Items);
             }
         });
     });
