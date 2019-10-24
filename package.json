@@ -19,8 +19,9 @@
   },
   "homepage": "https://github.com/bingii98/Webapp_Auction#readme",
   "dependencies": {
-    "aws-sdk": "^2.542.0",
+    "aws-sdk": "^2.555.0",
     "babel-node": "0.0.1-security",
+    "bcrypt": "^3.0.6",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",

@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const {performance} = require('perf_hooks');
+const { performance } = require('perf_hooks');
 var t0 = performance.now();
 AWS.config.update({
     region: "CNM",

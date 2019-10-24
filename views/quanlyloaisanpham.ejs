@@ -19,7 +19,21 @@
                     if (data) {
                         document.getElementById("categoryForm").submit();
                     } else {
-                        document.getElementById("error_businessName").innerHTML = "Tên loại đã tồn tại";
+                        document.getElementById("error_customerName").innerHTML = "Tên loại đã tồn tại";
+                    }
+                });
+            }
+        }
+
+        function checkCategoryEdit() {
+            var name = checkBusinessName(document.getElementById('edit_categoryName').value);
+            if (name) {
+                socket.emit("Client_sent_data_category", document.getElementById('edit_categoryName').value);
+                socket.on("Server_sent_data_category", function (data) {
+                    if (data) {
+                        document.getElementById("categoryForm").submit();
+                    } else {
+                        document.getElementById("error_CategoryName").innerHTML = "Tên loại đã tồn tại";
                     }
                 });
             }
@@ -28,11 +42,8 @@
     </script>
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
-
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
     <!-- CSS -->
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -47,7 +58,6 @@
     <link rel="stylesheet" href="css/addNews.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.min.css">
-
     <!-- Delete CSS -->
     <link rel="stylesheet" href="css/styleDel.css">
     <!-- Modernizer JS -->
@@ -70,9 +80,7 @@
     </div>
     <!-- Body main wrapper start -->
     <div class="wrapper bg-white fix">
-
-        <!-- Header 4 -->
-        <% include element/header %>
+        <!-- Header 4 --> <% include element/header %>
         <!-- Cart Area -->
         <div class="cart-area pb-90 pt-90 mt-100">
             <div class="container">
@@ -91,18 +99,38 @@
                                         <form action="createCategory" method="POST" id="categoryForm">
                                             <div class="input-wrapper">
                                                 <label for="">Nhập tên loại:</label>
-                                                <input id="categoryName" type="text" placeholder="Name"
-                                                    onblur="checkBusinessName(this.value)" name="categoryName">
+                                                <input id="categoryName" type="text" placeholder="Name" onblur="checkCustomerName(this.value)" name="categoryName">
                                             </div>
-                                            <label id="error_businessName"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                                <button class="card__btn" type="button" onclick="checkCategory();"><span>Thêm</span></button>
+                                            <label id="error_customerName" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
+                                            <button class="card__btn" type="button" onclick="checkCategory();"><span>Thêm</span></button>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </section>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="editCategory" style="margin: 20px;" id="formEdit">
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Địa chỉ</label>
+                                            <input name="address" class="txtEdit" id="edit_categoryName" type="text" onblur="checkCategoryName(this.value)">
+                                            <label id="error_CategoryName" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                        </div>
+                                        <button onclick="checkCategoryEdit();" class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px;">Xác nhận</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row" style="margin-top: 20px;">
                     <div class="col-xs-12">
@@ -112,54 +140,39 @@
                                     <tr>
                                         <th scope="col" style="text-align: left; width: 80px;"> #</th>
                                         <th scope="col" style="text-align: left;">Mã Loại</th>
-                                        <th scope="col" style="text-align: left;">tên loại</th>
+                                        <th scope="col" style="text-align: left;">Tên loại</th>
+                                        <th scope="col" style="text-align: left; width: 150px;">Tình trạng</th>
                                         <th scope="col" style="text-align: left; width: 80px;">Edit</th>
                                         <th scope="col" style="text-align: left; width: 80px;">Remove</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <% var i = 1; %>
-                                    <% if(_uG.length != 0){ %>
-                                    <% _uG.forEach((item) => { %>
-                                    <tr>
+                                <tbody> <% var i = 1; %> <% if(_uG.length != 0){ %> <% _uG.forEach((item) => { %> <tr>
                                         <th scope="row">1</th>
                                         <td><%= item.categoryID %></td>
                                         <td><%= item.categoryName %></td>
-                                        <td><button class="cart-pro-remove"><i class="zmdi zmdi-edit"></i></button></td>
-                                        <td><!-- partial:index.partial.html -->
-                                            <a><button class="cd-popup-trigger cart-pro-remove"><i
-                                                        class="zmdi zmdi-close"></i></button></a>
-                                            <div class="cd-popup" role="alert">
-                                                <div class="cd-popup-container">
-                                                    <p>Are you sure you want to delete this element?</p>
-                                                    <ul class="cd-buttons">
-                                                        <li><a
-                                                                href="/deleteCategory?categoryID=<%= item.categoryID %>&categoryName=<%= item.categoryName %>">Yes</a>
-                                                        </li>
-                                                        <li><a class="btn cd-popup-close1"
-                                                                style="padding-top: 0px;">No</a></li>
-                                                    </ul>
-                                                    <a class="cd-popup-close img-replace"></a>
-                                                </div> <!-- cd-popup-container -->
-                                            </div> <!-- cd-popup --></td>
-                                    </tr>
-                                    <% i++ %>
-                                    <% });%>
-                                    <% };%>
-                                </tbody>
+                                        <td><% if(item.isStatus){ %> ON <%}else{%> OFF <% } %></td>
+                                        <td><% if(item.isStatus){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setCategoryName_Input('<%= item.categoryName %>')"><i class="zmdi zmdi-edit"></i></button><% } %> </td>
+                                        <td><% if(item.isStatus){ %> <a onclick="setHrefDel('/deleteCategory?categoryID=<%= item.categoryID %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% };%></td>
+                                    </tr> <% i++ %> <% });%> <% };%> </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!--Footer-->
-        <% include element/footer %>
+        <!--Footer--> <% include element/footer %>
+        <!-- cd-popup -->
+        <div class="cd-popup" role="alert">
+            <div class="cd-popup-container">
+                <p>Loại sản phẩm sẻ không thể thêm sản phẩm <br> Bạn có muốn tiếp tục?</p>
+                <ul class="cd-buttons">
+                </ul>
+                <a class="cd-popup-close img-replace"></a>
+            </div> <!-- cd-popup-container -->
+        </div> <!-- cd-popup -->
     </div>
     <!-- Body main wrapper end -->
-
     <!-- JS -->
-
     <!-- jQuery JS -->
     <script src="js/jquery.min.js"></script>
     <script src="js/checkForm.js"></script>

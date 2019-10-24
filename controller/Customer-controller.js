@@ -40,7 +40,6 @@ function delete_Item_Customer_Key(customerID, router, res) {
             res.writeHead(302, { 'Location': router });
             console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
         }
-        res.end();
     });
 }
 
@@ -79,6 +78,7 @@ function add_Item_Customer(ObjectB, location, res) {
                 Item: {
                     customerID: customerID,
                     customerName: ObjectB.customerName,
+                    isStatus : true,
                     address: ObjectB.address,
                     email: ObjectB.email,
                     phone: ObjectB.phone,
@@ -94,7 +94,6 @@ function add_Item_Customer(ObjectB, location, res) {
                     console.log('Added An Item', JSON.stringify(params));
                     res.writeHead(302, { 'Location': location });
                 }
-                res.end();
             });
         }
     });
@@ -106,9 +105,9 @@ function edit_Item_Business(ObjectB, location, res) {
         Key: {
             "customerID": ObjectB.customerID,
         },
-        UpdateExpression: "set adress =:a, phone =:p, email =:e",
+        UpdateExpression: "set address =:a, phone =:p, email =:e",
         ExpressionAttributeValues: {
-            ":a": ObjectB.adress,
+            ":a": ObjectB.address,
             ":p": ObjectB.phone,
             ":e": ObjectB.email
         },
@@ -120,7 +119,6 @@ function edit_Item_Business(ObjectB, location, res) {
         } else {
             res.writeHead(302, { 'Location': location });
         }
-        res.end();
     });
 }
 

@@ -54,6 +54,7 @@
         <!-- Header 4 -->
         <% include element/header %>
         <!-- Cart Area -->
+        <% var formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }); %>
         <div class="cart-area pb-90 pt-90 mt-100">
             <div class="container">
                 <div class="row" style="margin-top: 20px;">
@@ -88,13 +89,13 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <p class="cart-price"><%=item.auction.startDate%></p>
+                                            <p class="cart-price"><%= formatter.format(item.auction.startPrice);%></p>
                                         </td>
                                         <td>
                                             <p class="cart-stock"><%=formatted_date%></p>
                                         </td>
                                         <td>
-                                            <p class="cart-stock"><%=item.auction.timeRun%></p>
+                                            <p class="cart-stock"><%=item.auction.timeRun%> giây</p>
                                         </td>
                                         <td><a
                                                 href="/deleteproduct?businessid=<%=item.businessID%>&businessname=<%=item.businessName%>&index=<%=index%>"><button
@@ -122,23 +123,18 @@
 
     <!-- JS -->
 
-    <!-- jQuery JS
-============================================ -->
+    <!-- jQuery JS -->
     <!-- partial -->
     <script src='js/jquery.min.js'></script>
     <script src='js/moment-with-locales.js'></script>
     <script src='js/bootstrap-datetimepicker.js'></script>
-    <!-- Bootstrap JS
-============================================ -->
+    <!-- Bootstrap JS -->
     <script src="js/bootstrap.min.js"></script>
-    <!-- Plugins JS
-============================================ -->
+    <!-- Plugins JS -->
     <script src="js/plugins.js"></script>
-    <!-- Particles Active JS
-============================================ -->
+    <!-- Particles Active JS -->
     <script src="js/app.js"></script>
-    <!-- Main JS
-============================================ -->
+    <!-- Main JS -->
     <script src="js/main.js"></script>
     <script src="js/addNews.js"></script>
     <script src="js/swiper.js"></script>

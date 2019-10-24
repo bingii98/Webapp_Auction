@@ -13,7 +13,7 @@ const adminID = 'Admin';
 const adminName = 'Admin';
 const dateAuc = "Fri Oct 07 2019 01:42:00 GMT+0700 (Indochina Time)";
 const timeRun = 120;
-const adress = makeid(20);
+const address = makeid(20);
 const phone = makeid(20);
 const email = 'october15th98@gmail.com';
 const username = 'admin';
@@ -30,7 +30,7 @@ const params = {
         adminID,
         adminName,
         contact: {
-            adress,
+            address,
             phone,
             email
         },

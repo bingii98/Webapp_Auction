@@ -43,6 +43,7 @@ docClient.scan(params, (err, data) => {
       Item: {
         customerID: customerID,
         customerName: "Nguyen Giang",
+        isStatus : true,
         address: "826 QUang Trung - Gò Vấp",
         email: "october15th98@gmail.com",
         phone: "0827374414",

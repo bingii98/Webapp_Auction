@@ -16,10 +16,10 @@
             var username = checkUsername(document.getElementById('username').value);
             var pass = checkPassword(document.getElementById('passwordA').value);
             var repass = checkConfirmPassword(document.getElementById('re-password').value);
-            var adress = checkAdress(document.getElementById('adress').value);
+            var address = checkAddress(document.getElementById('address').value);
             var phone = checkPhone(document.getElementById('phoneA').value);
             var mail = checkEmail(document.getElementById('email').value);
-            if (name && username && pass && repass && adress && phone && mail) {
+            if (name && username && pass && repass && address && phone && mail) {
                 socket.emit("Client_sent_data", document.getElementById('username').value);
                 socket.on("Server_sent_data", function (data) {
                     if (data) {
@@ -92,55 +92,40 @@
                                         <form action="createbusiness" method="POST" id="autopass">
                                             <div class="input-wrapper">
                                                 <label for="">Tên doanh nghiệp</label>
-                                                <input name="businessName" id="businessName" type="text"
-                                                    placeholder="Name" onblur="checkBusinessName(this.value)">
+                                                <input name="businessName" id="businessName" type="text" placeholder="Name" onblur="checkBusinessName(this.value)">
                                             </div>
-                                            <label id="error_businessName"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
+                                            <label id="error_businessName" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Tên người dùng:</label>
-                                                <input name="username" id="username" type="text" placeholder="User"
-                                                    onblur="checkUsername(this.value)">
+                                                <input name="username" id="username" type="text" placeholder="User" onblur="checkUsername(this.value)">
                                             </div>
-                                            <label id="error_username"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
+                                            <label id="error_username" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Mật khẩu:</label>
-                                                <input name="password" type="text" placeholder="Password" id="passwordA"
-                                                    onblur="checkPassword(this.value)">
+                                                <input name="password" type="text" placeholder="Password" id="passwordA" onblur="checkPassword(this.value)">
                                             </div>
-                                            <label id="error_password"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
+                                            <label id="error_password" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Nhập lại mật khẩu:</label>
-                                                <input name="re-password" id="re-password" type="text"
-                                                    placeholder="Re-Password" onblur="checkConfirmPassword(this.value)">
+                                                <input name="re-password" id="re-password" type="text" placeholder="Re-Password" onblur="checkConfirmPassword(this.value)">
                                             </div>
-                                            <label id="error_repassword"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
+                                            <label id="error_repassword" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Địa chỉ:</label>
-                                                <input name="adress" id="adress" type="text" placeholder="Address"
-                                                    onblur="checkAdress(this.value)">
+                                                <input name="address" id="address" type="text" placeholder="Address" onblur="checkAddress(this.value)">
                                             </div>
-                                            <label id="error_adress"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
+                                            <label id="error_address" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Số điện thoại:</label>
-                                                <input name="phone" id="phoneA" type="text"
-                                                    placeholder="Telephone Number" onblur="checkPhone(this.value)">
+                                                <input name="phone" id="phoneA" type="text" placeholder="Telephone Number" onblur="checkPhone(this.value)">
                                             </div>
-                                            <label id="error_phone"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
+                                            <label id="error_phone" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Email:</label>
-                                                <input name="email" id="email" type="email" placeholder="Name"
-                                                    id="email" onblur="checkEmail(this.value)">
+                                                <input name="email" id="email" type="email" placeholder="Name" id="email" onblur="checkEmail(this.value)">
                                             </div>
-                                            <label id="error_email"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <button class="btn btn-success" type="button"
-                                                onclick="checkBusiness();"><span>Xác nhận</span></button>
+                                            <label id="error_email" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
+                                            <button class="btn btn-success" type="button" onclick="checkBusiness();"><span>Xác nhận</span></button>
                                         </form>
                                     </div>
                                 </div>
@@ -148,8 +133,7 @@
                         </div>
                     </section>
                     <!-- Modal -->
-                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -163,27 +147,20 @@
                                         <input name="businessID" id="businessIDEdit" type="hidden">
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Địa chỉ</label>
-                                            <input name="adress" class="txtEdit" id="edit_bnAdress" type="text"
-                                                onblur="checkAdressEdit(this.value)">
-                                            <label id="error_adress_edit"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                            <input name="address" class="txtEdit" id="edit_bnAddress" type="text" onblur="checkAddressEdit(this.value)">
+                                            <label id="error_address_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                         </div>
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Số điện thoại</label>
-                                            <input name="phone" class="txtEdit" id="edit_bnPhone" type="text"
-                                                onblur="checkPhoneEdit(this.value)">
-                                            <label id="error_phone_edit"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                            <input name="phone" class="txtEdit" id="edit_bnPhone" type="text" onblur="checkPhoneEdit(this.value)">
+                                            <label id="error_phone_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                         </div>
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Email</label>
-                                            <input name="email" class="txtEdit" id="edit_bnEmail" type="text"
-                                                onblur="checkEmailEdit(this.value)"><br>
-                                            <label id="error_email_edit"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
-                                        </div>
-                                        <button onclick="checkEditBusiness();" class="btn btn-warning" id="btnEdit"
-                                            type="button" style="padding: 5px;">Xác nhận</button>
+                                            <input name="email" class="txtEdit" id="edit_bnEmail" type="text" onblur="checkEmailEdit(this.value)"><br>
+                                            <label id="error_email_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                        </div><br>
+                                        <button onclick="checkEditBusiness();" class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px;">Xác nhận</button>
                                     </form>
                                 </div>
                             </div>
@@ -203,6 +180,7 @@
                                         <th scope="col" style="text-align: left;">Số điện thoại</th>
                                         <th scope="col" style="text-align: left;">Mail</th>
                                         <th scope="col" style="text-align: left;">Username</th>
+                                        <th scope="col" style="text-align: left;">Tình trạng</th>
                                         <th scope="col" style="text-align: left;">SP</th>
                                         <th scope="col" style="text-align: left;">Sửa</th>
                                         <th scope="col" style="text-align: left;">Xoá</th>
@@ -212,40 +190,15 @@
                                         <td scope="row" style="font-weight: 700; padding-left: 10px;"><%= i %></td>
                                         <td><%= item.businessID %></td>
                                         <td style="font-weight: 700;"><%= item.businessName %></td>
-                                        <td><%= item.adress %></td>
+                                        <td><%= item.address %></td>
                                         <td><%= item.phone %></td>
                                         <td><%= item.email %></td>
                                         <td><%= item.username %></td>
-                                        <td><a
-                                                href="/quanlydoanhnghiep_sanpham?businessID=<%= item.businessID %>&businessName=<%= item.businessName %>"><button
-                                                    class="cart-pro-remove"><i class="zmdi zmdi-eye"></i></button></a>
-                                        </td>
-                                        <td><button class="cart-pro-remove" data-toggle="modal"
-                                                data-target="#exampleModalCenter"
-                                                onclick="setBusinessID_Input('<%= item.businessID %>','<%= item.businessName %>')"><i
-                                                    class="zmdi zmdi-edit"></i></button></td>
-                                        <td>
-                                            <!-- partial:index.partial.html -->
-                                            <a><button class="cd-popup-trigger cart-pro-remove"><i
-                                                        class="zmdi zmdi-close"></i></button></a>
-                                            <div class="cd-popup" role="alert">
-                                                <div class="cd-popup-container">
-                                                    <p>Are you sure you want to delete this element?</p>
-                                                    <ul class="cd-buttons">
-                                                        <li><a
-                                                                href="/deletebusiness?businessid=<%= item.businessID %>&businessname=<%= item.businessName %>">Yes</a>
-                                                        </li>
-                                                        <li><a class="btn cd-popup-close1"
-                                                                style="padding-top: 0px;">No</a></li>
-                                                    </ul>
-                                                    <a class="cd-popup-close img-replace"></a>
-                                                </div> <!-- cd-popup-container -->
-                                            </div> <!-- cd-popup -->
-                                        </td>
+                                        <td><% if(item.isStatus){ %> Hoạt động <%}else{%> Ngưng HĐ <% } %></td>
+                                        <td><a href="/quanlydoanhnghiep_sanpham?businessID=<%= item.businessID %>&businessName=<%= item.businessName %>"><button class="cart-pro-remove"><i class="zmdi zmdi-eye"></i></button></a></td>
+                                        <td><% if(item.isStatus){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setBusinessID_Input('<%= item.businessID %>','<%= item.businessName %>','<%= item.address %>','<%= item.phone %>','<%= item.email %>')"><i class="zmdi zmdi-edit"></i></button></td><% } %> <td><% if(item.isStatus){ %> <a onclick="setHrefDel('/deletebusiness?businessid=<%= item.businessID %>&businessname=<%= item.businessName %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a> <% } %> </td>
                                     </tr> <% i++ %> <% });%> <% } else { %> <tr>
-                                        <td colspan="10"
-                                            style="text-align: center;font-size: 18px;font-weight: bold;color: red;">
-                                            Notthing to show!</td>
+                                        <td colspan="10" style="text-align: center;font-size: 18px;font-weight: bold;color: red;"> Notthing to show!</td>
                                     </tr> <% } %> </tbody>
                             </table>
                         </div>
@@ -254,6 +207,15 @@
             </div>
         </div>
         <!--Footer--> <% include element/footer %>
+        <!-- cd-popup -->
+        <div class="cd-popup" role="alert">
+            <div class="cd-popup-container">
+                <p>Doanh nghiệp sẻ NGƯNG HOẠT ĐỘNG <br>Bạn có muốn tiếp tục hành động này?</p>
+                <ul class="cd-buttons">
+                </ul>
+                <a class="cd-popup-close img-replace"></a>
+            </div> <!-- cd-popup-container -->
+        </div> <!-- cd-popup -->
     </div>
     <!-- Body main wrapper end -->
     <!-- JS -->

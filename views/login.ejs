@@ -16,10 +16,10 @@
             var username = checkUsername(document.getElementById('txtCustomerUsername').value);
             var pass = checkPassword(document.getElementById('passwordA').value);
             var repass = checkConfirmPassword(document.getElementById('re-password').value);
-            var adress = checkAdress(document.getElementById('txtCustomerAddress').value);
+            var address = checkAddress(document.getElementById('txtCustomerAddress').value);
             var phone = checkPhone(document.getElementById('txtCustomerPhone').value);
             var mail = checkEmail(document.getElementById('txtCustomerEmail').value);
-            if (name && username && pass && repass && adress && phone && mail) {
+            if (name && username && pass && repass && address && phone && mail) {
                 socket.emit("Customer_check_username", document.getElementById('txtCustomerUsername').value);
                 socket.on("Server_reply_username", function (data) {
                     if (data) {
@@ -101,9 +101,9 @@
                                     <label id="error_phone" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                 </div>
                                 <div class="card__input-group">
-                                    <input class="card__input-group-input" type="text" required="required" name="address" id="txtCustomerAddress" onblur="checkAdress(this.value)"/>
+                                    <input class="card__input-group-input" type="text" required="required" name="address" id="txtCustomerAddress" onblur="checkAddress(this.value)"/>
                                     <label class="card__input-group-label">Địa chỉ</label>
-                                    <label id="error_adress" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                    <label id="error_address" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                 </div>
                                 <div class="card__btn-group">
                                     <button class="card__btn" type="button" id="confirmSignUp" onclick="checkCustomer()"><span>Đăng ký</span></button>

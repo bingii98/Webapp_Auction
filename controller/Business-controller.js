@@ -58,16 +58,17 @@ function getAll_Product_Business(ejs, res) {
             res.render(ejs, { _uG: productList });
         }
     });
-    res.end();
 }
 
 function get_Items_Business_Key(id, name, location, res) {
     let params = {
         TableName: 'Businesss',
         Key: {
-            "business": id,
+            "businessID": id,
             "businessName": name
-        }
+        },
+        FilterExpression: 'businessID = :businessID',
+        ExpressionAttributeValues: { ":businessID": id }
     }
     docClient.scan(params, (err, data) => {
         if (err) {
@@ -90,11 +91,6 @@ function get_Items_Business_Key(id, name, location, res) {
                 if (nameA > nameB)
                     return 1
                 return 0 //default return value (no sorting)
-            })
-
-            productList.sort(function (a, b) {
-                var dateA = new Date(a.auction.startDate), dateB = new Date(b.auction.startDate)
-                return dateA - dateB //sort by date ascending
             });
 
             res.render(location, { _uG: productList });
@@ -102,8 +98,8 @@ function get_Items_Business_Key(id, name, location, res) {
     });
 }
 
+//Update Business isStatus = false
 function delete_Item_Business_Key(businessid, businessname, router, res) {
-
     var table = "Businesss";
     var docClient = new AWS.DynamoDB.DocumentClient();
 
@@ -112,17 +108,20 @@ function delete_Item_Business_Key(businessid, businessname, router, res) {
         Key: {
             "businessID": businessid,
             "businessName": businessname
-        }
+        },
+        UpdateExpression: "set isStatus = :isStatus",
+        ExpressionAttributeValues: {
+            ":isStatus": false,
+        },
+        ReturnValues: "UPDATED_NEW"
     };
 
-    docClient.delete(params, function (err, data) {
+    docClient.update(params, function (err, data) {
         if (err) {
             console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
-            res.writeHead(302, { 'Location': router });
-            console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
+            res.redirect(router);
         }
-        res.end();
     });
 }
 
@@ -161,7 +160,8 @@ function add_Item_Business(ObjectB, location, res) {
                 Item: {
                     businessID: businessID,
                     businessName: ObjectB.businessName,
-                    adress: ObjectB.adress,
+                    isStatus: true,
+                    address: ObjectB.address,
                     email: ObjectB.email,
                     phone: ObjectB.phone,
                     username: ObjectB.username,
@@ -183,9 +183,8 @@ function add_Item_Business(ObjectB, location, res) {
                     console.error('Unable to add item. Error JSON:', JSON.stringify(err, null, 2));
                 } else {
                     console.log('Added An Item', JSON.stringify(params));
-                    res.writeHead(302, { 'Location': location });
+                    res.redirect(location);
                 }
-                res.end();
             });
         }
     });
@@ -198,9 +197,9 @@ function edit_Item_Business(ObjectB, location, res) {
             "businessID": ObjectB.businessID,
             "businessName": ObjectB.businessName,
         },
-        UpdateExpression: "set adress =:a, phone =:p, email =:e",
+        UpdateExpression: "set address =:a, phone =:p, email =:e",
         ExpressionAttributeValues: {
-            ":a": ObjectB.adress,
+            ":a": ObjectB.address,
             ":p": ObjectB.phone,
             ":e": ObjectB.email
         },
@@ -210,9 +209,8 @@ function edit_Item_Business(ObjectB, location, res) {
         if (err) {
             console.log(`${JSON.stringify(err, null, 2)}`);
         } else {
-            res.writeHead(302, { 'Location': location });
+            res.redirect(location);
         }
-        res.end();
     });
 }
 

@@ -3,25 +3,28 @@ const AWS = require('aws-sdk');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const Passport = require('passport');
 const app = express();
 const ctlBsn = require('../controller/Business-controller');
 const ctlAdmin = require('../controller/Admin-controller');
 const ctlCtm = require('../controller/Customer-controller');
 const docClient = new AWS.DynamoDB.DocumentClient();
-const flash = require('connect-flash');
 const bcrypt = require('bcrypt-nodejs');
 
 //set view engine for project
 app.set('view engine', 'ejs');
 app.set('views', './views');
-app.use(express.static('./views'));
+app.use(express.static('./public'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session({ secret: "mysecret" }));
-app.use(Passport.initialize());
-app.use(Passport.session());
-app.use(flash());
+app.use(session({
+    secret: 'FMS',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 300000,
+        secure: false
+    }
+}));
 
 AWS.config.update({
     region: "CNM",
@@ -34,11 +37,6 @@ const io = require('socket.io').listen(server);
 
 //SocketIO FUNCTION START
 io.on("connection", function (socket) {
-    console.log("-------CONNECT: New connection at ID : " + socket.id + " - !");
-
-    socket.on("disconnect", function () {
-        console.log("-------DISCONNECT: ID " + socket.id + " was disconnect!");
-    });
 
     //CHECK BUSINESS USER EXIST
     socket.on("Client_sent_data", function (username) {
@@ -137,13 +135,13 @@ io.on("connection", function (socket) {
             } else {
                 var abc = true;
                 data.Items[0].category.forEach(element => {
-                    if(categoryName === element.categoryName){
+                    if (categoryName === element.categoryName) {
                         abc = false;
                     }
                 });
-                if(abc == false){
+                if (abc == false) {
                     socket.emit("Server_sent_data_category", false);
-                }else{
+                } else {
                     socket.emit("Server_sent_data_category", true);
                 }
             }
@@ -161,27 +159,22 @@ app.post('/login', (req, res) => {
     sess = req.session
     username = req.body.username;
     password = req.body.password;
-    console.log("Getting!");
     ctlAdmin.get_Item_Admin_Username(username).then((data) => {
         if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
             sess.permission = "admin";
-            res.writeHead(302, { 'Location': '/quanlydoanhnghiep' });
-            res.end();
+            res.redirect('/quanlydoanhnghiep');
         } else {
             ctlBsn.get_Item_Business_Username(username).then((data) => {
                 if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
                     sess.permission = "business";
-                    res.writeHead(302, { 'Location': '/quanlydoanhnghiep' });
-                    res.end();
+                    res.redirect('/quanlydoanhnghiep');
                 } else {
                     ctlCtm.get_Item_Customer_Username(username).then((data) => {
                         if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
                             sess.permission = "customer";
-                            res.writeHead(302, { 'Location': '/' });
-                            res.end();
+                            res.redirect('/');
                         } else {
-                            res.writeHead(302, { 'Location': '/login' });
-                            res.end();
+                            res.redirect('/login');
                         }
                     });
                 }
@@ -308,7 +301,7 @@ app.get('/quanlysanpham', function (req, res) {
 app.get('/quanlyloaisanpham', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
-        ctlAdmin.getAll_Category('quanlyloaisanpham',res);
+        ctlAdmin.getAll_Category('quanlyloaisanpham', res);
     } else {
         res.render('login');
     }
@@ -358,7 +351,8 @@ app.post('/createCategory', function (req, res) {
                     ':categoryAdd': [
                         {
                             'categoryID': String(categoryID),
-                            'categoryName': String(categoryName)
+                            'categoryName': String(categoryName),
+                            'isStatus': true,
                         }
                     ]
 
@@ -370,43 +364,55 @@ app.post('/createCategory', function (req, res) {
                 if (err) {
                     console.error(JSON.stringify(err, null, 2));
                 } else {
-                    res.writeHead(302, { 'Location': '/quanlyloaisanpham' });
+                    res.redirect('/quanlyloaisanpham');
                 }
-                res.end();
             })
         }
     })
 });
 
 //Xoa loai san pham
-app.get('deleteCategory',(req,res) => {
+app.get('/deleteCategory', (req, res) => {
+    var categoryID = req.query.categoryID;
     let params = {
         TableName: 'Admins',
         Key: {
             "adminID": "admin",
             "adminName": "admin"
         },
-        UpdateExpression: "SET #category = remove(#category, :categoryRemove)",
-        ExpressionAttributeNames: { "#category": "category" },
-        ExpressionAttributeValues: {
-            ':categoryRemove': [
-                {
-                    'categoryID': String(req.body.categoryID),
-                    'categoryName': String(req.body.categoryName)
-                }
-            ]
-
-        },
-        ReturnValues: "ALL_NEW"
     };
-    docClient.update(params, function (err, data) {
+    docClient.scan(params, function (err, data) {
         if (err) {
             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
-            res.writeHead(302, { 'Location': '/quanlyloaisanpham' });
-            console.log("UpdateItem succeeded:", JSON.stringify(data));
+            for (let index = 0; index < data.Items.length; index++) {
+                for (let i = 0; i < data.Items[index].category.length; i++) {
+                    if (data.Items[index].category[i].categoryID === categoryID) {
+                        console.log(data.Items[index].category[i].categoryID);
+                        let params = {
+                            TableName: 'Admins',
+                            Key: {
+                                "adminID": "admin",
+                                "adminName": "admin"
+                            },
+                            UpdateExpression: "SET category[" + i + "].isStatus = :vals",
+                            ExpressionAttributeValues: {
+                                ":vals": false
+                            }
+                        };
+
+                        docClient.update(params, function (err, data) {
+                            if (err)
+                                console.log(err);
+                            else {
+                                console.log("UpdateItem succeeded:", JSON.stringify(data));
+                                res.redirect('/quanlyloaisanpham');
+                            }
+                        });
+                    }
+                }
+            }
         }
-        res.end();
     });
 });
 
@@ -434,10 +440,8 @@ app.get('/deleteproduct', function (req, res) {
             if (err) {
                 console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
             } else {
-                res.writeHead(302, { 'Location': '/quanlysanpham' });
-                console.log("UpdateItem succeeded:", JSON.stringify(data));
+                res.redirect('/quanlysanpham');
             }
-            res.end();
         });
     } else {
         res.render('login');
@@ -447,7 +451,7 @@ app.get('/deleteproduct', function (req, res) {
 // Thêm doanh nghiệp
 app.post('/createbusiness', function (req, res) {
     const businessName = req.body.businessName;
-    const adress = req.body.adress;
+    const address = req.body.address;
     const phone = req.body.phone;
     const email = req.body.email;
     const username = req.body.username;
@@ -455,7 +459,7 @@ app.post('/createbusiness', function (req, res) {
 
     const ObjectB = {
         businessName: businessName,
-        adress: adress,
+        address: address,
         phone: phone,
         email: email,
         username: username,
@@ -466,14 +470,9 @@ app.post('/createbusiness', function (req, res) {
 
 // Xoá doanh nghiệp
 app.get('/deletebusiness', function (req, res) {
-    sess = req.session
-    if (sess.permission === "admin") {
-        var businessid = req.query.businessid;
-        var businessname = req.query.businessname;
-        ctlBsn.delete_Item_Business_Key(businessid, businessname, '/quanlydoanhnghiep', res);
-    } else {
-        res.render('login');
-    }
+    var businessid = req.query.businessid;
+    var businessname = req.query.businessname;
+    ctlBsn.delete_Item_Business_Key(businessid, businessname, '/quanlydoanhnghiep', res);
 });
 
 // Sửa doanh nghiệp
@@ -482,14 +481,14 @@ app.get('/editBusiness', function (req, res) {
     if (sess.permission === "admin") {
         const businessID = req.query.businessID;
         const businessName = req.query.businessName;
-        const adress = req.query.adress;
+        const address = req.query.address;
         const phone = req.query.phone;
         const email = req.query.email;
 
         const ObjectB = {
             businessID: businessID,
             businessName: businessName,
-            adress: adress,
+            address: address,
             phone: phone,
             email: email,
         }
@@ -501,7 +500,12 @@ app.get('/editBusiness', function (req, res) {
 
 //Trnag dau gia
 app.get('/sanphamdaugia', (req, res) => {
-    res.render('auction-page');
+    sess = req.session
+    if (sess.permission === "customer") {
+        res.render('auction-page');
+    } else {
+        res.render('login');
+    }
 });
 
 app.get('/contact', (req, res) => {

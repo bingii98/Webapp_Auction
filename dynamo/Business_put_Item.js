@@ -42,7 +42,8 @@ docClient.scan(params, (err, data) => {
       Item: {
         businessID: businessID,
         businessName: "ABC Cake",
-        adress: "826 QUang Trung - Gò Vấp",
+        isStatus: true,
+        address: "826 QUang Trung - Gò Vấp",
         email: "october15th98@gmail.com",
         phone: "0827374414",
         username: "bingii98",
