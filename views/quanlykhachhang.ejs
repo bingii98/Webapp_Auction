@@ -7,14 +7,35 @@
     <title>Admin site</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <!--SOCKETIO for Sign up-->
+    <script src="socket.io/socket.io.js"></script>
+    <script> var socket = io('http://localhost:3000'); </script>
+    <script>
+            function checkCustomer() {
+                var name = checkCustomerName(document.getElementById('customerName').value);
+                var username = checkUsername(document.getElementById('username').value);
+                var pass = checkPassword(document.getElementById('passwordA').value);
+                var repass = checkConfirmPassword(document.getElementById('re-password').value);
+                var address = checkAddress(document.getElementById('address').value);
+                var phone = checkPhone(document.getElementById('phoneA').value);
+                var mail = checkEmail(document.getElementById('email').value);
+                if (name && username && pass && repass && address && phone && mail) {
+                    socket.emit("Customer_check_username", document.getElementById('username').value);
+                    socket.on("Server_reply_username", function (data) {
+                        if (data) {
+                            document.getElementById("autopass").submit();
+                        } else {
+                            document.getElementById("error_username").innerHTML = "Username đã tồn tại";
+                        }
+                    });
+                }
+            }
+    
+        </script>
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
-
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i"
-        rel="stylesheet">
-
+    <link href="css/googleapisFont.css" rel="stylesheet">
     <!-- CSS -->
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -28,10 +49,12 @@
     <link rel="stylesheet" href="css/responsive.css">
     <link href="css/color/color-1.css" rel="stylesheet">
     <link rel="stylesheet" href="css/addNews.css">
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.css'>
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.min.css'>
+    <link rel='stylesheet' href='css/swiper.css'>
+    <link rel='stylesheet' href='css/swiper.min.css'>
     <!-- Modernizer JS -->
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    <!-- Delete CSS -->
+    <link rel="stylesheet" href="css/styleDel.css">
 </head>
 
 <body>
@@ -50,9 +73,7 @@
     </div>
     <!-- Body main wrapper start -->
     <div class="wrapper bg-white fix">
-
-        <!-- Header 4 -->
-        <% include element/header %>
+        <!-- Header 4 --> <% include element/header %>
         <!-- Cart Area -->
         <div class="cart-area pb-90 pt-90 mt-100">
             <div class="container">
@@ -68,42 +89,87 @@
                                 <div class="right">
                                     <div class="form">
                                         <h2 class="title">Thêm khách hàng</h2>
-                                        <form>
+                                        <form action="/createCustomer" method="POST" id="autopass">
                                             <div class="input-wrapper">
-                                                <label for="">Họ tên khách hàng</label>
-                                                <input id="name" type="text" placeholder="Name">
+                                                <label for="">Tên khách hàng</label>
+                                                <input name="customerName" id="customerName" type="text" placeholder="Name" onblur="checkCustomerName(this.value)">
                                             </div>
+                                            <label id="error_customerName" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Tên người dùng:</label>
-                                                <input id="user" type="text" placeholder="User">
+                                                <input name="username" id="username" type="text" placeholder="User" onblur="checkUsername(this.value)">
                                             </div>
+                                            <label id="error_username" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Mật khẩu:</label>
-                                                <input id="pass" type="text" placeholder="Password">
+                                                <input name="password" type="text" placeholder="Password" id="passwordA" onblur="checkPassword(this.value)">
                                             </div>
+                                            <label id="error_password" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Nhập lại mật khẩu:</label>
-                                                <input id="re-pass" type="text" placeholder="Re-Password">
+                                                <input name="re-password" id="re-password" type="text" placeholder="Re-Password" onblur="checkConfirmPassword(this.value)">
                                             </div>
+                                            <label id="error_repassword" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Địa chỉ:</label>
-                                                <input id="address" type="text" placeholder="Address">
+                                                <input name="address" id="address" type="text" placeholder="Address" onblur="checkAddress(this.value)">
                                             </div>
+                                            <label id="error_address" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Số điện thoại:</label>
-                                                <input id="tel" type="text" placeholder="Telephone Number">
+                                                <input name="phone" id="phoneA" type="text" placeholder="Telephone Number" onblur="checkPhone(this.value)">
                                             </div>
+                                            <label id="error_phone" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Email:</label>
-                                                <input id="mail" type="email" placeholder="Name">
+                                                <input name="email" id="email" type="email" placeholder="Name" id="email" onblur="checkEmail(this.value)">
                                             </div>
+                                            <label id="error_email" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
+                                            <button class="btn btn-success" type="button" onclick="checkCustomer();"><span>Xác nhận</span></button>
                                         </form>
-                                        <button class="btn"><span>Xác nhận</span></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </section>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="editCustomer" style="margin: 20px;" id="formEdit" method="POST">
+                                        <input name="customerID" id="customerIDEdit" type="hidden">
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Họ và tên</label>
+                                            <input name="customerName" class="txtEdit" id="edit_customerName" type="text" onblur="checkBusinessName(this.value)">
+                                            <label id="error_businessName" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                        </div>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Địa chỉ</label>
+                                            <input name="address" class="txtEdit" id="edit_ddress" type="text" onblur="checkAddressEdit(this.value)">
+                                            <label id="error_address_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                        </div>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Số điện thoại</label>
+                                            <input name="phone" class="txtEdit" id="edit_Phone" type="text" onblur="checkPhoneEdit(this.value)">
+                                            <label id="error_phone_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                        </div>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Email</label>
+                                            <input name="email" class="txtEdit" id="edit_Email" type="text" onblur="checkEmailEdit(this.value)"><br>
+                                            <label id="error_email_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                        </div><br>
+                                        <button onclick="checkEditCustomer();" class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px;">Xác nhận</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row" style="margin-top: 20px;">
                     <div class="col-xs-12">
@@ -118,77 +184,59 @@
                                         <th scope="col" style="text-align: left;">Số điện thoại</th>
                                         <th scope="col" style="text-align: left;">Mail</th>
                                         <th scope="col" style="text-align: left;">Username</th>
-                                        <th scope="col" style="text-align: left;">Edit</th>
+                                        <th scope="col" style="text-align: left;">Tình trạng</th>
+                                        <th scope="col" style="text-align: left;">Sửa</th>
+                                        <th scope="col" style="text-align: left;">Xóa</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
+                                <tbody> <% _uG.forEach(item => { %> <tr>
                                         <th scope="row">1</th>
-                                        <td>KD12</td>
-                                        <td>Nguyễn Văn A</td>
-                                        <td>12 Nguyễn Văn Bảo, phường 4, Gò Vấp</td>
-                                        <td>123456789</td>
-                                        <td>google@gmail.com</td>
-                                        <td>google</td>
-                                        <td><button class="cart-pro-remove"><i class="zmdi zmdi-edit"></i></button></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>KD12</td>
-                                        <td>Nguyễn Văn A</td>
-                                        <td>12 Nguyễn Văn Bảo, phường 4, Gò Vấp</td>
-                                        <td>123456789</td>
-                                        <td>google@gmail.com</td>
-                                        <td>google</td>
-                                        <td><button class="cart-pro-remove"><i class="zmdi zmdi-edit"></i></button></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>KD12</td>
-                                        <td>Nguyễn Văn A</td>
-                                        <td>12 Nguyễn Văn Bảo, phường 4, Gò Vấp</td>
-                                        <td>123456789</td>
-                                        <td>google@gmail.com</td>
-                                        <td>google</td>
-                                        <td><button class="cart-pro-remove"><i class="zmdi zmdi-edit"></i></button></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">4</th>
-                                        <td>KD12</td>
-                                        <td>Nguyễn Văn A</td>
-                                        <td>12 Nguyễn Văn Bảo, phường 4, Gò Vấp</td>
-                                        <td>123456789</td>
-                                        <td>google@gmail.com</td>
-                                        <td>google</td>
-                                        <td><button class="cart-pro-remove"><i class="zmdi zmdi-edit"></i></button></td>
-                                    </tr>
-                                </tbody>
+                                        <td><%=item.customerID%></td>
+                                        <td><%=item.customerName%></td>
+                                        <td><%=item.address%></td>
+                                        <td><%=item.phone%></td>
+                                        <td><%=item.email%></td>
+                                        <td><%=item.username%></td>
+                                        <td><% if(item.isStatus){ %> ON <%}else{%> OFF <% } %></td>
+                                        <td><% if(item.isStatus){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setCustomer_Input('<%= item.customerID %>','<%= item.customerName %>','<%= item.address %>','<%= item.phone %>','<%= item.email %>')"><i class="zmdi zmdi-edit"></i></button><% } %></td>
+                                        <td><% if(item.isStatus){ %> <a onclick="setHrefDel('/deleteCustomer?customerID=<%= item.customerID %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a> <% } %></td>
+                                    </tr> <% }) %> </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!--Footer-->
-        <% include element/footer %>
+        <!--Footer--> <% include element/footer %>
+        <!-- cd-popup -->
+        <div class="cd-popup" role="alert">
+            <div class="cd-popup-container">
+                <p>Thay đổi trạng thái khách hàng <br>Bạn có muốn tiếp tục hành động này?</p>
+                <ul class="cd-buttons">
+                </ul>
+                <a class="cd-popup-close img-replace"></a>
+            </div> <!-- cd-popup-container -->
+        </div> <!-- cd-popup -->
     </div>
     <!-- Body main wrapper end -->
-
     <!-- JS -->
-
-    <!-- jQuery JS-->
+    <script src="js/checkForm.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/5.0.7/sweetalert2.min.js'></script>
+    <!-- jQuery JS  -->
     <script src="js/vendor/jquery-1.12.0.min.js"></script>
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap JS  -->
     <script src="js/bootstrap.min.js"></script>
-    <!-- Plugins JS -->
+    <!-- Plugins JS  -->
     <script src="js/plugins.js"></script>
-    <!-- Particles Active JS -->
+    <!-- Particles Active JS  -->
     <script src="js/app.js"></script>
-    <!-- Main JS -->
+    <!-- Main JS  -->
     <script src="js/main.js"></script>
     <script src="js/addNews.js"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/js/swiper.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/js/swiper.min.js'></script>
+    <script src='js/swiper.js'> </script>
+    <script src='js/swiper.min.js'></script>
+    <!-- partial -->
+    <script src="js/scriptDel.js"></script>
     <script>
         $(document).ready(function () {
             $(".menu_khachhang").addClass("active");

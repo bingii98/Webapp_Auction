@@ -101,11 +101,22 @@ function checkEmailEdit(str) {
     return re.test(str);
 }
 
+
 function checkEditBusiness() {
     let address = checkAddressEdit(document.getElementById('edit_bnAddress').value);
     let phone = checkPhoneEdit(document.getElementById('edit_bnPhone').value);
     let mail = checkEmailEdit(document.getElementById('edit_bnEmail').value);
     if (address && phone && mail) {
+        document.getElementById("formEdit").submit();
+    }
+}
+
+function checkEditCustomer() {
+    let name = checkBusinessName(document.getElementById('edit_customerName').value);
+    let address = checkAddressEdit(document.getElementById('edit_ddress').value);
+    let phone = checkPhoneEdit(document.getElementById('edit_Phone').value);
+    let mail = checkEmailEdit(document.getElementById('edit_Email').value);
+    if (name && address && phone && mail) {
         document.getElementById("formEdit").submit();
     }
 }
@@ -122,6 +133,15 @@ function setBusinessID_Input(BusinessID,BusinessName,address,phone,email){
 //Writeform for EDIT CATEGORY
 function setCategoryName_Input(edit_categoryName){
     document.getElementById("edit_categoryName").value = edit_categoryName;
+}
+
+//Writeform for EDIT CUSTOMER
+function setCustomer_Input(id,name,address,phone,email){
+    document.getElementById("customerIDEdit").value = id;
+    document.getElementById("edit_customerName").value = name;
+    document.getElementById("edit_ddress").value = address;
+    document.getElementById("edit_Phone").value = phone;
+    document.getElementById("edit_Email").value = email;
 }
 
 //Check form for Customerr - sign up

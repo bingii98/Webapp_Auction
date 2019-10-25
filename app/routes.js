@@ -189,13 +189,13 @@ app.get('/logout', function (req, res) {
     });
 });
 
-app.get('/signup', function (req, res) {
-    const customerName = req.query.customerName;
-    const address = req.query.address;
-    const phone = req.query.phone;
-    const email = req.query.email;
-    const username = req.query.username;
-    const password = req.query.password;
+app.post('/signup', function (req, res) {
+    const customerName = req.body.customerName;
+    const address = req.body.address;
+    const phone = req.body.phone;
+    const email = req.body.email;
+    const username = req.body.username;
+    const password = req.body.password;
 
     const ObjectB = {
         customerName: customerName,
@@ -207,6 +207,26 @@ app.get('/signup', function (req, res) {
     }
 
     ctlCtm.add_Item_Customer(ObjectB, '/login', res);
+});
+
+app.post('/createCustomer', function (req, res) {
+    const customerName = req.body.customerName;
+    const address = req.body.address;
+    const phone = req.body.phone;
+    const email = req.body.email;
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const ObjectB = {
+        customerName: customerName,
+        address: address,
+        phone: phone,
+        email: email,
+        username: username,
+        password: password
+    }
+
+    ctlCtm.add_Item_Customer(ObjectB, '/quanlykhachhang', res);
 });
 
 //router trang chủ
@@ -270,7 +290,7 @@ app.get('/quanlyhoadon', function (req, res) {
 app.get('/quanlykhachhang', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
-        res.render('quanlykhachhang');
+        ctlCtm.getAll_Customer('quanlykhachhang',res);
     } else {
         res.render('login');
     }
@@ -496,6 +516,34 @@ app.get('/editBusiness', function (req, res) {
     } else {
         res.render('login');
     }
+});
+
+// Sửa khách hàng
+app.post('/editCustomer', function (req, res) {
+    sess = req.session
+    const customerID = req.body.customerID;
+    const customerName = req.body.customerName;
+    const address = req.body.address;
+    const phone = req.body.phone;
+    const email = req.body.email;
+    if (sess.permission === "admin") {
+        const ObjectB = {
+            customerID: customerID,
+            customerName: customerName,
+            address: address,
+            phone: phone,
+            email: email,
+        }
+        ctlCtm.edit_Item_Customer(ObjectB, '/quanlykhachhang', res);
+    } else {
+        res.render('login');
+    }
+});
+
+// Xoá khách hàng
+app.get('/deleteCustomer', function (req, res) {
+    var customerID = req.query.customerID;
+    ctlCtm.delete_Item_Customer_Key(customerID, '/quanlykhachhang', res);
 });
 
 //Trnag dau gia

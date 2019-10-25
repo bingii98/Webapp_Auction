@@ -22,7 +22,7 @@ function getAll_Customer(ejs, res) {
     });
 }
 
-function delete_Item_Customer_Key(customerID, router, res) {
+function delete_Item_Customer_Key(customerID, location, res) {
     var table = "Customers";
     var docClient = new AWS.DynamoDB.DocumentClient();
 
@@ -30,15 +30,19 @@ function delete_Item_Customer_Key(customerID, router, res) {
         TableName: table,
         Key: {
             "customerID": customerID,
-        }
+        },
+        UpdateExpression: "set isStatus = :isStatus",
+        ExpressionAttributeValues: {
+            ":isStatus": false,
+        },
+        ReturnValues: "UPDATED_NEW"
     };
 
-    docClient.delete(params, function (err, data) {
+    docClient.update(params, function (err, data) {
         if (err) {
             console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
-            res.writeHead(302, { 'Location': router });
-            console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
+            res.redirect(location);
         }
     });
 }
@@ -92,21 +96,22 @@ function add_Item_Customer(ObjectB, location, res) {
                     console.error('Unable to add item. Error JSON:', JSON.stringify(err, null, 2));
                 } else {
                     console.log('Added An Item', JSON.stringify(params));
-                    res.writeHead(302, { 'Location': location });
+                    res.redirect(location);
                 }
             });
         }
     });
 }
 
-function edit_Item_Business(ObjectB, location, res) {
+function edit_Item_Customer(ObjectB, location, res) {
     let params = {
         TableName: 'Customers',
         Key: {
             "customerID": ObjectB.customerID,
         },
-        UpdateExpression: "set address =:a, phone =:p, email =:e",
+        UpdateExpression: "set customerName =:n, address =:a, phone =:p, email =:e",
         ExpressionAttributeValues: {
+            ":n": ObjectB.customerName,
             ":a": ObjectB.address,
             ":p": ObjectB.phone,
             ":e": ObjectB.email
@@ -117,7 +122,7 @@ function edit_Item_Business(ObjectB, location, res) {
         if (err) {
             console.log(`${JSON.stringify(err, null, 2)}`);
         } else {
-            res.writeHead(302, { 'Location': location });
+            res.redirect(location);
         }
     });
 }
@@ -145,5 +150,5 @@ module.exports = {
     get_Item_Customer_Username: get_Item_Customer_Username,
     delete_Item_Customer_Key: delete_Item_Customer_Key,
     add_Item_Customer: add_Item_Customer,
-    edit_Item_Business: edit_Item_Business,
+    edit_Item_Customer: edit_Item_Customer,
 };

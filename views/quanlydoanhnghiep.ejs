@@ -194,9 +194,10 @@
                                         <td><%= item.phone %></td>
                                         <td><%= item.email %></td>
                                         <td><%= item.username %></td>
-                                        <td><% if(item.isStatus){ %> Hoạt động <%}else{%> Ngưng HĐ <% } %></td>
+                                        <td><% if(item.isStatus){ %> ON <%}else{%> OFF <% } %></td>
                                         <td><a href="/quanlydoanhnghiep_sanpham?businessID=<%= item.businessID %>&businessName=<%= item.businessName %>"><button class="cart-pro-remove"><i class="zmdi zmdi-eye"></i></button></a></td>
-                                        <td><% if(item.isStatus){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setBusinessID_Input('<%= item.businessID %>','<%= item.businessName %>','<%= item.address %>','<%= item.phone %>','<%= item.email %>')"><i class="zmdi zmdi-edit"></i></button></td><% } %> <td><% if(item.isStatus){ %> <a onclick="setHrefDel('/deletebusiness?businessid=<%= item.businessID %>&businessname=<%= item.businessName %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a> <% } %> </td>
+                                        <td><% if(item.isStatus){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setBusinessID_Input('<%= item.businessID %>','<%= item.businessName %>','<%= item.address %>','<%= item.phone %>','<%= item.email %>')"><i class="zmdi zmdi-edit"></i></button><% } %></td>
+                                        <td><% if(item.isStatus){ %> <a onclick="setHrefDel('/deletebusiness?businessid=<%= item.businessID %>&businessname=<%= item.businessName %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a> <% } %> </td>
                                     </tr> <% i++ %> <% });%> <% } else { %> <tr>
                                         <td colspan="10" style="text-align: center;font-size: 18px;font-weight: bold;color: red;"> Notthing to show!</td>
                                     </tr> <% } %> </tbody>
@@ -235,7 +236,6 @@
     <script src='js/swiper.js'> </script>
     <script src='js/swiper.min.js'></script>
     <!-- partial -->
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src="js/scriptDel.js"></script>
     <script>
         $(document).ready(function () {

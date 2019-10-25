@@ -7,13 +7,10 @@
     <title>Admin site</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
-
     <!-- Google Fonts -->
     <link href="css/googleapisFont.css" rel="stylesheet">
-
     <!-- CSS -->
     <!-- Bootstrap CSS -->
     <link rel='stylesheet' href='css/bootstrap.min.css'>
@@ -50,9 +47,7 @@
     </div>
     <!-- Body main wrapper start -->
     <div class="wrapper bg-white fix">
-
-        <!-- Header 4 -->
-        <% include element/header %>
+        <!-- Header 4 --> <% include element/header %>
         <!-- Cart Area -->
         <div class="cart-area pb-90 pt-90 mt-100">
             <div class="container">
@@ -130,22 +125,18 @@
                                         <th class="remove">Xoá</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %>
-                                    <% _uG.forEach((item) => { %>
-                                    <% var index = 0;%>
-                                    <% item.product.forEach((product) => { %>
-                                    <%let current_datetime = new Date(product.dateAuc);%>
-                                    <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%>
-                                    <tr>
+                                <tbody> 
+                                    <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %> 
+                                    <% _uG.forEach((product) => { %> 
+                                        <% var index = 0;%> 
+                                            <%let current_datetime = new Date(product.auction.startDate);%> 
+                                            <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%> <tr>
                                         <td>
                                             <div class="cart-product text-left fix">
                                                 <img src="img/product/2.jpg" alt="" />
                                                 <div class="details fix">
                                                     <a href="#"> <%=product.productName%></a>
-                                                    <p><%=product.productid%></p>
-                                                    <p>Business : <%=item.businessName%></p>
-                                                    <p>Loại : Đồ cổ</p>
+                                                    <p><%=product.productID%></p>
                                                 </div>
                                             </div>
                                         </td>
@@ -158,33 +149,24 @@
                                         <td>
                                             <p class="cart-stock"><%=product.timeRun%></p>
                                         </td>
-                                        <td><a
-                                                href="/deleteproduct?businessid=<%=item.businessID%>&businessname=<%=item.businessName%>&index=<%=index%>"><button
-                                                    class="cart-pro-remove"><i class="zmdi zmdi-edit"></i></button></a>
+                                        <td><a href=""><button class="cart-pro-remove"><i class="zmdi zmdi-edit"></i></button></a>
                                         </td>
-                                        <td><a
-                                                href="/deleteproduct?businessid=<%=item.businessID%>&businessname=<%=item.businessName%>&index=<%=index%>"><button
-                                                    class="cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a>
+                                        <td><a href=""><button class="cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a>
                                         </td>
                                         </td>
-                                    </tr>
-                                    <% index++;%>
-                                    <% }); %>
-                                    <% }); %>
-                                </tbody>
+                                    </tr> 
+                                    <% index++;%> 
+                                    <% }); %> </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!--Footer-->
-        <% include element/footer %>
+        <!--Footer--> <% include element/footer %>
     </div>
     <!-- Body main wrapper end -->
-
     <!-- JS -->
-
     <!-- jQuery JS  -->
     <!-- partial -->
     <script src='js/jquery.min.js'></script>
