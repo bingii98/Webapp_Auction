@@ -25,7 +25,7 @@ function onScan(err, data) {
             console.log('| -- Username: ' + item.username);
             console.log('| -- Password: ' + item.password);
             item.category.forEach(cat => {
-                console.log('| -- Category: ' + cat.catName);
+                console.log('| -- Category: ' + cat.categoryName);
                 cat.product.forEach(element => {
                     console.log('|    ---- Product: ' + element.productName);
                 });

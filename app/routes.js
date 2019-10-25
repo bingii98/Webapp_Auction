@@ -396,6 +396,7 @@ app.post('/createCategory', function (req, res) {
                             'categoryID': String(categoryID),
                             'categoryName': String(categoryName),
                             'isStatus': true,
+                            'product' : []
                         }
                     ]
 
