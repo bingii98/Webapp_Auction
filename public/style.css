@@ -5572,6 +5572,10 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 .cart-table thead tr th.remove {
     min-width: 100px;
 }
+
+.cart-table thead tr th.id {
+    min-width: 50px;
+}
 .cart-table tbody {}
 .cart-table tbody tr {}
 .cart-table tbody tr td {
@@ -5612,13 +5616,14 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 .cart-table .cart-product .details p {
     color: #909090;
     margin: 0;
+    padding: 3px;
+    font-size: 12px;
 }
 .cart-table .cart-price {
     color: #606060;
 }
 .cart-table .cart-stock {
     color: #606060;
-    text-transform: uppercase;
 }
 .cart-table .add-cart-btn {
     background-color: #ff7900;

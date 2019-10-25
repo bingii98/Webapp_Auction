@@ -147,6 +147,29 @@ io.on("connection", function (socket) {
             }
         });
     });
+
+    //Get all CATEGORY IN REALTIME
+    socket.on("Client_sent_data_list_category", function () {
+        let params = {
+            TableName: 'Admins',
+        }
+        var CategoryList = [];
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                data.Items.forEach(item => {
+                    item.category.forEach(cat => {
+                        if(cat.isStatus){
+                            CategoryList.push(cat);
+                        }
+                    });
+                });
+                console.log(CategoryList);
+                socket.emit("Server_sent_data_list_category", CategoryList);
+            }
+        });
+    });
 });
 
 

@@ -60,6 +60,7 @@ function getAll_Product_Business(ejs, res) {
     });
 }
 
+//Get listProduct of 1 BUSINESS
 function get_Items_Business_Key(id, name, location, res) {
     let params = {
         TableName: 'Businesss',
@@ -125,6 +126,7 @@ function delete_Item_Business_Key(businessid, businessname, router, res) {
     });
 }
 
+//ADD NEW BUSINESS - EMTY CATEGORY
 function add_Item_Business(ObjectB, location, res) {
     let params = {
         TableName: 'Businesss'
@@ -169,7 +171,7 @@ function add_Item_Business(ObjectB, location, res) {
                     category: [
                         {
                             catID: "CR_1",
-                            catName: "Đồ điện tử",
+                            categoryName: "Đồ điện tử",
                             product: [
 
                             ],

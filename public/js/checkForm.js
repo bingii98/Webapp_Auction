@@ -67,7 +67,25 @@ function checkPhone(str) {
     return re.test(str);
 }
 
+function checkproductName(str) {
+    var re = /^((?![\^!@#$*~ <>?]).)((?![\^!@#$*~<>?]).){0,73}((?![\^!@#$*~ <>?]).)$/;
+    if (!re.test(str)) {
+        $('#error_productName').text('Tên lớn hơn 1 ký tự!');
+    } else {
+        $('#error_productName').text('');
+    }
+    return re.test(str);
+}
 
+function checkproductDescribe(str) {
+    var re = /^((?![\^!@#$*~ <>?]).)((?![\^!@#$*~<>?]).){0,}((?![\^!@#$*~ <>?]).)$/;
+    if (!re.test(str)) {
+        $('#error_productDescribe').text('Mô tả phải lớn hơn 1 ký tự!');
+    } else {
+        $('#error_productDescribe').text('');
+    }
+    return re.test(str);
+}
 
 //CHECK FOR EDIT
 

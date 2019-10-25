@@ -7,6 +7,22 @@
     <title>Admin site</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src='js/jquery.min.js'></script>
+    <!--SOCKETIO for Sign up-->
+    <script src="socket.io/socket.io.js"></script>
+    <script> var socket = io('http://localhost:3000'); </script>
+    <script>
+        $(document).ready(function () {
+            $("#addProductBtn").click(function () {
+                socket.emit("Client_sent_data_list_category");
+                socket.on("Server_sent_data_list_category", function (data) {
+                    data.forEach(element => {
+                        $("#listCaterory").append("<option id="+ element.categoryID +">" + element.categoryName + "</option>");
+                    });
+                });
+            })
+        });
+    </script>
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
     <!-- Google Fonts -->
@@ -53,7 +69,7 @@
             <div class="container">
                 <div class="row">
                     <div class="procced-checkout col-md-12 col-xs-12">
-                        <button class="btn btn-open checkout-link">
+                        <button id="addProductBtn" class="btn btn-open checkout-link">
                             <span>Thêm sản phẩm đấu giá</span></button>
                     </div>
                     <section class="modal">
@@ -65,43 +81,26 @@
                                         <h2 class="title">Thêm sản phẩm đấu giá</h2>
                                         <form method="get" action="/createproduct">
                                             <div class="input-wrapper">
-                                                <label for="">Nhập tên sản phẩm:</label>
-                                                <input id="name" type="text" name="name" placeholder="Name">
+                                                <label for="">Tên sản phẩm</label>
+                                                <input name="productName" id="productName_txt" type="text"
+                                                    placeholder="Name" onblur="checkproductName(this.value)">
+                                            </div>
+                                            <label id="error_productName"
+                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
+                                            <div class="input-wrapper">
+                                                <label for="">Chọn loại sản phẩm</label>
+                                                <select name="categoryName" id="listCaterory"></select>
                                             </div>
                                             <div class="input-wrapper">
-                                                <label for="">Chọn loại sản phẩm:</label>
-                                                <select name="cards">
-                                                    <option value="">Điện tử</option>
-                                                    <option value="">Đồ cổ</option>
-                                                    <option value="">Xe</option>
-                                                </select>
+                                                <label for="">Mô tả</label>
+                                                <input name="productDescribe" id="productDescribe_txt" type="text"
+                                                    placeholder="Name" onblur="checkproductDescribe(this.value)">
                                             </div>
+                                            <label id="error_productDescribe"
+                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
-                                                <label for="">Nhập mô tả:</label>
-                                                <input id="mota" type="text" name="des" placeholder="Mô tả">
-                                            </div>
-                                            <div class="input-wrapper">
-                                                <label for="">Chọn hình ảnh:</label>
+                                                <label for="">Chọn hình ảnh</label>
                                                 <input id="image" type="file" placeholder="Image">
-                                            </div>
-                                            <div class="input-wrapper">
-                                                <label for="">Nhập giá:</label>
-                                                <input id="gia" type="text" name="price" placeholder="Giá">
-                                            </div>
-                                            <div class="input-wrapper">
-                                                <label for="">Thời gian khởi động đấu giá:</label>
-                                                <div class="form-group">
-                                                    <div class="input-group date" id="datetimepicker1">
-                                                        <input type="text" class="form-control" name="dateAuc" />
-                                                        <span class="input-group-addon">
-                                                            <span class="">Chọn ngày</span>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="input-wrapper">
-                                                <label for="">Hạn cho mỗi lượt:</label>
-                                                <input id="due" type="text" name="timerun" placeholder="Giây">
                                             </div>
                                             <button class="btn" type="submit"><span>Xác nhận</span></button>
                                         </form>
@@ -110,52 +109,93 @@
                             </div>
                         </div>
                     </section>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="editBusiness" style="margin: 20px;" id="formEdit">
+                                        <input name="businessName" id="businessNameEdit" type="hidden">
+                                        <input name="businessID" id="businessIDEdit" type="hidden">
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Hình ảnh:</label>
+                                            <input name="address" class="txtEdit" id="edit_bnAddress" type="file"
+                                                onblur="checkAddressEdit(this.value)">
+                                            <label id="error_address_edit"
+                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                        </div>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Tên:</label>
+                                            <input name="phone" class="txtEdit" id="edit_bnPhone" type="text"
+                                                onblur="checkPhoneEdit(this.value)">
+                                            <label id="error_phone_edit"
+                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                        </div>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Mô tả:</label>
+                                            <input name="email" class="txtEdit" id="edit_bnEmail" type="text"
+                                                onblur="checkEmailEdit(this.value)"><br>
+                                            <label id="error_email_edit"
+                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                        </div><br>
+                                        <button onclick="checkEditBusiness();" class="btn btn-warning" id="btnEdit"
+                                            type="button" style="padding: 5px;">Xác nhận</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <% var formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }); %>
                 <div class="row" style="margin-top: 20px;">
                     <div class="col-xs-12">
                         <div class="cart-table table-responsive mb-50">
                             <table class="table text-center">
                                 <thead>
                                     <tr>
-                                        <th class="product">Sản phẩm</th>
-                                        <th class="price">Giá</th>
-                                        <th class="stock">TG bắt đầu</th>
-                                        <th class="qty">Hạn</th>
+                                        <th class="id">ID</th>
+                                        <th class="price">Hình ảnh</th>
+                                        <th class="stock">Tên</th>
+                                        <th class="qty">Mô tả</th>
                                         <th class="remove">Chỉnh sửa</th>
                                         <th class="remove">Xoá</th>
                                     </tr>
                                 </thead>
-                                <tbody> 
-                                    <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %> 
-                                    <% _uG.forEach((product) => { %> 
-                                        <% var index = 0;%> 
-                                            <%let current_datetime = new Date(product.auction.startDate);%> 
-                                            <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%> <tr>
+                                <tbody>
+                                    <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %>
+                                    <% _uG.forEach((product) => { %>
+                                    <% var index = 0;%>
+                                    <%let current_datetime = new Date(product.auction.startDate);%>
+                                    <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%>
+                                    <tr>
                                         <td>
-                                            <div class="cart-product text-left fix">
-                                                <img src="img/product/2.jpg" alt="" />
-                                                <div class="details fix">
-                                                    <a href="#"> <%=product.productName%></a>
-                                                    <p><%=product.productID%></p>
-                                                </div>
-                                            </div>
+                                            <div class="cart-stock"><%=product.productID%></div>
                                         </td>
                                         <td>
-                                            <p class="cart-price"><%=product.productPrice%></p>
+                                            <p class="cart-product text-left fix"><img src="img/product/2.jpg" alt="" />
+                                            </p>
                                         </td>
                                         <td>
-                                            <p class="cart-stock"><%=formatted_date%></p>
+                                            <p class="cart-stock"><%=product.productName%></p>
                                         </td>
                                         <td>
-                                            <p class="cart-stock"><%=product.timeRun%></p>
+                                            <p class="cart-stock"><%=product.productDescribe%> giây</p>
                                         </td>
-                                        <td><a href=""><button class="cart-pro-remove"><i class="zmdi zmdi-edit"></i></button></a>
+                                        <td><button class="cart-pro-remove" data-toggle="modal"
+                                                data-target="#exampleModalCenter"><i
+                                                    class="zmdi zmdi-edit"></i></button></td>
+                                        <td><a href=""><button class="cart-pro-remove"><i
+                                                        class="zmdi zmdi-close"></i></button></a>
                                         </td>
-                                        <td><a href=""><button class="cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a>
                                         </td>
-                                        </td>
-                                    </tr> 
-                                    <% index++;%> 
+                                    </tr>
+                                    <% index++;%>
                                     <% }); %> </tbody>
                             </table>
                         </div>
@@ -169,7 +209,6 @@
     <!-- JS -->
     <!-- jQuery JS  -->
     <!-- partial -->
-    <script src='js/jquery.min.js'></script>
     <script src='js/moment-with-locales.js'></script>
     <script src='js/bootstrap-datetimepicker.js'></script>
     <!-- Bootstrap JS  -->
@@ -183,6 +222,7 @@
     <script src="js/addNews.js"></script>
     <script src="js/swiper.js"></script>
     <script src="js/swiper.min.js"></script>
+    <script src="js/checkForm.js"></script>
     <script>
         $(function () {
             $('#datetimepicker1').datetimepicker();
