@@ -262,6 +262,10 @@
                                     <!-- Product Info Tab -->
                                     <div id="description" class="pro-details-tab pro-dsc-tab tab-pane active">
                                         <ul style="font-weight: bold; line-height: 40px;" id="listUserJoin">
+                                            <!--LIST BIDS-->
+                                            <% _uG.auction.bids.forEach(item => { %>
+                                                <li style='float: left; margin-right: 50px;'><i class='zmdi zmdi-account-circle'></i>&nbsp<span>UserID: <%= item.user %> - chốt giá <%= item.amount %></span></li>
+                                            <% }) %>
                                         </ul>
                                     </div>
                                 </div>

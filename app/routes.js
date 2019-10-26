@@ -176,7 +176,7 @@ io.on("connection", function (socket) {
     })
 
     //Add BID to AUCTION
-    socket.on("Client_sent_data_BID", function (productID,price, ownerID, ownerName) {
+    socket.on("Client_sent_data_BID", function(productID,price, ownerID, ownerName) {
         if(ownerID === "admin"){
             let params = {
                 TableName: 'Admins'
@@ -216,7 +216,6 @@ io.on("connection", function (socket) {
                                             io.sockets.in(socket.room).emit("Server_sent_data_BID", sess.userName, price);
                                         }
                                     });
-                                    break
                                 }
                             }
                         }
@@ -261,7 +260,6 @@ io.on("connection", function (socket) {
                                             socket.emit("Server_sent_data_BID", sess.userName, price);
                                         }
                                     });
-                                    break
                                 }
                             }
                         }
