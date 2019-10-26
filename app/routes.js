@@ -18,12 +18,10 @@ app.use(express.static('./public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
     secret: 'FMS',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        maxAge: 300000,
-        secure: false
-    }
+    maxAge: 8 * 60 * 60 * 1000, //8 hours
+    httpOnly: true,
+    secure: false,
+    secureProxy: true,
 }));
 
 AWS.config.update({
@@ -160,7 +158,7 @@ io.on("connection", function (socket) {
             } else {
                 data.Items.forEach(item => {
                     item.category.forEach(cat => {
-                        if(cat.isStatus){
+                        if (cat.isStatus) {
                             CategoryList.push(cat);
                         }
                     });
@@ -281,7 +279,7 @@ app.get('/admin', function (req, res) {
 app.get('/quanlysanpham', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
-        ctlBsn.getAll_Product_Business('quanlysanpham', res);
+        ctlAdmin.getAll_Product_Admin('quanlysanpham', res);
     } else {
         res.render('login');
     }
@@ -313,7 +311,7 @@ app.get('/quanlyhoadon', function (req, res) {
 app.get('/quanlykhachhang', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
-        ctlCtm.getAll_Customer('quanlykhachhang',res);
+        ctlCtm.getAll_Customer('quanlykhachhang', res);
     } else {
         res.render('login');
     }
@@ -329,16 +327,6 @@ app.get('/quanlydoanhnghiep', function (req, res) {
     }
 });
 
-//router admib
-app.get('/quanlysanpham', function (req, res) {
-    sess = req.session
-    if (sess.permission === "admin") {
-        var id = req.query.businessID;
-        ctlBsn.get_Items_Business_Key(id, 'quanlysanpham_business', res);
-    } else {
-        res.render('login');
-    }
-});
 
 //router admib
 app.get('/quanlyloaisanpham', function (req, res) {
@@ -396,7 +384,7 @@ app.post('/createCategory', function (req, res) {
                             'categoryID': String(categoryID),
                             'categoryName': String(categoryName),
                             'isStatus': true,
-                            'product' : []
+                            'product': []
                         }
                     ]
 
@@ -460,33 +448,197 @@ app.get('/deleteCategory', (req, res) => {
     });
 });
 
+//Thêm sản phẩm
+app.post('/createproduct', (req, res) => {
+    const productName = req.body.productName;
+    const productDescribe = req.body.productDescribe;
+    const categoryID = req.body.categoryID;
+
+    const ObjectB = {
+        productName: productName,
+        productDescribe: productDescribe
+    }
+    ctlAdmin.add_Product(ObjectB, categoryID, '/quanlysanpham', res);
+});
 
 // Xoá sản phẩm
-app.get('/deleteproduct', function (req, res) {
+app.get('/deleteProduct', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
-        var businessid = req.query.businessid;
-        var businessname = req.query.businessname;
-        var index = "REMOVE product[" + req.query.index + "]";
-        console.log(JSON.stringify(index));
-        var params = {
-            TableName: "Business",
-            Key: {
-                "businessID": businessid,
-                "businessName": businessname
-            },
-            UpdateExpression: index,
-            ReturnValues: "UPDATED_NEW"
-        };
-
-        console.log("Updating the item: " + businessid + " - " + businessname);
-        docClient.update(params, function (err, data) {
-            if (err) {
-                console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-            } else {
-                res.redirect('/quanlysanpham');
+        var owner = req.query.owner;
+        var productID = req.query.productID;
+        if (owner === "admin") {
+            let params = {
+                TableName: 'Admins'
             }
-        });
+            docClient.scan(params, (err, data) => {
+                if (err) {
+                    console.error('Error JSON:', JSON.stringify(err, null, 2));
+                } else {
+                    for (let i = 0; i < data.Items.length; i++) {
+                        for (let x = 0; x < data.Items[i].category.length; x++) {
+                            for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                                if (data.Items[i].category[x].product[z].productID === productID) {
+                                    let params = {
+                                        TableName: "Admins",
+                                        Key: {
+                                            "adminID": "admin",
+                                            "adminName": "admin"
+                                        },
+                                        UpdateExpression: "REMOVE category[" + x + "].product[" + z + "]",
+                                        ReturnValues: "UPDATED_NEW"
+                                    };
+                                    docClient.update(params, function (err, data) {
+                                        if (err) {
+                                            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                        } else {
+                                            res.redirect('/quanlysanpham');
+                                        }
+                                    });
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                };
+            });
+        } else {
+            let params = {
+                TableName: 'Businesss',
+                Key: {
+                    businessID: req.query.id,
+                    businessName: owner,
+                }
+            }
+            docClient.scan(params, (err, data) => {
+                if (err) {
+                    console.error('Error JSON:', JSON.stringify(err, null, 2));
+                } else {
+                    for (let i = 0; i < data.Items.length; i++) {
+                        for (let x = 0; x < data.Items[i].category.length; x++) {
+                            for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                                if (data.Items[i].category[x].product[z].productID === productID) {
+                                    let params = {
+                                        TableName: "Businesss",
+                                        Key: {
+                                            "businessID": req.query.id,
+                                            "businessName": owner
+                                        },
+                                        UpdateExpression: "REMOVE category[" + x + "].product[" + z + "]",
+                                        ReturnValues: "UPDATED_NEW"
+                                    };
+                                    docClient.update(params, function (err, data) {
+                                        if (err) {
+                                            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                        } else {
+                                            res.redirect('/quanlysanpham');
+                                        }
+                                    });
+                                    break
+                                }
+                            }
+                        }
+                    }
+                };
+            });
+        }
+    } else {
+        res.render('login');
+    }
+});
+
+
+// Sửa sản phẩm
+app.get('/editProduct', function (req, res) {
+    sess = req.session
+    if (sess.permission === "admin") {
+        var owner = req.query.owner;
+        var id = req.query.id;
+        var productID = req.query.productID;
+        var productName = req.query.productName;
+        var productDescribe = req.query.productDescribe;
+        if (owner === "admin") {
+            let params = {
+                TableName: 'Admins'
+            }
+            docClient.scan(params, (err, data) => {
+                if (err) {
+                    console.error('Error JSON:', JSON.stringify(err, null, 2));
+                } else {
+                    for (let i = 0; i < data.Items.length; i++) {
+                        for (let x = 0; x < data.Items[i].category.length; x++) {
+                            for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                                if (data.Items[i].category[x].product[z].productID === productID) {
+                                    let params = {
+                                        TableName: "Admins",
+                                        Key: {
+                                            "adminID": "admin",
+                                            "adminName": "admin"
+                                        },
+                                        UpdateExpression: "set category[" + x + "].product[" + z + "].productName =:n, category[" + x + "].product[" + z + "].productDescribe =:d",
+                                        ExpressionAttributeValues: {
+                                            ":n": productName,
+                                            ":d": productDescribe,
+                                        },
+                                        ReturnValues: "UPDATED_NEW"
+                                    };
+                                    docClient.update(params, function (err, data) {
+                                        if (err) {
+                                            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                        } else {
+                                            res.redirect('/quanlysanpham');
+                                        }
+                                    });
+                                    break
+                                }
+                            }
+                        }
+                    }
+                };
+            });
+        } else {
+            let params = {
+                TableName: 'Businesss',
+                Key: {
+                    businessID: req.query.id,
+                    businessName: owner,
+                }
+            }
+            docClient.scan(params, (err, data) => {
+                if (err) {
+                    console.error('Error JSON:', JSON.stringify(err, null, 2));
+                } else {
+                    for (let i = 0; i < data.Items.length; i++) {
+                        for (let x = 0; x < data.Items[i].category.length; x++) {
+                            for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                                if (data.Items[i].category[x].product[z].productID === productID) {
+                                    let params = {
+                                        TableName: "Businesss",
+                                        Key: {
+                                            "businessID": id,
+                                            "businessName": owner
+                                        },
+                                        UpdateExpression: "set category[" + x + "].product[" + z + "].productName =:n, category[" + x + "].product[" + z + "].productDescribe =:d",
+                                        ExpressionAttributeValues: {
+                                            ":n": productName,
+                                            ":d": productDescribe,
+                                        },
+                                    };
+                                    docClient.update(params, function (err, data) {
+                                        if (err) {
+                                            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                        } else {
+                                            res.redirect('/quanlysanpham');
+                                        }
+                                    });
+                                    break
+                                }
+                            }
+                        }
+                    }
+                };
+            });
+        }
     } else {
         res.render('login');
     }

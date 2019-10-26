@@ -138,16 +138,16 @@
                             <table class="table">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th scope="col" style="text-align: left; width: 80px;"> #</th>
-                                        <th scope="col" style="text-align: left;">Mã Loại</th>
-                                        <th scope="col" style="text-align: left;">Tên loại</th>
-                                        <th scope="col" style="text-align: left; width: 150px;">Tình trạng</th>
-                                        <th scope="col" style="text-align: left; width: 80px;">Edit</th>
-                                        <th scope="col" style="text-align: left; width: 80px;">Remove</th>
+                                        <th scope="col" style="width: 80px;padding-left: 10px;"> #</th>
+                                        <th scope="col">Mã Loại</th>
+                                        <th scope="col">Tên loại</th>
+                                        <th scope="col" style="width: 150px;">Tình trạng</th>
+                                        <th class="remove" style="width: 50px;">Sửa</th>
+                                        <th class="remove" style="width: 50px;">Xoá</th>
                                     </tr>
                                 </thead>
                                 <tbody> <% var i = 1; %> <% if(_uG.length != 0){ %> <% _uG.forEach((item) => { %> <tr>
-                                        <th scope="row">1</th>
+                                        <td><strong><%= i %></strong></td>
                                         <td><%= item.categoryID %></td>
                                         <td><%= item.categoryName %></td>
                                         <td><% if(item.isStatus){ %> ON <%}else{%> OFF <% } %></td>
@@ -164,7 +164,7 @@
         <!-- cd-popup -->
         <div class="cd-popup" role="alert">
             <div class="cd-popup-container">
-                <p>Loại sản phẩm sẻ không thể thêm sản phẩm <br> Bạn có muốn tiếp tục?</p>
+                <p>Thay đổi trạng thái sản phẩm <br>Bạn có muốn tiếp tục hành động này?</p>
                 <ul class="cd-buttons">
                 </ul>
                 <a class="cd-popup-close img-replace"></a>

@@ -5538,7 +5538,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 /*  19.  Cart Area
 /*----------------------------------------*/
 .cart-table {
-    background-color: #f6f6f6;
+    background-color: #ffdda9;
     padding: 30px;
 }
 .cart-table thead {}
@@ -5550,7 +5550,6 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     height: 40px;
     margin-bottom: 10px;
     padding: 0;
-    text-align: center;
     text-transform: uppercase;
     vertical-align: middle;
 }
@@ -5570,12 +5569,17 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     min-width: 150px;
 }
 .cart-table thead tr th.remove {
-    min-width: 100px;
+    min-width: 50px;
 }
 
 .cart-table thead tr th.id {
-    min-width: 50px;
+    min-width: 20px;
 }
+
+.idTag{
+    font-size: 12px;
+}
+
 .cart-table tbody {}
 .cart-table tbody tr {}
 .cart-table tbody tr td {

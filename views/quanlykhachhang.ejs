@@ -177,22 +177,24 @@
                             <table class="table">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th scope="col" style="text-align: left;"> #</th>
-                                        <th scope="col" style="text-align: left;">Mã KH</th>
-                                        <th scope="col" style="text-align: left;">Họ tên</th>
-                                        <th scope="col" style="text-align: left;">Địa chỉ</th>
-                                        <th scope="col" style="text-align: left;">Số điện thoại</th>
-                                        <th scope="col" style="text-align: left;">Mail</th>
-                                        <th scope="col" style="text-align: left;">Username</th>
-                                        <th scope="col" style="text-align: left;">Tình trạng</th>
-                                        <th scope="col" style="text-align: left;">Sửa</th>
-                                        <th scope="col" style="text-align: left;">Xóa</th>
+                                        <th scope="col" style="padding-left: 10px;"> #</th>
+                                        <th scope="col">Mã KH</th>
+                                        <th scope="col">Họ tên</th>
+                                        <th scope="col">Địa chỉ</th>
+                                        <th scope="col">Số điện thoại</th>
+                                        <th scope="col">Mail</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Tình trạng</th>
+                                        <th class="remove" style="width: 50px;">Sửa</th>
+                                        <th class="remove" style="width: 50px;">Xoá</th>
                                     </tr>
                                 </thead>
-                                <tbody> <% _uG.forEach(item => { %> <tr>
-                                        <th scope="row">1</th>
+                                <tbody>
+                                    <% var i = 1%>
+                                     <% _uG.forEach(item => { %> <tr>
+                                        <td><strong><%= i %></strong></td>
                                         <td><%=item.customerID%></td>
-                                        <td><%=item.customerName%></td>
+                                        <td><strong><%=item.customerName%></strong></td>
                                         <td><%=item.address%></td>
                                         <td><%=item.phone%></td>
                                         <td><%=item.email%></td>
@@ -200,7 +202,7 @@
                                         <td><% if(item.isStatus){ %> ON <%}else{%> OFF <% } %></td>
                                         <td><% if(item.isStatus){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setCustomer_Input('<%= item.customerID %>','<%= item.customerName %>','<%= item.address %>','<%= item.phone %>','<%= item.email %>')"><i class="zmdi zmdi-edit"></i></button><% } %></td>
                                         <td><% if(item.isStatus){ %> <a onclick="setHrefDel('/deleteCustomer?customerID=<%= item.customerID %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a> <% } %></td>
-                                    </tr> <% }) %> </tbody>
+                                    </tr><% i++ %> <% }) %> </tbody>
                             </table>
                         </div>
                     </div>

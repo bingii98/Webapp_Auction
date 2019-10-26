@@ -87,6 +87,26 @@ function checkproductDescribe(str) {
     return re.test(str);
 }
 
+function checkproductName_edit(str) {
+    var re = /^((?![\^!@#$*~ <>?]).)((?![\^!@#$*~<>?]).){0,73}((?![\^!@#$*~ <>?]).)$/;
+    if (!re.test(str)) {
+        $('#error_productName_edit').text('Tên lớn hơn 1 ký tự!');
+    } else {
+        $('#error_productName_edit').text('');
+    }
+    return re.test(str);
+}
+
+function checkproductDescribe_edit(str) {
+    var re = /^((?![\^!@#$*~ <>?]).)((?![\^!@#$*~<>?]).){0,}((?![\^!@#$*~ <>?]).)$/;
+    if (!re.test(str)) {
+        $('#error_productDescribe_edit').text('Mô tả phải lớn hơn 1 ký tự!');
+    } else {
+        $('#error_productDescribe_edit').text('');
+    }
+    return re.test(str);
+}
+
 //CHECK FOR EDIT
 
 function checkAddressEdit(str) {
@@ -139,6 +159,14 @@ function checkEditCustomer() {
     }
 }
 
+function checkEditProduct(){
+    let name = checkproductName_edit(document.getElementById('edit_bnPhone').value);
+    let address = checkproductDescribe_edit(document.getElementById('edit_bnEmail').value);
+    if (name && address) {
+        document.getElementById("formEdit").submit();
+    }
+}
+
 //Writeform for EDIT BUSINESS
 function setBusinessID_Input(BusinessID,BusinessName,address,phone,email){
     document.getElementById("businessIDEdit").value = BusinessID;
@@ -160,6 +188,16 @@ function setCustomer_Input(id,name,address,phone,email){
     document.getElementById("edit_ddress").value = address;
     document.getElementById("edit_Phone").value = phone;
     document.getElementById("edit_Email").value = email;
+}
+
+
+//Writeform for PRODUCR EDIT
+function setProductEdit_Input(proID,name,des,bnID,bnName){
+    document.getElementById("productIDEdit").value = proID;
+    document.getElementById("edit_bnPhone").value = name;
+    document.getElementById("edit_bnEmail").value = des;
+    document.getElementById("businessIDEdit").value = bnID;
+    document.getElementById("businessNameEdit").value = bnName;
 }
 
 //Check form for Customerr - sign up
