@@ -38,7 +38,7 @@
     <link href="css/googleapisFont.css" rel="stylesheet">
     <!-- CSS -->
     <!-- Bootstrap CSS -->
-    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='css/bootstrap.min.css'>
     <link rel='stylesheet' href='css/bootstrap-datetimepicker.css'>
     <!-- Icon Font CSS-->
     <link rel="stylesheet" href="css/material-design-iconic-font.min.css">
@@ -117,7 +117,7 @@
                             </div>
                         </div>
                     </section>
-                    <!-- Modal -->
+                    <!-- Modal EDIT -->
                     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
@@ -159,31 +159,37 @@
                                     <h4 class="modal-title"><strong>THÊM PHIÊN ĐẤU GIÁ</strong></h4>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="" style="padding: 20px;">
+                                    <form action="/createauction" style="padding: 20px;" method="POST" id="formAddAuction">
+                                        <input type="hidden" id="productID_addAuc" name="productID">
+                                        <input type="hidden" id="businessID_addAuc" name="businessID">
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Tên phiên đấu giá:</label>
-                                            <input type="text" name="price" class="txtEdit">
+                                            <input type="text" name="auctionName" id="auctionName" class="txtEdit" onblur="checkAuctionName(this.value)">
+                                            <label id="error_AuctionName" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                         </div>
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Thời gian khởi động đấu giá:</label>
                                             <div class="form-group">
                                                 <div class="input-group date" id="datetimepicker1">
-                                                    <input type="text" class="form-control" name="dateAuc" class="txtEdit" />
+                                                    <input type="text" class="form-control" name="startDate" id="startDate" class="txtEdit" onblur="checkAuctionDate(this.value)" />
                                                     <span class="input-group-addon">
                                                         <span class="">Chọn ngày</span>
                                                     </span>
                                                 </div>
                                             </div>
+                                            <label id="error_AuctionDate" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                         </div>
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Nhập giá:</label>
-                                            <input id="gia" type="text" name="price" class="txtEdit">
+                                            <input type="text" name="startPrice" id="startPrice" class="txtEdit" onblur="checkAuctionPrice(this.value)">
+                                            <label id="error_AuctionPrice" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                         </div>
                                         <div class="input-wrapper">
-                                            <label class="labelEdit">Hạn cho mỗi lượt:</label>
-                                            <input id="due" type="text" name="timerun" class="txtEdit">
+                                            <label class="labelEdit">Hạn chạy đấu giá:</label>
+                                            <input type="text" name="timeRun" id="timeRun" class="txtEdit" onblur="checkAuctionTimeRun(this.value)">
+                                            <label id="error_AuctionTimeRun" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                         </div>
-                                        <button class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px; margin-top: 50px;">Xác nhận</button>
+                                        <button class="btn btn-warning" type="button" style="padding: 5px; margin-top: 50px;" id="CheckFormAddAuction">Xác nhận</button>
                                     </form>
                                 </div>
                             </div>
@@ -200,7 +206,7 @@
                                         <th class="price">Hình ảnh</th>
                                         <th class="stock">Tên</th>
                                         <th class="stock">Sở hữu</th>
-                                        <th class="qty">Mô tả</th>
+                                        <th class="mota">Mô tả</th>
                                         <th class="remove" style="width: 50px;">Thêm PĐG</th>
                                         <th class="remove" style="width: 50px;">Sửa</th>
                                         <th class="remove" style="width: 50px;">Xoá</th>
@@ -225,10 +231,10 @@
                                             </strong>
                                         </td>
                                         <td>
-                                            <p class="cart-stock"><%=product.productDescribe%> giây</p>
+                                            <p class="cart-stock word-break_break-all"><%=product.productDescribe%></p>
                                         </td>
-                                        <td><button class="cart-pro-remove" data-toggle="modal" data-target="#modalAddAuction"><i class="zmdi zmdi-plus"></i></button></td>
-                                        <td><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setProductEdit_Input('<%= product.productID %>','<%= product.productName %>','<%= product.productDescribe %>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-edit"></i></button></td>
+                                        <td><% if(product.count == 0){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#modalAddAuction" onclick="addAutionBtn('<%=product.productID%>','<%= product.id %>')"><i class="zmdi zmdi-plus"></i></button><% }else{ %><i class="zmdi zmdi-check"></i><% }; %></td>
+                                        <td><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setProductEdit_Input('<%= product.productID %>','<%= product.productName %>','<%=product.productDescribe%>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-edit"></i></button></td>
                                         <td><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a></td>
                                     </tr> <% i++;%> <% }); %> </tbody>
                             </table>
@@ -283,7 +289,30 @@
                     $("#formADD").submit();
                 }
             });
+
+            $("#CheckFormAddAuction").click(function () {
+                var name = checkAuctionName($("#auctionName").val());
+                var date = checkAuctionDate($("#startDate").val());
+                var price = checkAuctionPrice($("#startPrice").val());
+                var timerun = checkAuctionTimeRun($("#timeRun").val());
+                if (name && date && price && timerun) {
+                    var date = new Date($("#startDate").val());
+                    var nowdate = new Date();
+                    var time = Number($("#timeRun").val());
+                    if (((date.getTime() - nowdate.getTime()) - time * 1000) > 0) {
+                        $("#formAddAuction").submit();
+                    }else{
+                        $('#error_AuctionDate').text('Ngày phải lớn hơn thời điểm hiện tại + thời gian chạy đấu giá!');
+                    }
+                }
+            });
         });
+
+        function addAutionBtn(productID_addAuc, businessID_addAuc) {
+            document.getElementById("productID_addAuc").value = productID_addAuc;
+            document.getElementById("businessID_addAuc").value = businessID_addAuc;
+        }
+
     </script>
     <script src="js/scriptDel.js"></script>
 </body>

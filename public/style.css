@@ -5572,6 +5572,11 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     min-width: 50px;
 }
 
+.cart-table thead tr th.mota {
+    min-width: 200px;
+    max-width: 400px;
+}
+
 .cart-table thead tr th.id {
     min-width: 20px;
 }
@@ -5580,13 +5585,17 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     font-size: 12px;
 }
 
+.word-break_break-all {
+    word-break: break-all;
+  }
+
 .cart-table tbody {}
 .cart-table tbody tr {}
 .cart-table tbody tr td {
     border-color: #fff;
     border-style: solid;
     border-width: 0 0 2px;
-    padding: 20px 0;
+    padding: 20px 5px;
     vertical-align: middle;
 }
 .cart-table tbody tr:first-child td {

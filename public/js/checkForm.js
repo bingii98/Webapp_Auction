@@ -167,6 +167,47 @@ function checkEditProduct(){
     }
 }
 
+//CHECKING AUCTION
+function checkAuctionName(str) {
+    var re = /^((?![\^!@#$*~ <>?]).)((?![\^!@#$*~<>?]).){0,73}((?![\^!@#$*~ <>?]).)$/;
+    if (!re.test(str)) {
+        $('#error_AuctionName').text('Tên lớn hơn 1 ký tự!');
+    } else {
+        $('#error_AuctionName').text('');
+    }
+    return re.test(str);
+}
+
+function checkAuctionPrice(str) {
+    var re = /^[0-9]+(\.[0-9]{1,2})?$/;
+    if (!re.test(str)) {
+        $('#error_AuctionPrice').text('Định dạng tiền không đúng!');
+    } else {
+        $('#error_AuctionPrice').text('');
+    }
+    return re.test(str);
+}
+
+function checkAuctionTimeRun(str) {
+    var re = /^[0-9]+(\.[0-9]{1,2})?$/;
+    if (!re.test(str)) {
+        $('#error_AuctionTimeRun').text('Thời gian không đúng!');
+    } else {
+        $('#error_AuctionTimeRun').text('');
+    }
+    return re.test(str);
+}
+
+function checkAuctionDate(str) {
+    var re = /^\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{1,2} [AP]M$/;
+    if (!re.test(str)) {
+        $('#error_AuctionDate').text('Định dạng ngày không đúng!');
+    } else {
+        $('#error_AuctionDate').text('');
+    }
+    return re.test(str);
+}
+
 //Writeform for EDIT BUSINESS
 function setBusinessID_Input(BusinessID,BusinessName,address,phone,email){
     document.getElementById("businessIDEdit").value = BusinessID;
@@ -192,10 +233,10 @@ function setCustomer_Input(id,name,address,phone,email){
 
 
 //Writeform for PRODUCR EDIT
-function setProductEdit_Input(proID,name,des,bnID,bnName){
+function setProductEdit_Input(proID,proName,proDes,bnID,bnName){
     document.getElementById("productIDEdit").value = proID;
-    document.getElementById("edit_bnPhone").value = name;
-    document.getElementById("edit_bnEmail").value = des;
+    document.getElementById("edit_bnPhone").value = proName;
+    document.getElementById("edit_bnEmail").value = proDes;
     document.getElementById("businessIDEdit").value = bnID;
     document.getElementById("businessNameEdit").value = bnName;
 }

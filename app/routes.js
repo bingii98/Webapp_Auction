@@ -252,7 +252,7 @@ app.post('/createCustomer', function (req, res) {
 
 //router trang chủ
 app.get('/', function (req, res) {
-    ctlBsn.getAll_Product_Business('index', res);
+    ctlAdmin.getAll_Product_Admin('index', res);
 });
 
 //router trang chủ
@@ -557,7 +557,6 @@ app.get('/deleteProduct', function (req, res) {
     }
 });
 
-
 // Sửa sản phẩm
 app.get('/editProduct', function (req, res) {
     sess = req.session
@@ -737,6 +736,47 @@ app.get('/sanphamdaugia', (req, res) => {
     sess = req.session
     if (sess.permission === "customer") {
         res.render('auction-page');
+    } else {
+        res.render('login');
+    }
+});
+
+app.post('/createauction', (req,res) =>{
+    sess = req.session;
+    const auctionName = req.body.auctionName;
+    const startDate = req.body.startDate;
+    const timeRun = req.body.timeRun;
+    const startPrice = req.body.startPrice;
+    const productID = req.body.productID;
+    const businessID = req.body.businessID;
+
+    const ObjectB = {
+        auctionName: auctionName,
+        startDate: startDate,
+        timeRun: timeRun,
+        startPrice: startPrice,
+        businessID : businessID,
+        owner : sess.permission
+    }
+    if (sess.permission === "admin") {
+        ctlAdmin.add_Auction(ObjectB,productID,res);
+    } else {
+        res.render('login');
+    }
+});
+
+app.get('/deleteauction', (req,res) =>{
+    sess = req.session;
+    const productID = req.query.productID;
+    const businessID = req.query.businessID;
+    const owner = req.query.owner;
+
+    const ObjectB = {
+        businessID : businessID,
+        owner : owner
+    }
+    if (sess.permission === "admin") {
+        ctlAdmin.delete_Auction(ObjectB,productID,res);
     } else {
         res.render('login');
     }

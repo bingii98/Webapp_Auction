@@ -117,20 +117,15 @@
                                 <thead>
                                     <tr>
                                         <th class="id" style="padding-left: 10px;"> #</th>
-                                        <th class="id">ID</th>
                                         <th class="price" style="text-align: center;">Sản phẩm</th>
                                         <th class="stock">Tên</th>
                                         <th class="stock">Ngày chạy</th>
                                         <th class="qty">Thời gian</th>
                                         <th class="qty">Giá</th>
                                         <th class="remove" style="width: 50px;">TT</th>
-                                        <th class="remove" style="width: 50px;">Sửa</th>
                                         <th class="remove" style="width: 50px;">Xoá</th>
                                     </tr>
                                 </thead><% var i = 1%> <tbody> <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %> <% _uG.forEach((product) => { %> <tr> <% if(product.count != 0){ %> <td><strong><%= i %></strong></td>
-                                        <td>
-                                            <div class="cart-stock idTag"><%=product.auction.auctionID%></div>
-                                        </td>
                                         <td>
                                             <div class="cart-product text-left fix">
                                                 <img src="img/product/2.jpg" alt="" />
@@ -160,8 +155,7 @@
                                         <td>
                                             <p class="cart-stock"><% if(product.auction.isRunning){ %> ON <%}else{%> OFF <% } %></p>
                                         </td>
-                                        <td><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setProductEdit_Input('<%= product.productID %>','<%= product.productName %>','<%= product.productDescribe %>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-edit"></i></button></td>
-                                        <td><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a></td>
+                                        <td><a onclick="setHrefDel('/deleteauction?productID=<%= product.productID %>&owner=<%= product.ownerName %>&businessID=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a></td>
                                     </tr> <% i++;%> <% }; %> <% }); %> </tbody>
                             </table>
                         </div>
@@ -171,7 +165,7 @@
         </div>
         <div class="cd-popup" role="alert">
             <div class="cd-popup-container">
-                <p>Thay đổi trạng thái sản phẩm <br>Bạn có muốn tiếp tục hành động này?</p>
+                <p>Xóa phiên đấu giá này?<br><i>Bạn vẫn có thể thêm lại phiên đấu giá cho sản phẩm!</i></p>
                 <ul class="cd-buttons">
                 </ul>
                 <a class="cd-popup-close img-replace"></a>

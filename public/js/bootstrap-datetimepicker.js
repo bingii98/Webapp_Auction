@@ -2325,15 +2325,15 @@
         disabledDates: false,
         enabledDates: false,
         icons: {
-            time: 'glyphicon glyphicon-time',
-            date: 'glyphicon glyphicon-calendar',
-            up: 'glyphicon glyphicon-chevron-up',
-            down: 'glyphicon glyphicon-chevron-down',
-            previous: 'glyphicon glyphicon-chevron-left',
-            next: 'glyphicon glyphicon-chevron-right',
-            today: 'glyphicon glyphicon-screenshot',
-            clear: 'glyphicon glyphicon-trash',
-            close: 'glyphicon glyphicon-remove'
+            time: 'zmdi zmdi-timer',
+            date: 'zmdi zmdi-calendar',
+            up: 'zmdi zmdi-caret-up-circle',
+            down: 'zmdi zmdi-caret-down-circle',
+            previous: 'zmdi zmdi-caret-left-circle',
+            next: 'zmdi zmdi-caret-right-circle',
+            today: 'zmdi zmdi-camera-alt',
+            clear: 'zmdi zmdi-delete',
+            close: 'zmdi zmdi-close-circle'
         },
         tooltips: {
             today: 'Go to today',

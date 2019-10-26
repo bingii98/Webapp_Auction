@@ -163,10 +163,201 @@ function add_Product(ObjectB, categoryID, location, res) {
     });
 }
 
+//Push Auction for Product
+function add_Auction(ObjectB, productID, res) {
+    if (ObjectB.owner === "admin") {
+        let params = {
+            TableName: 'Admins'
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                for (let i = 0; i < data.Items.length; i++) {
+                    for (let x = 0; x < data.Items[i].category.length; x++) {
+                        for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                            if (data.Items[i].category[x].product[z].productID === productID) {
+                                let params = {
+                                    TableName: "Admins",
+                                    Key: {
+                                        "adminID": "admin",
+                                        "adminName": "admin"
+                                    },
+                                    UpdateExpression: "set category[" + x + "].product[" + z + "].auction =:auc",
+                                    ExpressionAttributeValues: {
+                                        ":auc": {
+                                            auctionName: ObjectB.auctionName,
+                                            startDate: ObjectB.startDate,
+                                            timeRun: ObjectB.timeRun,
+                                            startPrice: ObjectB.startPrice,
+                                            isRunning: true,
+                                        },
+                                    },
+                                    ReturnValues: "UPDATED_NEW"
+                                };
+                                docClient.update(params, function (err, data) {
+                                    if (err) {
+                                        console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                    } else {
+                                        res.redirect('/quanlydaugia');
+                                    }
+                                });
+                                break
+                            }
+                        }
+                    }
+                }
+            };
+        });
+    } else {
+        let params = {
+            TableName: 'Businesss',
+            Key: {
+                businessID: ObjectB.businessID,
+                businessName: owner,
+            }
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                for (let i = 0; i < data.Items.length; i++) {
+                    for (let x = 0; x < data.Items[i].category.length; x++) {
+                        for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                            if (data.Items[i].category[x].product[z].productID === productID) {
+                                let params = {
+                                    TableName: "Businesss",
+                                    Key: {
+                                        "businessID": id,
+                                        "businessName": owner
+                                    },
+                                    UpdateExpression: "set category[" + x + "].product[" + z + "].auction =:auc",
+                                    ExpressionAttributeValues: {
+                                        ":auc": {
+                                            auctionName: ObjectB.auctionName,
+                                            startDate: ObjectB.startDate,
+                                            timeRun: ObjectB.timeRun,
+                                            startPrice: ObjectB.startPrice,
+                                            isRunning: true,
+                                        },
+                                    },
+                                    ReturnValues: "UPDATED_NEW"
+                                };
+                                docClient.update(params, function (err, data) {
+                                    if (err) {
+                                        console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                    } else {
+                                        res.redirect('/quanlydaugia');
+                                    }
+                                });
+                                break
+                            }
+                        }
+                    }
+                }
+            };
+        });
+    }
+}
+
+//Del Auction for Product
+function delete_Auction(ObjectB, productID, res) {
+    if (ObjectB.owner === "admin") {
+        console.log("1a");
+        let params = {
+            TableName: 'Admins'
+        };
+        console.log("2a");
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                for (let i = 0; i < data.Items.length; i++) {
+                    for (let x = 0; x < data.Items[i].category.length; x++) {
+                        for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                            if (data.Items[i].category[x].product[z].productID === productID) {
+                                let params = {
+                                    TableName: "Admins",
+                                    Key: {
+                                        "adminID": "admin",
+                                        "adminName": "admin"
+                                    },
+                                    UpdateExpression: "set category[" + x + "].product[" + z + "].auction =:auc",
+                                    ExpressionAttributeValues: {
+                                        ":auc": {
+                                        },
+                                    },
+                                    ReturnValues: "UPDATED_NEW"
+                                };
+                                console.log("3a");
+                                docClient.update(params, function (err, data) {
+                                    if (err) {
+                                        console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                    } else {
+                                        res.redirect('/quanlydaugia');
+                                    }
+                                });
+                                break
+                            }
+                        }
+                    }
+                }
+            };
+        });
+    } else {
+        console.log("1b");
+        let params = {
+            TableName: 'Businesss',
+            Key: {
+                businessID: ObjectB.businessID,
+                businessName: ObjectB.owner,
+            }
+        }
+        console.log("2b");
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                for (let i = 0; i < data.Items.length; i++) {
+                    for (let x = 0; x < data.Items[i].category.length; x++) {
+                        for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                            if (data.Items[i].category[x].product[z].productID === productID) {
+                                let params = {
+                                    TableName: "Businesss",
+                                    Key: {
+                                        "businessID": id,
+                                        "businessName": owner
+                                    },
+                                    UpdateExpression: "set category[" + x + "].product[" + z + "].auction =:auc",
+                                    ExpressionAttributeValues: {
+                                        ":auc": {
+                                        },
+                                    },
+                                    ReturnValues: "UPDATED_NEW"
+                                };
+                                console.log("3b");
+                                docClient.update(params, function (err, data) {
+                                    if (err) {
+                                        console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                    } else {
+                                        res.redirect('/quanlydaugia');
+                                    }
+                                });
+                                break
+                            }
+                        }
+                    }
+                }
+            };
+        });
+    }
+}
 
 module.exports = {
     get_Item_Admin_Username: get_Item_Admin_Username,
     getAll_Category: getAll_Category,
     add_Product: add_Product,
     getAll_Product_Admin: getAll_Product_Admin,
+    add_Auction: add_Auction,
+    delete_Auction: delete_Auction,
 };
