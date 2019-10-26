@@ -169,9 +169,14 @@ io.on("connection", function (socket) {
         });
     });
 
+    //JOIN ROOM AUCTION
+    socket.on("JOIN_ROOM_AUCTION_CLIENT", function(RoomName){
+        socket.join(RoomName);
+        socket.room = RoomName;
+    })
+
     //Add BID to AUCTION
-    socket.on("Client_sent_data_BID", function (price, ownerID, ownerName) {
-        sess = req.session;
+    socket.on("Client_sent_data_BID", function (productID,price, ownerID, ownerName) {
         if(ownerID === "admin"){
             let params = {
                 TableName: 'Admins'
@@ -190,13 +195,13 @@ io.on("connection", function (socket) {
                                             "adminID": "admin",
                                             "adminName": "admin"
                                         },
-                                        UpdateExpression: "set category[" + x + "].product[" + z + "].bids = list_append(#set category[" + x + "].product[" + z + "].bids, :bidAdd)",
+                                        UpdateExpression: "set category[" + x + "].product[" + z + "].auction.bids = list_append(category[" + x + "].product[" + z + "].auction.bids, :bidAdd)",
                                         ExpressionAttributeValues: {
                                             ":bidAdd": [
                                                 {
                                                     user : sess.userID,
                                                     amount : price,
-                                                    timeStamp : new Date(),
+                                                    timeStamp : new Date().getTime(),
                                                 }
                                             ],
                                         },
@@ -207,7 +212,8 @@ io.on("connection", function (socket) {
                                             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                         } else {
                                             //EMIT SERVER
-                                            socket.emit("Server_sent_data_BID", sess.userName, price);
+                                            console.log(sess.userName);
+                                            io.sockets.in(socket.room).emit("Server_sent_data_BID", sess.userName, price);
                                         }
                                     });
                                     break
@@ -235,13 +241,13 @@ io.on("connection", function (socket) {
                                             "businessID": ownerID,
                                             "businessName": ownerName
                                         },
-                                        UpdateExpression: "set category[" + x + "].product[" + z + "].bids = list_append(#set category[" + x + "].product[" + z + "].bids, :bidAdd)",
+                                        UpdateExpression: "set category[" + x + "].product[" + z + "].auction.bids = list_append(category[" + x + "].product[" + z + "].auction.bids, :bidAdd)",
                                         ExpressionAttributeValues: {
                                             ":bidAdd": [
                                                 {
                                                     user : sess.userID,
                                                     amount : price,
-                                                    timeStamp : new Date(),
+                                                    timeStamp : new Date().getTime(),
                                                 }
                                             ],
                                         },
@@ -296,6 +302,7 @@ app.post('/login', (req, res) => {
                             sess.permission = "customer";
                             sess.userID = data[0].customerID;
                             sess.userName = data[0].customerName;
+                            console.log(sess.userName);
                             res.redirect('/');
                         } else {
                             res.redirect('/login');
@@ -917,7 +924,7 @@ app.get('/deleteCustomer', function (req, res) {
 app.get('/sanphamdaugia', (req, res) => {
     sess = req.session
     if (sess.permission === "customer") {
-        ctlAdmin.get_Item_Product(req.query.ownerid,req.query.owner,req.query.sanpham,res)
+        ctlAdmin.get_Item_Product(req.query.ownerid,req.query.owner,req.query.sanpham,sess.userName,res)
     } else {
         res.render('login');
     }

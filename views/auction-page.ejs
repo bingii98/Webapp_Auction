@@ -15,17 +15,22 @@
     <script> var socket = io('http://localhost:3000'); </script>
     <script>
         $(document).ready(function () {
+            socket.emit("JOIN_ROOM_AUCTION_CLIENT", $("#clientProductID").val());
+
             $("#btnActionAuction").click(function () {
                 var re = /^[0-9]+(\.[0-9]{1,2})?$/;
                 var price = $("#priceAuctionbyUser").val();
                 var ownerID = $("#clientOwnerID").val();
                 var ownerName = $("#clientOwnerName").val();
+                var productID = $("#clientProductID").val();
                 if (!re.test(price)) {
                     $('#error_AuctionPrice').text('Định dạng tiền không đúng!');
                 } else {
-
                     $('#error_AuctionPrice').text('');
-                    socket.emit("Client_sent_data_BID", price, ownerID, ownerName);
+                    socket.emit("Client_sent_data_BID",productID, price, ownerID, ownerName);
+                    socket.on("Server_sent_data_BID", function (userName,price) {
+                        $("#listUserJoin").append("<li style='float: left; margin-right: 50px;'><i class='zmdi zmdi-account-circle'></i>&nbsp<span>"+ userName +" vừa chốt giá " + price + "</span></li>");
+                    });
                 }
             });
         });
@@ -193,8 +198,10 @@
                                     <h4><strong><%= _uG.productName %></strong></h4>
                                     <h5><strong>Sở hữu: <p style="text-transform: uppercase;"><i><%= _uG.owner %></i>
                                             </p></strong></h5>
+                                            <h5>User bạn đang login: <%= _uG.nameUser %></h5>
                                     <input type="hidden" id="clientOwnerID" value="<%= _uG.id %>">
                                     <input type="hidden" id="clientOwnerName" value="<%= _uG.owner %>">
+                                    <input type="hidden" id="clientProductID" value="<%= _uG.productID %>">
                                 </div>
                             </div>
                             <div class="single-product-content fix">
@@ -254,10 +261,7 @@
                                 <div class="tab-content fix">
                                     <!-- Product Info Tab -->
                                     <div id="description" class="pro-details-tab pro-dsc-tab tab-pane active">
-                                        <ul style="font-weight: bold; line-height: 40px;">
-                                            <li style="float: left; margin-right: 50px;"><i
-                                                    class="zmdi zmdi-account-circle"></i>&nbsp<span>Nguyễn Văn A</span>
-                                            </li>
+                                        <ul style="font-weight: bold; line-height: 40px;" id="listUserJoin">
                                         </ul>
                                     </div>
                                 </div>

@@ -162,7 +162,7 @@ function add_Product(ObjectB, categoryID, location, res) {
 }
 
 //Get item Product
-function get_Item_Product(id,owner,productID,res){
+function get_Item_Product(id,owner,productID,userName,res){
     if (owner === "admin") {
         params = {
             TableName: 'Admins',
@@ -177,7 +177,7 @@ function get_Item_Product(id,owner,productID,res){
                     element.category.forEach(item1 => {
                         item1.product.forEach(item => {
                             if(item.productID === productID){
-                                var obj = Object.assign(item, { id: id }, { owner: owner });
+                                var obj = Object.assign(item, { id: id }, { owner: owner }, {nameUser : userName});
                                 res.render('auction-page',{ _uG : obj});
                             }
                         });
