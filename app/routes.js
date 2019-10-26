@@ -168,6 +168,102 @@ io.on("connection", function (socket) {
             }
         });
     });
+
+    //Add BID to AUCTION
+    socket.on("Client_sent_data_BID", function (price, ownerID, ownerName) {
+        sess = req.session;
+        if(ownerID === "admin"){
+            let params = {
+                TableName: 'Admins'
+            }
+            docClient.scan(params, (err, data) => {
+                if (err) {
+                    console.error('Error JSON:', JSON.stringify(err, null, 2));
+                } else {
+                    for (let i = 0; i < data.Items.length; i++) {
+                        for (let x = 0; x < data.Items[i].category.length; x++) {
+                            for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                                if (data.Items[i].category[x].product[z].productID === productID) {
+                                    let params = {
+                                        TableName: "Admins",
+                                        Key: {
+                                            "adminID": "admin",
+                                            "adminName": "admin"
+                                        },
+                                        UpdateExpression: "set category[" + x + "].product[" + z + "].bids = list_append(#set category[" + x + "].product[" + z + "].bids, :bidAdd)",
+                                        ExpressionAttributeValues: {
+                                            ":bidAdd": [
+                                                {
+                                                    user : sess.userID,
+                                                    amount : price,
+                                                    timeStamp : new Date(),
+                                                }
+                                            ],
+                                        },
+                                        ReturnValues: "UPDATED_NEW"
+                                    };
+                                    docClient.update(params, function (err, data) {
+                                        if (err) {
+                                            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                        } else {
+                                            //EMIT SERVER
+                                            socket.emit("Server_sent_data_BID", sess.userName, price);
+                                        }
+                                    });
+                                    break
+                                }
+                            }
+                        }
+                    }
+                };
+            });
+        }else{
+            let params = {
+                TableName: 'Businesss'
+            }
+            docClient.scan(params, (err, data) => {
+                if (err) {
+                    console.error('Error JSON:', JSON.stringify(err, null, 2));
+                } else {
+                    for (let i = 0; i < data.Items.length; i++) {
+                        for (let x = 0; x < data.Items[i].category.length; x++) {
+                            for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                                if (data.Items[i].category[x].product[z].productID === productID) {
+                                    let params = {
+                                        TableName: "Businesss",
+                                        Key: {
+                                            "businessID": ownerID,
+                                            "businessName": ownerName
+                                        },
+                                        UpdateExpression: "set category[" + x + "].product[" + z + "].bids = list_append(#set category[" + x + "].product[" + z + "].bids, :bidAdd)",
+                                        ExpressionAttributeValues: {
+                                            ":bidAdd": [
+                                                {
+                                                    user : sess.userID,
+                                                    amount : price,
+                                                    timeStamp : new Date(),
+                                                }
+                                            ],
+                                        },
+                                        ReturnValues: "UPDATED_NEW"
+                                    };
+                                    docClient.update(params, function (err, data) {
+                                        if (err) {
+                                            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                        } else {
+                                            //EMIT SERVER
+                                            socket.emit("Server_sent_data_BID", sess.userName, price);
+                                        }
+                                    });
+                                    break
+                                }
+                            }
+                        }
+                    }
+                };
+            });
+        }
+    });
 });
 
 
@@ -184,16 +280,22 @@ app.post('/login', (req, res) => {
     ctlAdmin.get_Item_Admin_Username(username).then((data) => {
         if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
             sess.permission = "admin";
+            sess.userID = "admin";
+            sess.userName = "admin";
             res.redirect('/quanlysanpham');
         } else {
             ctlBsn.get_Item_Business_Username(username).then((data) => {
                 if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
                     sess.permission = "business";
+                    sess.userID = data[0].businessID;
+                    sess.userName = data[0].businessName;
                     res.redirect('/quanlysanpham');
                 } else {
                     ctlCtm.get_Item_Customer_Username(username).then((data) => {
                         if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
                             sess.permission = "customer";
+                            sess.userID = data[0].customerID;
+                            sess.userName = data[0].customerName;
                             res.redirect('/');
                         } else {
                             res.redirect('/login');
@@ -637,7 +739,7 @@ app.get('/deleteProduct', function (req, res) {
     }
 });
 
-//Edit Product
+//Update Product
 app.get('/editProduct', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {

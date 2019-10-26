@@ -177,7 +177,8 @@ function get_Item_Product(id,owner,productID,res){
                     element.category.forEach(item1 => {
                         item1.product.forEach(item => {
                             if(item.productID === productID){
-                                res.render('auction-page',{ _uG : item});
+                                var obj = Object.assign(item, { id: id }, { owner: owner });
+                                res.render('auction-page',{ _uG : obj});
                             }
                         });
                     });
@@ -197,7 +198,8 @@ function get_Item_Product(id,owner,productID,res){
                 data.forEach(element => {
                     element.product.forEach(item => {
                         if(item.productID === productID){
-                            res.render('auction-page',{ _uG : item});
+                            var obj = Object.assign(item, { id: id }, { owner: owner });
+                                res.render('auction-page',{ _uG : obj});
                         }
                     });
                 });
