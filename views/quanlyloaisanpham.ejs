@@ -31,7 +31,7 @@
                 socket.emit("Client_sent_data_category", document.getElementById('edit_categoryName').value);
                 socket.on("Server_sent_data_category", function (data) {
                     if (data) {
-                        document.getElementById("categoryForm").submit();
+                        document.getElementById("formEdit").submit();
                     } else {
                         document.getElementById("error_CategoryName").innerHTML = "Tên loại đã tồn tại";
                     }
@@ -119,10 +119,11 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="editCategory" style="margin: 20px;" id="formEdit">
+                                    <form action="updateCategory" style="margin: 20px;" id="formEdit" method="POST" >
+                                        <input type="hidden" id="editCategoryID" name="categoryID"/>
                                         <div class="input-wrapper">
-                                            <label class="labelEdit">Địa chỉ</label>
-                                            <input name="address" class="txtEdit" id="edit_categoryName" type="text" onblur="checkCategoryName(this.value)">
+                                            <label class="labelEdit">Tên loại:</label>
+                                            <input name="categoryName" class="txtEdit" id="edit_categoryName" type="text" onblur="checkCategoryName(this.value)">
                                             <label id="error_CategoryName" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                         </div>
                                         <button onclick="checkCategoryEdit();" class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px;">Xác nhận</button>
@@ -151,7 +152,7 @@
                                         <td><%= item.categoryID %></td>
                                         <td><%= item.categoryName %></td>
                                         <td><% if(item.isStatus){ %> ON <%}else{%> OFF <% } %></td>
-                                        <td><% if(item.isStatus){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setCategoryName_Input('<%= item.categoryName %>')"><i class="zmdi zmdi-edit"></i></button><% } %> </td>
+                                        <td><% if(item.isStatus){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setCategoryName_Input('<%= item.categoryID %>', '<%= item.categoryName %>')"><i class="zmdi zmdi-edit"></i></button><% } %> </td>
                                         <td><% if(item.isStatus){ %> <a onclick="setHrefDel('/deleteCategory?categoryID=<%= item.categoryID %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% };%></td>
                                     </tr> <% i++ %> <% });%> <% };%> </tbody>
                             </table>

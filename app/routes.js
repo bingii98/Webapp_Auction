@@ -10,7 +10,7 @@ const ctlCtm = require('../controller/Customer-controller');
 const docClient = new AWS.DynamoDB.DocumentClient();
 const bcrypt = require('bcrypt-nodejs');
 
-//set view engine for project
+//SET VIEW ENGINE
 app.set('view engine', 'ejs');
 app.set('views', './views');
 app.use(express.static('./public'));
@@ -171,11 +171,12 @@ io.on("connection", function (socket) {
 });
 
 
-// Hiển thị form login
+//LOGIN
 app.get('/login', (req, res) => {
     res.render('login');
 });
 
+//LOG IN
 app.post('/login', (req, res) => {
     sess = req.session
     username = req.body.username;
@@ -204,12 +205,14 @@ app.post('/login', (req, res) => {
     });
 });
 
+//LOG OUT
 app.get('/logout', function (req, res) {
     req.session.destroy(function (err) {
         res.redirect('/');
     });
 });
 
+//SIGN UP
 app.post('/signup', function (req, res) {
     const customerName = req.body.customerName;
     const address = req.body.address;
@@ -230,6 +233,7 @@ app.post('/signup', function (req, res) {
     ctlCtm.add_Item_Customer(ObjectB, '/login', res);
 });
 
+//Create Customer
 app.post('/createCustomer', function (req, res) {
     const customerName = req.body.customerName;
     const address = req.body.address;
@@ -250,32 +254,22 @@ app.post('/createCustomer', function (req, res) {
     ctlCtm.add_Item_Customer(ObjectB, '/quanlykhachhang', res);
 });
 
-//router trang chủ
+//Home Manager Admin Page
 app.get('/', function (req, res) {
     ctlAdmin.getAll_Product_Admin('index', res);
 });
 
-//router trang chủ
-app.get('/daugia', function (req, res) {
-    sess = req.session
-    if (sess.permission === "customer") {
-        ctlBsn.getAll_Product_Business('index', res);
-    } else {
-        res.render('login');
-    }
-});
-
-//router admib
+//Product Manager Admin Page
 app.get('/admin', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
-        res.render('quanlysanpham');
+        ctlAdmin.getAll_Product_Admin('quanlysanpham', res);
     } else {
         res.render('login');
     }
 });
 
-//router admib QUUAN LY SAN PHAM
+//Product Manager Admin Page
 app.get('/quanlysanpham', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -285,7 +279,7 @@ app.get('/quanlysanpham', function (req, res) {
     }
 });
 
-//router admib QUUAN LY DAU GIA
+//Auction Manager Admin Page
 app.get('/quanlydaugia', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -295,7 +289,7 @@ app.get('/quanlydaugia', function (req, res) {
     }
 });
 
-//router admib QUAN LY DOANH NGHIEP -> Xem san pham
+//Product - Business Manager Admin Page
 app.get('/quanlydoanhnghiep_sanpham', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -307,7 +301,7 @@ app.get('/quanlydoanhnghiep_sanpham', function (req, res) {
     }
 });
 
-//router admib QUAN LY HOA DON
+//Order Manager Admin Page
 app.get('/quanlyhoadon', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -317,7 +311,7 @@ app.get('/quanlyhoadon', function (req, res) {
     }
 });
 
-//router admib QUAN LY KHACH HANG
+//Customer Manager Admin Page
 app.get('/quanlykhachhang', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -327,7 +321,7 @@ app.get('/quanlykhachhang', function (req, res) {
     }
 });
 
-//router admib QUAN LY DOANH NHGIEP
+//Business Manager Admin Page
 app.get('/quanlydoanhnghiep', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -338,7 +332,7 @@ app.get('/quanlydoanhnghiep', function (req, res) {
 });
 
 
-//router admib
+//Category Manager Admin Page
 app.get('/quanlyloaisanpham', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -349,7 +343,7 @@ app.get('/quanlyloaisanpham', function (req, res) {
 });
 
 
-// Thêm loai sản phẩm ADMIN
+//Create Category
 app.post('/createCategory', function (req, res) {
     let params = {
         TableName: 'Admins'
@@ -413,7 +407,93 @@ app.post('/createCategory', function (req, res) {
     })
 });
 
-//Xoa loai san pham
+//Update Category
+app.post('/updateCategory', (req, res) => {
+    var categoryID = req.body.categoryID;
+    var categoryName = req.body.categoryName;
+
+    //Update for admin
+    let params = {
+        TableName: 'Admins',
+        Key: {
+            "adminID": "admin",
+            "adminName": "admin"
+        },
+    };
+    docClient.scan(params, function (err, data) {
+        if (err) {
+            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            for (let index = 0; index < data.Items.length; index++) {
+                for (let i = 0; i < data.Items[index].category.length; i++) {
+                    if (data.Items[index].category[i].categoryID === categoryID) {
+                        let params = {
+                            TableName: 'Admins',
+                            Key: {
+                                "adminID": "admin",
+                                "adminName": "admin"
+                            },
+                            UpdateExpression: "SET category[" + i + "].categoryName = :vals",
+                            ExpressionAttributeValues: {
+                                ":vals": categoryName
+                            }
+                        };
+
+                        docClient.update(params, function (err, data) {
+                            if (err)
+                                console.log(err);
+                            else {
+                                console.log("Update category succeeded for Admin");
+                                res.redirect('/quanlyloaisanpham');
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    });
+
+    //Update for Business
+    let params1 = {
+        TableName: 'Businesss',
+    };
+    docClient.scan(params1, function (err, data) {
+        if (err) {
+            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+        } else {
+            if(data.Items.length != 0){
+                data.forEach(element => {
+                    element.category.forEach(item => {
+                        if(item.categoryID === categoryID){
+                            let params = {
+                                TableName: 'Businesss',
+                                Key: {
+                                    "businessID": element.businessID,
+                                    "businessName": element.businessName
+                                },
+                                UpdateExpression: "SET category[" + i + "].categoryName = :vals",
+                                ExpressionAttributeValues: {
+                                    ":vals": categoryName
+                                }
+                            };
+    
+                            docClient.update(params, function (err, data) {
+                                if (err)
+                                    console.log(err);
+                                else {
+                                    console.log("Update category succeeded for " + item.businessName);
+                                    res.redirect('/quanlyloaisanpham');
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+        }
+    });
+});
+
+//Delete Category
 app.get('/deleteCategory', (req, res) => {
     var categoryID = req.query.categoryID;
     let params = {
@@ -458,7 +538,7 @@ app.get('/deleteCategory', (req, res) => {
     });
 });
 
-//Thêm sản phẩm
+//Create Product
 app.post('/createproduct', (req, res) => {
     const productName = req.body.productName;
     const productDescribe = req.body.productDescribe;
@@ -471,7 +551,7 @@ app.post('/createproduct', (req, res) => {
     ctlAdmin.add_Product(ObjectB, categoryID, '/quanlysanpham', res);
 });
 
-// Xoá sản phẩm
+//Delete Product
 app.get('/deleteProduct', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -557,7 +637,7 @@ app.get('/deleteProduct', function (req, res) {
     }
 });
 
-// Sửa sản phẩm
+//Edit Product
 app.get('/editProduct', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -653,7 +733,7 @@ app.get('/editProduct', function (req, res) {
     }
 });
 
-// Thêm doanh nghiệp
+//Add Business
 app.post('/createbusiness', function (req, res) {
     const businessName = req.body.businessName;
     const address = req.body.address;
@@ -673,14 +753,14 @@ app.post('/createbusiness', function (req, res) {
     ctlBsn.add_Item_Business(ObjectB, 'quanlydoanhnghiep', res);
 });
 
-// Xoá doanh nghiệp
+//Delete Business
 app.get('/deletebusiness', function (req, res) {
     var businessid = req.query.businessid;
     var businessname = req.query.businessname;
     ctlBsn.delete_Item_Business_Key(businessid, businessname, '/quanlydoanhnghiep', res);
 });
 
-// Sửa doanh nghiệp
+//Update Business
 app.get('/editBusiness', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -703,7 +783,7 @@ app.get('/editBusiness', function (req, res) {
     }
 });
 
-// Sửa khách hàng
+//Update Customer
 app.post('/editCustomer', function (req, res) {
     sess = req.session
     const customerID = req.body.customerID;
@@ -725,22 +805,23 @@ app.post('/editCustomer', function (req, res) {
     }
 });
 
-// Xoá khách hàng
+//Delete Customer
 app.get('/deleteCustomer', function (req, res) {
     var customerID = req.query.customerID;
     ctlCtm.delete_Item_Customer_Key(customerID, '/quanlykhachhang', res);
 });
 
-//Trnag dau gia
+//Auction Page
 app.get('/sanphamdaugia', (req, res) => {
     sess = req.session
     if (sess.permission === "customer") {
-        res.render('auction-page');
+        ctlAdmin.get_Item_Product(req.query.ownerid,req.query.owner,req.query.sanpham,res)
     } else {
         res.render('login');
     }
 });
 
+//Create Auction
 app.post('/createauction', (req,res) =>{
     sess = req.session;
     const auctionName = req.body.auctionName;
@@ -765,6 +846,7 @@ app.post('/createauction', (req,res) =>{
     }
 });
 
+//Delete Auction
 app.get('/deleteauction', (req,res) =>{
     sess = req.session;
     const productID = req.query.productID;
@@ -787,7 +869,7 @@ app.get('/contact', (req, res) => {
 });
 
 
-//404
+//404 PAGE
 app.use((req, res) => {
     res.status(404);
     res.render('404');

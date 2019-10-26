@@ -81,7 +81,8 @@
                 <div class="row">
                     <!-- Modal -->
                     <h5 style="padding-left: 15px;"><strong>Thêm phiên đấu giá trong dánh sách SẢN PHẨM</strong></h5>
-                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -96,21 +97,27 @@
                                         <input name="productID" id="productIDEdit" type="hidden">
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Tên:</label>
-                                            <input name="productName" class="txtEdit" id="edit_bnPhone" type="text" onblur="checkproductName_edit(this.value)">
-                                            <label id="error_productName_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                            <input name="productName" class="txtEdit" id="edit_bnPhone" type="text"
+                                                onblur="checkproductName_edit(this.value)">
+                                            <label id="error_productName_edit"
+                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                         </div>
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Mô tả:</label>
-                                            <input name="productDescribe" class="txtEdit" id="edit_bnEmail" type="text" onblur="checkproductDescribe_edit(this.value)"><br>
-                                            <label id="error_productDescribe_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                            <input name="productDescribe" class="txtEdit" id="edit_bnEmail" type="text"
+                                                onblur="checkproductDescribe_edit(this.value)"><br>
+                                            <label id="error_productDescribe_edit"
+                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                         </div><br>
-                                        <button onclick="checkEditProduct();" class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px;">Xác nhận</button>
+                                        <button onclick="checkEditProduct();" class="btn btn-warning" id="btnEdit"
+                                            type="button" style="padding: 5px;">Xác nhận</button>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> <% var formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }); %> <div class="row" style="margin-top: 20px;">
+                </div> <% var formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }); %>
+                <div class="row" style="margin-top: 20px;">
                     <div class="col-xs-12">
                         <div class="cart-table table-responsive mb-50">
                             <table class="table">
@@ -125,7 +132,10 @@
                                         <th class="remove" style="width: 50px;">TT</th>
                                         <th class="remove" style="width: 50px;">Xoá</th>
                                     </tr>
-                                </thead><% var i = 1%> <tbody> <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %> <% _uG.forEach((product) => { %> <tr> <% if(product.count != 0){ %> <td><strong><%= i %></strong></td>
+                                </thead><% var i = 1%> <tbody>
+                                    <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %>
+                                    <% _uG.forEach((product) => { %> <tr> <% if(product.count != 0){ %> <td>
+                                            <strong><%= i %></strong></td>
                                         <td>
                                             <div class="cart-product text-left fix">
                                                 <img src="img/product/2.jpg" alt="" />
@@ -142,8 +152,8 @@
                                                 <p class="cart-stock"><%=product.auction.auctionName%></p>
                                             </strong>
                                         </td>
-                                        <td> <%let current_datetime = new Date(product.auction.startDate);%> 
-                                            <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%> 
+                                        <td> <%let current_datetime = new Date(product.auction.startDate);%>
+                                            <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%>
                                             <p class="cart-stock"><%=formatted_date%></p>
                                         </td>
                                         <td>
@@ -153,9 +163,16 @@
                                             <p class="cart-stock"><%=product.auction.startPrice%></p>
                                         </td>
                                         <td>
-                                            <p class="cart-stock"><% if(product.auction.isRunning){ %> ON <%}else{%> OFF <% } %></p>
+                                            <p class="cart-stock"><% if(product.auction.isRunning){ %> ON <%}else{%> OFF
+                                                <% } %></p>
                                         </td>
-                                        <td><a onclick="setHrefDel('/deleteauction?productID=<%= product.productID %>&owner=<%= product.ownerName %>&businessID=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a></td>
+                                        <% var date = new Date(product.auction.startDate); %>
+                                        <% var nowdate = new Date(); %>
+                                        <td><% if ((nowdate.getTime() - date.getTime()) < 0) { %>
+                                            <a
+                                                onclick="setHrefDel('/deleteauction?productID=<%= product.productID %>&owner=<%= product.ownerName %>&businessID=<%= product.id %>')"><button
+                                                    class="cd-popup-trigger cart-pro-remove"><i
+                                                        class="zmdi zmdi-close"></i></button></a><% } %></td>
                                     </tr> <% i++;%> <% }; %> <% }); %> </tbody>
                             </table>
                         </div>

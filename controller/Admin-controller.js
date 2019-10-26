@@ -63,7 +63,6 @@ function getAll_Product_Admin(ejs, res) {
                             for (var c in element.auction) {
                                 count = count + 1;
                             }
-                            console.log(count);
                             var obj = Object.assign(element, { ownerName: "admin" }, { id: "admin" }, { loai: cat.categoryName }, { count: count });
                             productList.push(obj);
                         });
@@ -84,7 +83,7 @@ function getAll_Product_Admin(ejs, res) {
     });
 }
 
-//Push danh sách loại sản phẩm
+//Get danh sách loại sản phẩm
 function getAll_Category(ejs, res) {
     let params = {
         TableName: 'Admins'
@@ -105,8 +104,8 @@ function getAll_Category(ejs, res) {
     });
 }
 
+//Thêm sản phẩm ADMIN
 function add_Product(ObjectB, categoryID, location, res) {
-
     let params = {
         TableName: 'Admins'
     }
@@ -119,7 +118,6 @@ function add_Product(ObjectB, categoryID, location, res) {
             data.Items.forEach(item => {
                 item.category.forEach(element => {
                     element.product.forEach(item1 => {
-                        console.log(item1)
                         var index = Number(item1.productID.match(/[^_]*$/));
                         if (index > max) {
                             max = index;
@@ -163,6 +161,51 @@ function add_Product(ObjectB, categoryID, location, res) {
     });
 }
 
+//Get item Product
+function get_Item_Product(id,owner,productID,res){
+    if (owner === "admin") {
+        params = {
+            TableName: 'Admins',
+            Key: {
+                "adminID": "admin",
+                "adminName": "admin"
+            },
+        }
+        docClient.scan(params, (err, data) => {
+            if(data.Items.length != 0){
+                data.Items.forEach(element => {
+                    element.category.forEach(item1 => {
+                        item1.product.forEach(item => {
+                            if(item.productID === productID){
+                                res.render('auction-page',{ _uG : item});
+                            }
+                        });
+                    });
+                });
+            }
+        });
+    }else{
+        params = {
+            TableName: 'Businesss',
+            Key: {
+                "businessID": id,
+                "businessName": owner
+            },
+        }
+        docClient.scan(params, (err, data) => {
+            if(data.Items.length != 0){
+                data.forEach(element => {
+                    element.product.forEach(item => {
+                        if(item.productID === productID){
+                            res.render('auction-page',{ _uG : item});
+                        }
+                    });
+                });
+            }
+        });
+    }
+}
+
 //Push Auction for Product
 function add_Auction(ObjectB, productID, res) {
     if (ObjectB.owner === "admin") {
@@ -191,6 +234,10 @@ function add_Auction(ObjectB, productID, res) {
                                             timeRun: ObjectB.timeRun,
                                             startPrice: ObjectB.startPrice,
                                             isRunning: true,
+                                            winner : "null",
+                                            bids : [
+                                                
+                                            ]
                                         },
                                     },
                                     ReturnValues: "UPDATED_NEW"
@@ -239,6 +286,10 @@ function add_Auction(ObjectB, productID, res) {
                                             timeRun: ObjectB.timeRun,
                                             startPrice: ObjectB.startPrice,
                                             isRunning: true,
+                                            winner : "",
+                                            bids : [
+
+                                            ]
                                         },
                                     },
                                     ReturnValues: "UPDATED_NEW"
@@ -263,11 +314,9 @@ function add_Auction(ObjectB, productID, res) {
 //Del Auction for Product
 function delete_Auction(ObjectB, productID, res) {
     if (ObjectB.owner === "admin") {
-        console.log("1a");
         let params = {
             TableName: 'Admins'
         };
-        console.log("2a");
         docClient.scan(params, (err, data) => {
             if (err) {
                 console.error('Error JSON:', JSON.stringify(err, null, 2));
@@ -289,7 +338,6 @@ function delete_Auction(ObjectB, productID, res) {
                                     },
                                     ReturnValues: "UPDATED_NEW"
                                 };
-                                console.log("3a");
                                 docClient.update(params, function (err, data) {
                                     if (err) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
@@ -305,7 +353,6 @@ function delete_Auction(ObjectB, productID, res) {
             };
         });
     } else {
-        console.log("1b");
         let params = {
             TableName: 'Businesss',
             Key: {
@@ -313,7 +360,6 @@ function delete_Auction(ObjectB, productID, res) {
                 businessName: ObjectB.owner,
             }
         }
-        console.log("2b");
         docClient.scan(params, (err, data) => {
             if (err) {
                 console.error('Error JSON:', JSON.stringify(err, null, 2));
@@ -335,7 +381,6 @@ function delete_Auction(ObjectB, productID, res) {
                                     },
                                     ReturnValues: "UPDATED_NEW"
                                 };
-                                console.log("3b");
                                 docClient.update(params, function (err, data) {
                                     if (err) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
@@ -360,4 +405,5 @@ module.exports = {
     getAll_Product_Admin: getAll_Product_Admin,
     add_Auction: add_Auction,
     delete_Auction: delete_Auction,
+    get_Item_Product: get_Item_Product,
 };

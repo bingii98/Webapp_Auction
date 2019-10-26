@@ -218,8 +218,9 @@ function setBusinessID_Input(BusinessID,BusinessName,address,phone,email){
 }
 
 //Writeform for EDIT CATEGORY
-function setCategoryName_Input(edit_categoryName){
+function setCategoryName_Input(edit_categoryID , edit_categoryName){
     document.getElementById("edit_categoryName").value = edit_categoryName;
+    document.getElementById("editCategoryID").value = edit_categoryID;
 }
 
 //Writeform for EDIT CUSTOMER

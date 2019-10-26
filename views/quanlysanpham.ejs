@@ -299,10 +299,10 @@
                     var date = new Date($("#startDate").val());
                     var nowdate = new Date();
                     var time = Number($("#timeRun").val());
-                    if (((date.getTime() - nowdate.getTime()) - time * 1000) > 0) {
+                    if (((date.getTime() - nowdate.getTime()) - 30) > 0) {
                         $("#formAddAuction").submit();
                     }else{
-                        $('#error_AuctionDate').text('Ngày phải lớn hơn thời điểm hiện tại + thời gian chạy đấu giá!');
+                        $('#error_AuctionDate').text('Ngày phải lớn hơn thời điểm hiện tại 30 giây!');
                     }
                 }
             });
