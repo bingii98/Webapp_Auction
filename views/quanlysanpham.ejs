@@ -38,7 +38,7 @@
     <link href="css/googleapisFont.css" rel="stylesheet">
     <!-- CSS -->
     <!-- Bootstrap CSS -->
-    <link rel='stylesheet' href='css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'>
     <link rel='stylesheet' href='css/bootstrap-datetimepicker.css'>
     <!-- Icon Font CSS-->
     <link rel="stylesheet" href="css/material-design-iconic-font.min.css">
@@ -159,28 +159,32 @@
                                     <h4 class="modal-title"><strong>THÊM PHIÊN ĐẤU GIÁ</strong></h4>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="input-wrapper">
-                                        <label for="">Nhập giá:</label>
-                                        <input id="gia" type="text" name="price" placeholder="Giá">
-                                    </div>
-                                    <div class="input-wrapper">
-                                        <label for="">Thời gian khởi động đấu giá:</label>
-                                        <div class="form-group">
-                                            <div class="input-group date" id="datetimepicker1">
-                                                <input type="text" class="form-control" name="dateAuc" />
-                                                <span class="input-group-addon">
-                                                    <span class="">Chọn ngày</span>
-                                                </span>
+                                    <form action="" style="padding: 20px;">
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Tên phiên đấu giá:</label>
+                                            <input type="text" name="price" class="txtEdit">
+                                        </div>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Thời gian khởi động đấu giá:</label>
+                                            <div class="form-group">
+                                                <div class="input-group date" id="datetimepicker1">
+                                                    <input type="text" class="form-control" name="dateAuc" class="txtEdit" />
+                                                    <span class="input-group-addon">
+                                                        <span class="">Chọn ngày</span>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="input-wrapper">
-                                        <label for="">Hạn cho mỗi lượt:</label>
-                                        <input id="due" type="text" name="timerun" placeholder="Giây">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Nhập giá:</label>
+                                            <input id="gia" type="text" name="price" class="txtEdit">
+                                        </div>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Hạn cho mỗi lượt:</label>
+                                            <input id="due" type="text" name="timerun" class="txtEdit">
+                                        </div>
+                                        <button class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px; margin-top: 50px;">Xác nhận</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
