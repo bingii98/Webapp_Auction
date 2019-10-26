@@ -183,12 +183,12 @@ app.post('/login', (req, res) => {
     ctlAdmin.get_Item_Admin_Username(username).then((data) => {
         if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
             sess.permission = "admin";
-            res.redirect('/quanlydoanhnghiep');
+            res.redirect('/quanlysanpham');
         } else {
             ctlBsn.get_Item_Business_Username(username).then((data) => {
                 if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
                     sess.permission = "business";
-                    res.redirect('/quanlydoanhnghiep');
+                    res.redirect('/quanlysanpham');
                 } else {
                     ctlCtm.get_Item_Customer_Username(username).then((data) => {
                         if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
@@ -275,7 +275,7 @@ app.get('/admin', function (req, res) {
     }
 });
 
-//router admib
+//router admib QUUAN LY SAN PHAM
 app.get('/quanlysanpham', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -285,7 +285,17 @@ app.get('/quanlysanpham', function (req, res) {
     }
 });
 
-//router admib
+//router admib QUUAN LY DAU GIA
+app.get('/quanlydaugia', function (req, res) {
+    sess = req.session
+    if (sess.permission === "admin") {
+        ctlAdmin.getAll_Product_Admin('quanlydaugia', res);
+    } else {
+        res.render('login');
+    }
+});
+
+//router admib QUAN LY DOANH NGHIEP -> Xem san pham
 app.get('/quanlydoanhnghiep_sanpham', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -297,7 +307,7 @@ app.get('/quanlydoanhnghiep_sanpham', function (req, res) {
     }
 });
 
-//router admib
+//router admib QUAN LY HOA DON
 app.get('/quanlyhoadon', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -307,7 +317,7 @@ app.get('/quanlyhoadon', function (req, res) {
     }
 });
 
-//router admib
+//router admib QUAN LY KHACH HANG
 app.get('/quanlykhachhang', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
@@ -317,7 +327,7 @@ app.get('/quanlykhachhang', function (req, res) {
     }
 });
 
-//router admib
+//router admib QUAN LY DOANH NHGIEP
 app.get('/quanlydoanhnghiep', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {

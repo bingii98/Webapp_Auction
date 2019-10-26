@@ -41,7 +41,11 @@ function getAll_Product_Admin(ejs, res) {
             data.Items.forEach(item => {
                 item.category.forEach(cat => {
                     cat.product.forEach(element => {
-                        var obj = Object.assign(element, { ownerName: item.businessName }, { id: item.businessID });
+                        let count = 0;
+                        for (var c in element.auction) {
+                            count = count + 1;
+                        }
+                        var obj = Object.assign(element, { ownerName: item.businessName }, { id: item.businessID }, { loai: cat.categoryName }, { count: count });
                         productList.push(obj);
                     });
                 });
@@ -55,7 +59,12 @@ function getAll_Product_Admin(ejs, res) {
                 data.Items.forEach(item => {
                     item.category.forEach(cat => {
                         cat.product.forEach(element => {
-                            var obj = Object.assign(element, { ownerName: "admin" }, { id: "admin" });
+                            let count = 0;
+                            for (var c in element.auction) {
+                                count = count + 1;
+                            }
+                            console.log(count);
+                            var obj = Object.assign(element, { ownerName: "admin" }, { id: "admin" }, { loai: cat.categoryName }, { count: count });
                             productList.push(obj);
                         });
                     });
