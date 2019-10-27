@@ -295,7 +295,7 @@ io.on("connection", function (socket) {
                         });
                     });
                     productList.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
-                    if (sess.userID === productList[productList.length - 1].user) {
+                    if (userID === productList[productList.length - 1].user) {
                         ctlCtm.add_Order_Customer(userID, productID);
                         socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
                     } else {
