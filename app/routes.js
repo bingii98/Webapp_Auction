@@ -170,14 +170,14 @@ io.on("connection", function (socket) {
     });
 
     //JOIN ROOM AUCTION
-    socket.on("JOIN_ROOM_AUCTION_CLIENT", function(RoomName){
+    socket.on("JOIN_ROOM_AUCTION_CLIENT", function (RoomName) {
         socket.join(RoomName);
-        socket.room = RoomName;
+        socket.roomCustom = RoomName;
     })
 
     //Add BID to AUCTION
-    socket.on("Client_sent_data_BID", function(productID,price, ownerID, ownerName) {
-        if(ownerID === "admin"){
+    socket.on("Client_sent_data_BID", function (productID, price, ownerID, ownerName, clientUserID,dateTime) {
+        if (ownerID === "admin") {
             let params = {
                 TableName: 'Admins'
             }
@@ -199,9 +199,9 @@ io.on("connection", function (socket) {
                                         ExpressionAttributeValues: {
                                             ":bidAdd": [
                                                 {
-                                                    user : sess.userID,
-                                                    amount : price,
-                                                    timeStamp : new Date().getTime(),
+                                                    user: sess.userID,
+                                                    amount: price,
+                                                    timeStamp: new Date().getTime(),
                                                 }
                                             ],
                                         },
@@ -212,8 +212,8 @@ io.on("connection", function (socket) {
                                             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                         } else {
                                             //EMIT SERVER
-                                            console.log(sess.userName);
-                                            io.sockets.in(socket.room).emit("Server_sent_data_BID", sess.userName, price);
+                                            console.log("Sending " + z + " ....");
+                                            io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", clientUserID, price,dateTime);
                                         }
                                     });
                                 }
@@ -222,7 +222,7 @@ io.on("connection", function (socket) {
                     }
                 };
             });
-        }else{
+        } else {
             let params = {
                 TableName: 'Businesss'
             }
@@ -244,9 +244,9 @@ io.on("connection", function (socket) {
                                         ExpressionAttributeValues: {
                                             ":bidAdd": [
                                                 {
-                                                    user : sess.userID,
-                                                    amount : price,
-                                                    timeStamp : new Date().getTime(),
+                                                    user: sess.userID,
+                                                    amount: price,
+                                                    timeStamp: new Date().getTime(),
                                                 }
                                             ],
                                         },
@@ -257,7 +257,7 @@ io.on("connection", function (socket) {
                                             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                         } else {
                                             //EMIT SERVER
-                                            socket.emit("Server_sent_data_BID", sess.userName, price);
+                                            socket.emit("Server_sent_data_BID",clientUserID, price,dateTime);
                                         }
                                     });
                                 }
@@ -568,10 +568,10 @@ app.post('/updateCategory', (req, res) => {
         if (err) {
             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
-            if(data.Items.length != 0){
+            if (data.Items.length != 0) {
                 data.forEach(element => {
                     element.category.forEach(item => {
-                        if(item.categoryID === categoryID){
+                        if (item.categoryID === categoryID) {
                             let params = {
                                 TableName: 'Businesss',
                                 Key: {
@@ -583,7 +583,7 @@ app.post('/updateCategory', (req, res) => {
                                     ":vals": categoryName
                                 }
                             };
-    
+
                             docClient.update(params, function (err, data) {
                                 if (err)
                                     console.log(err);
@@ -922,14 +922,14 @@ app.get('/deleteCustomer', function (req, res) {
 app.get('/sanphamdaugia', (req, res) => {
     sess = req.session
     if (sess.permission === "customer") {
-        ctlAdmin.get_Item_Product(req.query.ownerid,req.query.owner,req.query.sanpham,sess.userName,res)
+        ctlAdmin.get_Item_Product(req.query.ownerid, req.query.owner, req.query.sanpham, sess.userID, res)
     } else {
         res.render('login');
     }
 });
 
 //Create Auction
-app.post('/createauction', (req,res) =>{
+app.post('/createauction', (req, res) => {
     sess = req.session;
     const auctionName = req.body.auctionName;
     const startDate = req.body.startDate;
@@ -943,29 +943,29 @@ app.post('/createauction', (req,res) =>{
         startDate: startDate,
         timeRun: timeRun,
         startPrice: startPrice,
-        businessID : businessID,
-        owner : sess.permission
+        businessID: businessID,
+        owner: sess.permission
     }
     if (sess.permission === "admin") {
-        ctlAdmin.add_Auction(ObjectB,productID,res);
+        ctlAdmin.add_Auction(ObjectB, productID, res);
     } else {
         res.render('login');
     }
 });
 
 //Delete Auction
-app.get('/deleteauction', (req,res) =>{
+app.get('/deleteauction', (req, res) => {
     sess = req.session;
     const productID = req.query.productID;
     const businessID = req.query.businessID;
     const owner = req.query.owner;
 
     const ObjectB = {
-        businessID : businessID,
-        owner : owner
+        businessID: businessID,
+        owner: owner
     }
     if (sess.permission === "admin") {
-        ctlAdmin.delete_Auction(ObjectB,productID,res);
+        ctlAdmin.delete_Auction(ObjectB, productID, res);
     } else {
         res.render('login');
     }

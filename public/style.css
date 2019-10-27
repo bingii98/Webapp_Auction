@@ -43,7 +43,7 @@
 /*  1.  Theme default CSS
 /*----------------------------------------*/
 body {
-    background-color: #fff;
+    background: #f7f7f7;
     color: #606060;
     font-family: 'Open Sans', sans-serif;
     font-size: 14px;
@@ -4832,7 +4832,8 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 }
 /* Product Big Image */
 .product-big-image {
-    border: 1px solid #f1f1f1;
+    border: 1px solid #000000;
+    background: beige;
     max-width: 370px;
     width: 100%;
 }
@@ -4872,11 +4873,25 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     margin-right: 8px;
     margin-top: 28px;
 }
+
+.single-product-wrap{
+    box-shadow: 0 1px 15px 1px rgba(81,77,92,.08);
+    background: #ffffff;
+}
+
+.pro-details-tab-container{
+    box-shadow: 0 1px 15px 1px rgba(81,77,92,.08);
+    background: #ffffff;
+}
+
+.single-product-area{
+    background: #f7f7f7;
+}
 /* Single Product Thumb */
 .pro-thumb {
     margin-right: 30px;
 }
-.pro-thumb .sin-item {}
+
 .pro-thumb .sin-item + .sin-item {
     margin-top: 31px;
 }
