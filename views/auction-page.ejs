@@ -256,6 +256,12 @@
                     </div>
                 </div> <% }else{ %> <h3><strong style="color: red;">Sản phẩm chưa được khởi động đấu giá, cùng chờ nhé!</strong></h3> <% } %> </div>
         </div>
+        <form action="checkout" method="POST" id="formCheckout">
+            <input type="hidden" name="customerID" id="co_customerID">
+            <input type="hidden" name="productID" id="co_productID">
+            <input type="hidden" name="ownerID" id="co_ownerID">
+            <input type="hidden" name="ownerName" id="co_ownerName">
+        </form>
         <!-- Bootstrap JS -->
         <script src="js/bootstrap.min.js"></script>
         <!-- Plugins JS -->

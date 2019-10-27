@@ -176,7 +176,7 @@ io.on("connection", function (socket) {
     })
 
     //Add BID to AUCTION
-    socket.on("Client_sent_data_BID", function (productID, price, ownerID, ownerName, clientUserID,dateTime) {
+    socket.on("Client_sent_data_BID", function (productID, price, ownerID, ownerName, clientUserID, dateTime) {
         if (ownerID === "admin") {
             let params = {
                 TableName: 'Admins'
@@ -213,7 +213,7 @@ io.on("connection", function (socket) {
                                         } else {
                                             //EMIT SERVER
                                             console.log("Sending " + z + " ....");
-                                            io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", clientUserID, price,dateTime);
+                                            io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", clientUserID, price, dateTime);
                                         }
                                     });
                                 }
@@ -257,7 +257,7 @@ io.on("connection", function (socket) {
                                             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                         } else {
                                             //EMIT SERVER
-                                            socket.emit("Server_sent_data_BID",clientUserID, price,dateTime);
+                                            socket.emit("Server_sent_data_BID", clientUserID, price, dateTime);
                                         }
                                     });
                                 }
@@ -271,7 +271,7 @@ io.on("connection", function (socket) {
 
 
     //CHECK AND CREATE ORDER FOR USER HAVE FINAL SOCKET
-    socket.on("CREATE_ORDER_AUCTION_CLIENT",function(productID, userID,ownerID,ownerName) {
+    socket.on("CREATE_ORDER_AUCTION_CLIENT", function (productID, userID, ownerID, ownerName) {
         if (ownerName === "admin") {
             params = {
                 TableName: 'Admins',
@@ -281,23 +281,29 @@ io.on("connection", function (socket) {
                 },
             }
             docClient.scan(params, (err, data) => {
-                if(data.Items.length != 0){
-                    data.Items.forEach(element => {
-                        element.category.forEach(item1 => {
-                            item1.product.forEach(item => {
-                                if(item.productID === productID){
-                                    if(userID === item.auction.bids[item.auction.bids.length - 1].user){
-                                        socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
-                                    }else{
-                                        socket.emit("CREATE_ORDER_AUCTION_SERVER", false);
-                                    }
+                if (data.Items.length != 0) {
+                    var productList = [];
+                    data.Items.forEach(item => {
+                        item.category.forEach(cat => {
+                            cat.product.forEach(element => {
+                                if(productID === element.productID){
+                                    element.auction.bids.forEach(bid => {
+                                        productList.push(bid);
+                                    });
                                 }
                             });
                         });
                     });
+                    productList.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
+                    if (sess.userID === productList[productList.length - 1].user) {
+                        ctlCtm.add_Order_Customer(userID, productID);
+                        socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
+                    } else {
+                        socket.emit("CREATE_ORDER_AUCTION_SERVER", false);
+                    }
                 }
             });
-        }else{
+        } else {
             params = {
                 TableName: 'Businesss',
                 Key: {
@@ -306,20 +312,26 @@ io.on("connection", function (socket) {
                 },
             }
             docClient.scan(params, (err, data) => {
-                if(data.Items.length != 0){
-                    data.Items.forEach(element => {
-                        element.category.forEach(item1 => {
-                            item1.product.forEach(item => {
-                                if(item.productID === productID){
-                                    if(userID === sess.userID){
-                                        socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
-                                    }else{
-                                        socket.emit("CREATE_ORDER_AUCTION_SERVER", false);
-                                    }
+                if (data.Items.length != 0) {
+                    var productList = [];
+                    data.Items.forEach(item => {
+                        item.category.forEach(cat => {
+                            cat.product.forEach(element => {
+                                if(productID === element.productID){
+                                    element.auction.bids.forEach(bid => {
+                                        productList.push(bid);
+                                    });
                                 }
                             });
                         });
                     });
+                    productList.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
+                    if (userID === productList[productList.length - 1].user) {
+                        ctlCtm.add_Order_Customer(userID, productID);
+                        socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
+                    } else {
+                        socket.emit("CREATE_ORDER_AUCTION_SERVER", false);
+                    }
                 }
             });
         }
@@ -390,7 +402,10 @@ app.post('/signup', function (req, res) {
         phone: phone,
         email: email,
         username: username,
-        password: password
+        password: password,
+        orders : [
+
+        ]
     }
 
     ctlCtm.add_Item_Customer(ObjectB, '/login', res);
@@ -1028,8 +1043,13 @@ app.get('/deleteauction', (req, res) => {
 });
 
 //Create Auction
-app.get('/checkout', (req, res) => {
-    res.render('check-out');
+app.post('/checkout', (req, res) => {
+    ctlAdmin.getItem_Product_Admin(req.body.customerID, req.body.productID, req.body.ownerID, req.body.ownerName, "check-out", res);
+});
+
+//Update order
+app.post('/updateorder',(req,res) => {
+    ctlCtm.update_Order_Customer(sess.userID,req.body.productID,req.body.note,res);
 });
 
 app.get('/contact', (req, res) => {

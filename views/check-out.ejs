@@ -46,7 +46,17 @@
         <div class="checkout-area pb-90 pt-90">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12 col-xs-12">
+                    <div class="col-md-6 col-xs-12">
+                        <div class="billing-details">
+                            <h4>Xác nhận thông tin giao dịch</h4>
+                            <form action="/updateorder" method="POST" id="formUpdateOrder">
+                                <input type="hidden" name="productID" value="<%= _uG.productID %></h3>">
+                                <label>Ghi chú:</label>
+                                <textarea name="note"></textarea>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
                         <div class="order-payment">
                             <h4>Chi tiết giao dịch</h4>
                             <div class="single-product-wrap border" style="padding: 0px; margin-bottom: 30px;">
@@ -58,41 +68,18 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="single-product-content" style="float: none">
-                                    <h3 class="single-pro-title">Xe cổ thời Minh Mạng</h3>
+                                <div class="single-product-content" style="float: none; padding: 10px;">
+                                    <h3 class="single-pro-title"><%= _uG.productName %></h3>
                                     <div class="single-product-price-ratting fix">
                                         <p style="font-weight: bold;">Giá đấu thành công:</p>
                                         <h3 class="single-pro-price float-left">
-                                            <p class="new" style="color: red;">50.000 VNĐ</p>
+                                            <p class="new" style="color: red;"><%= _uG.auction.bids[_uG.auction.bids.length - 1].amount %></p>
                                         </h3>
                                     </div>
                                 </div>
                             </div>
                             <h4>Phương thức thanh toán</h4>
                             <div class="panel-group" id="payment-accordion">
-                                <div class="panel panel-default">
-                                    <h4 class="panel-title bg-white">
-                                        <a data-toggle="collapse" data-parent="#payment-accordion" href="#payment-1">Chuyển khoảng trực tiếp</a>
-                                    </h4>
-                                    <div id="payment-1" class="panel-collapse collapse in">
-                                        <div class="panel-body">
-                                            <table>
-                                                <tr style="height: 30px; padding-left: 20px;">
-                                                    <td>STK:</td>
-                                                    <td style="padding-left: 20px;"><b>0122121212121212.</b></td>
-                                                </tr>
-                                                <tr style="height: 30px; padding-left: 20px;">
-                                                    <td>Tên chủ thẻ:</td>
-                                                    <td style="padding-left: 20px;"><b>Nguyễn Văn A.</b></td>
-                                                </tr>
-                                                <tr style="height: 30px; padding-left: 20px;">
-                                                    <td>Ngân hàng:</td>
-                                                    <td style="padding-left: 20px;"><b>Ngân hàng thịnh vượng Việt Nam.</b></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="panel panel-default">
                                     <h4 class="panel-title bg-white">
                                         <a class="collapsed" data-toggle="collapse" data-parent="#payment-accordion" href="#payment-3">Thanh toán khi nhận hành</a>
@@ -103,66 +90,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <label for="">Ghi chú:</label>
-                                <textarea></textarea>
                             </div>
-                            <button class="place-order">Xác nhận giao dịch</button>
+                            <button class="place-order" id="btnUpdateOrder">Xác nhận giao dịch</button>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Footer Top Area -->
-        <div class="footer-top-area pb-70 pt-150">
-            <div class="container">
-                <div class="row">
-                    <div class="footer-contact col-md-8 col-sm-6 col-xs-12">
-                        <img src="img/logo-2.png" alt="" />
-                        <div>
-                            <span>Địa chỉ :</span>
-                            <p>12 Nguyễn Văn Bảo, phường 04, quận Gò Vấp, HCM</p>
-                        </div>
-                        <div>
-                            <span>Hotline :</span>
-                            <p>+84 000 0000</p>
-                        </div>
-                        <div>
-                            <span>Email :</span>
-                            <a href="#">contact-company@stock.com</a>
-                        </div>
-                        <div class="footer-social fix">
-                            <a href="#"><i class="zmdi zmdi-facebook"></i></a>
-                            <a href="#"><i class="zmdi zmdi-instagram"></i></a>
-                        </div>
-                    </div>
-                    <div class="footer-shipping col-md-2 col-sm-3 col-xs-6">
-                        <h4>CÁC LOẠI</h4>
-                        <ul>
-                            <li>
-                                <a href="#">Xe cộ</a>
-                            </li>
-                            <li>
-                                <a href="#">Đồ nội thất</a>
-                            </li>
-                            <li>
-                                <a href="#">Đồ điện tử</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="footer-shipping col-md-2 col-sm-3 col-xs-6">
-                        <h4>
-                        </h4>
-                        <ul>
-                            <li>
-                                <a href="#">Thời trang</a>
-                            </li>
-                            <li>
-                                <a href="#">Giày</a>
-                            </li>
-                            <li>
-                                <a href="#">Đồ cổ</a>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>
@@ -171,6 +101,13 @@
     <!-- jQuery JS -->
     <script src="js/vendor/jquery-1.12.0.min.js"></script>
     <!-- Bootstrap JS -->
+    <script>
+        $(document).ready(() => {
+            $("#btnUpdateOrder").click(() => {
+                $("#formUpdateOrder").submit()
+            });
+        });
+    </script>
     <script src="js/bootstrap.min.js"></script>
     <!-- Plugins JS -->
     <script src="js/plugins.js"></script>

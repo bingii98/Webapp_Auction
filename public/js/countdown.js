@@ -10,7 +10,11 @@ $(function () {
 			socket.emit("CREATE_ORDER_AUCTION_CLIENT", $("#clientProductID").val(), $("#clientUserID").val(),$("#clientOwnerID").val(),$("#clientOwnerName").val());
 			socket.on("CREATE_ORDER_AUCTION_SERVER",function(data){
 				if(data){
-					$(location).attr('href', '/checkout');
+					$("#co_customerID").val($("#clientUserID").val());
+					$("#co_productID").val($("#clientProductID").val());
+					$("#co_ownerID").val($("#clientOwnerID").val());
+					$("#co_ownerName").val($("#clientOwnerName").val());
+					$("#formCheckout").submit();
 				}else{
 					$(location).attr('href', '/');
 				}

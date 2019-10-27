@@ -83,6 +83,57 @@ function getAll_Product_Admin(ejs, res) {
     });
 }
 
+
+
+//get Product (not S)
+function getItem_Product_Admin(customerID,productID,ownerID,ownerName,ejs, res) {
+    if(ownerID === "admin"){
+        params = {
+            TableName: 'Admins',
+            Key: {
+                "adminID": "admin",
+                "adminName": "admin"
+            },
+        }
+        docClient.scan(params, (err, data) => {
+            if(data.Items.length != 0){
+                data.Items.forEach(element => {
+                    element.category.forEach(item => {
+                        item.product.forEach(product => {
+                            if(productID === product.productID){
+                                var obj = Object.assign(product, { customerID: customerID });
+                                res.render(ejs, { _uG: obj });
+                            }
+                        });
+                    });
+                });
+            }
+        });
+    }else{
+        params = {
+            TableName: 'Businesss',
+            Key: {
+                "businessID": ownerID,
+                "businessName": ownerName
+            },
+        }
+        docClient.scan(params, (err, data) => {
+            if(data.Items.length != 0){
+                data.Items.forEach(element => {
+                    element.category.forEach(item => {
+                        item.product.forEach(product => {
+                            if(productID === product.productID){
+                                var obj = Object.assign(product, { customerID: customerID });
+                                res.render(ejs, { _uG: obj });
+                            }
+                        });
+                    });
+                });
+            }
+        });
+    }
+}
+
 //Get danh sách loại sản phẩm
 function getAll_Category(ejs, res) {
     let params = {
@@ -408,4 +459,5 @@ module.exports = {
     add_Auction: add_Auction,
     delete_Auction: delete_Auction,
     get_Item_Product: get_Item_Product,
+    getItem_Product_Admin: getItem_Product_Admin,
 };

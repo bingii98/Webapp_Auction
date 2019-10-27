@@ -82,12 +82,15 @@ function add_Item_Customer(ObjectB, location, res) {
                 Item: {
                     customerID: customerID,
                     customerName: ObjectB.customerName,
-                    isStatus : true,
+                    isStatus: true,
                     address: ObjectB.address,
                     email: ObjectB.email,
                     phone: ObjectB.phone,
                     username: ObjectB.username,
-                    password: bcrypt.hashSync(ObjectB.password)
+                    password: bcrypt.hashSync(ObjectB.password),
+                    orders : [
+
+                    ]
                 },
             };
 
@@ -144,6 +147,77 @@ async function get_Item_Customer_Username(username) {
     });
 }
 
+function add_Order_Customer(customerID, productID) {
+    let params = {
+        TableName: 'Customers',
+        Key: {
+            "customerID": customerID,
+        },
+        UpdateExpression: "SET #orders = list_append(#orders, :order)",
+        ExpressionAttributeNames: { "#orders": "orders" },
+        ExpressionAttributeValues: {
+            ':order': [
+                {
+                    'productID': productID,
+                    'deliverMethod': "null",
+                    'paymentMethod': "null",
+                    'Note': "null",
+                }
+            ]
+
+        },
+        ReturnValues: "UPDATED_NEW"
+    }
+    docClient.update(params, function (err, data) {
+        if (err) {
+            console.log(`${JSON.stringify(err, null, 2)}`);
+        }
+    });
+}
+
+function update_Order_Customer(customerID,productID,note,res){
+    let params = {
+        TableName: 'Customers',
+        Key: {
+            "customerID": customerID,
+        },
+    }
+
+    docClient.scan(params, (err, data) => {
+        if (err) {
+            console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+        } else {
+            var length = data.Items[0].orders.length - 1;
+            let params = {
+                TableName: 'Customers',
+                Key: {
+                    "customerID": customerID,
+                },
+                UpdateExpression: "SET orders["+length+"] = :order",
+                ExpressionAttributeValues: {
+                    ':order': [
+                        {
+                            'productID': productID,
+                            'deliverMethod': "Giao hành nhanh",
+                            'paymentMethod': "Thanh toán khi nhận hàng",
+                            'Note': note,
+                        }
+                    ]
+        
+                },
+                ReturnValues: "UPDATED_NEW"
+            }
+            docClient.update(params, function (err, data) {
+                if (err) {
+                    console.log(`${JSON.stringify(err, null, 2)}`);
+                } else {
+                    res.redirect('/');
+                }
+            });
+        }
+    });
+};
+
 
 module.exports = {
     getAll_Customer: getAll_Customer,
@@ -151,4 +225,6 @@ module.exports = {
     delete_Item_Customer_Key: delete_Item_Customer_Key,
     add_Item_Customer: add_Item_Customer,
     edit_Item_Customer: edit_Item_Customer,
+    add_Order_Customer: add_Order_Customer,
+    update_Order_Customer: update_Order_Customer,
 };
