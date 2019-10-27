@@ -1,198 +1,181 @@
 <!doctype html>
 <html class="no-js" lang="zxx">
+
 <head>
-<meta charset="utf-8">
-<meta http-equiv="x-ua-compatible" content="ie=edge">
-<title>Home - Stock auction</title>
-<meta name="description" content="">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<!-- Favicon -->
-<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
-
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
-
-<!-- CSS -->
-<!-- Bootstrap CSS -->
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<!-- Icon Font CSS -->
-<link rel="stylesheet" href="css/material-design-iconic-font.min.css">
-<!-- Plugins Import CSS -->
-<link rel="stylesheet" href="css/import.css">
-<!-- Style CSS -->
-<link rel="stylesheet" href="style.css">
-<!-- Responsive CSS -->
-<link rel="stylesheet" href="css/responsive.css">
-<link href="css/color/color-1.css" rel="stylesheet">
-
-<!-- Modernizer JS-->
-<script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Home - Stock auction</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+    <!-- CSS -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Icon Font CSS -->
+    <link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+    <!-- Plugins Import CSS -->
+    <link rel="stylesheet" href="css/import.css">
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="css/color/color-1.css" rel="stylesheet">
+    <!-- Modernizer JS-->
+    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
-<body>
-<!-- Pre Loader-->
-<div class="preloader">
-    <div class="loading-center">
-        <div class="loading-center-absolute">
-            <div class="object object_one">
-            </div>
-            <div class="object object_two">
-            </div>
-            <div class="object object_three">
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Body main wrapper start -->
-<div class="wrapper bg-white fix">
-    <div class="checkout-area pb-90 pt-90">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-xs-12">
-                    <div class="billing-details">
-                        <h4>Xác nhận thông tin giao dịch</h4>
-                        <form action="#">
-                            <label for="">Họ và tên:</label>
-                            <input type="text"/>
-                            <label for="">Địa chỉ:</label>
-                            <input type="text"/>
-                            <label for="">Số điện thoại:</label>
-                            <input type="text"/>
-                            <label for="">Email:</label>
-                            <input type="text"/>
-                            <label for="">Ghi chú:</label>
-                            <textarea></textarea>
-                        </form>
-                    </div>
-                </div>
-                <div class="col-md-6 col-xs-12">
-                    <div class="order-payment">
-                        <h4>Chi tiết giao dịch</h4>
-                        <div class="single-product-wrap border" style="padding: 0px; margin-bottom: 30px;">
-                            <div class="single-product-image" style="float: none">
-                                <div class="product-big-image tab-content">
-                                    <div class="tab-pane active" id="pro-img-1">
-                                        <img src="img/product/1.jpg" alt="" />
-                                        <a class="pro-img-popup" href="img/product/1.jpg"><i class="zmdi zmdi-search"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="single-product-content" style="float: none">
-                                <h3 class="single-pro-title">Xe cổ thời Minh Mạng</h3>
-                                <div class="single-product-price-ratting fix">
-                                    <p style="font-weight: bold;">Giá đấu thành công:</p>
-                                    <h3 class="single-pro-price float-left">
-                                        <p class="new" style="color: red;">50.000 VNĐ</p>
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                        <h4>Phương thức thanh toán</h4>
-                        <div class="panel-group" id="payment-accordion">
-                            <div class="panel panel-default">
-                                <h4 class="panel-title bg-white">
-                                    <a data-toggle="collapse" data-parent="#payment-accordion" href="#payment-1">Chuyển khoảng trực tiếp</a>
-                                </h4>
-                                <div id="payment-1" class="panel-collapse collapse in">
-                                    <div class="panel-body">
-                                        <table>
-                                            <tr style="height: 30px; padding-left: 20px;">
-                                                <td>STK:</td>
-                                                <td style="padding-left: 20px;"><b>0122121212121212.</b></td>
-                                            </tr>
-                                            <tr style="height: 30px; padding-left: 20px;">
-                                                <td>Tên chủ thẻ:</td>
-                                                <td style="padding-left: 20px;"><b>Nguyễn Văn A.</b></td>
-                                            </tr>
-                                            <tr style="height: 30px; padding-left: 20px;">
-                                                <td>Ngân hàng:</td>
-                                                <td style="padding-left: 20px;"><b>Ngân hàng thịnh vượng Việt Nam.</b></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel panel-default">
-                                <h4 class="panel-title bg-white">
-                                    <a class="collapsed" data-toggle="collapse" data-parent="#payment-accordion" href="#payment-3">Thanh toán khi nhận hành</a>
-                                </h4>
-                                <div id="payment-3" class="panel-collapse collapse">
-                                    <div class="panel-body">
-                                        <p>Bạn sẻ chỉ phải thanh toán khi kiểm tra hàng OK.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button class="place-order">Xác nhận giao dịch</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Footer Top Area -->
-    <div class="footer-top-area pb-70 pt-150">
-        <div class="container">
-            <div class="row">
-                <div class="footer-contact col-md-8 col-sm-6 col-xs-12">
-                    <img src="img/logo-2.png" alt="" />
-                    <div>
-                        <span>Địa chỉ :</span>
-                        <p>12 Nguyễn Văn Bảo, phường 04, quận Gò Vấp, HCM</p>
-                    </div>
-                    <div>
-                        <span>Hotline :</span>
-                        <p>+84 000 0000</p>
-                    </div>
-                    <div>
-                        <span>Email :</span>
-                        <a href="#">contact-company@stock.com</a>
-                    </div>
-                    <div class="footer-social fix">
-                        <a href="#"><i class="zmdi zmdi-facebook"></i></a>
-                        <a href="#"><i class="zmdi zmdi-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="footer-shipping col-md-2 col-sm-3 col-xs-6">
-                    <h4>CÁC LOẠI</h4>
-                    <ul>
-                        <li>
-                            <a href="#">Xe cộ</a>
-                        </li>
-                        <li>
-                            <a href="#">Đồ nội thất</a>
-                        </li>
-                        <li>
-                            <a href="#">Đồ điện tử</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="footer-shipping col-md-2 col-sm-3 col-xs-6">
-                    <h4>
-                    </h4>
-                    <ul>
-                        <li>
-                            <a href="#">Thời trang</a>
-                        </li>
-                        <li>
-                            <a href="#">Giày</a>
-                        </li>
-                        <li>
-                            <a href="#">Đồ cổ</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- jQuery JS -->
-<script src="js/vendor/jquery-1.12.0.min.js"></script>
-<!-- Bootstrap JS -->
-<script src="js/bootstrap.min.js"></script>
-<!-- Plugins JS -->
-<script src="js/plugins.js"></script>
-<!-- Main JS -->
-<script src="js/main.js"></script>
+<body>
+    <!-- Pre Loader-->
+    <div class="preloader">
+        <div class="loading-center">
+            <div class="loading-center-absolute">
+                <div class="object object_one">
+                </div>
+                <div class="object object_two">
+                </div>
+                <div class="object object_three">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Body main wrapper start -->
+    <div class="wrapper bg-white fix">
+        <div class="checkout-area pb-90 pt-90">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="order-payment">
+                            <h4>Chi tiết giao dịch</h4>
+                            <div class="single-product-wrap border" style="padding: 0px; margin-bottom: 30px;">
+                                <div class="single-product-image" style="float: none">
+                                    <div class="product-big-image tab-content">
+                                        <div class="tab-pane active" id="pro-img-1">
+                                            <img src="img/product/1.jpg" alt="" />
+                                            <a class="pro-img-popup" href="img/product/1.jpg"><i class="zmdi zmdi-search"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="single-product-content" style="float: none">
+                                    <h3 class="single-pro-title">Xe cổ thời Minh Mạng</h3>
+                                    <div class="single-product-price-ratting fix">
+                                        <p style="font-weight: bold;">Giá đấu thành công:</p>
+                                        <h3 class="single-pro-price float-left">
+                                            <p class="new" style="color: red;">50.000 VNĐ</p>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4>Phương thức thanh toán</h4>
+                            <div class="panel-group" id="payment-accordion">
+                                <div class="panel panel-default">
+                                    <h4 class="panel-title bg-white">
+                                        <a data-toggle="collapse" data-parent="#payment-accordion" href="#payment-1">Chuyển khoảng trực tiếp</a>
+                                    </h4>
+                                    <div id="payment-1" class="panel-collapse collapse in">
+                                        <div class="panel-body">
+                                            <table>
+                                                <tr style="height: 30px; padding-left: 20px;">
+                                                    <td>STK:</td>
+                                                    <td style="padding-left: 20px;"><b>0122121212121212.</b></td>
+                                                </tr>
+                                                <tr style="height: 30px; padding-left: 20px;">
+                                                    <td>Tên chủ thẻ:</td>
+                                                    <td style="padding-left: 20px;"><b>Nguyễn Văn A.</b></td>
+                                                </tr>
+                                                <tr style="height: 30px; padding-left: 20px;">
+                                                    <td>Ngân hàng:</td>
+                                                    <td style="padding-left: 20px;"><b>Ngân hàng thịnh vượng Việt Nam.</b></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <h4 class="panel-title bg-white">
+                                        <a class="collapsed" data-toggle="collapse" data-parent="#payment-accordion" href="#payment-3">Thanh toán khi nhận hành</a>
+                                    </h4>
+                                    <div id="payment-3" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <p>Bạn sẻ chỉ phải thanh toán khi kiểm tra hàng OK.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label for="">Ghi chú:</label>
+                                <textarea></textarea>
+                            </div>
+                            <button class="place-order">Xác nhận giao dịch</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Top Area -->
+        <div class="footer-top-area pb-70 pt-150">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-contact col-md-8 col-sm-6 col-xs-12">
+                        <img src="img/logo-2.png" alt="" />
+                        <div>
+                            <span>Địa chỉ :</span>
+                            <p>12 Nguyễn Văn Bảo, phường 04, quận Gò Vấp, HCM</p>
+                        </div>
+                        <div>
+                            <span>Hotline :</span>
+                            <p>+84 000 0000</p>
+                        </div>
+                        <div>
+                            <span>Email :</span>
+                            <a href="#">contact-company@stock.com</a>
+                        </div>
+                        <div class="footer-social fix">
+                            <a href="#"><i class="zmdi zmdi-facebook"></i></a>
+                            <a href="#"><i class="zmdi zmdi-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="footer-shipping col-md-2 col-sm-3 col-xs-6">
+                        <h4>CÁC LOẠI</h4>
+                        <ul>
+                            <li>
+                                <a href="#">Xe cộ</a>
+                            </li>
+                            <li>
+                                <a href="#">Đồ nội thất</a>
+                            </li>
+                            <li>
+                                <a href="#">Đồ điện tử</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer-shipping col-md-2 col-sm-3 col-xs-6">
+                        <h4>
+                        </h4>
+                        <ul>
+                            <li>
+                                <a href="#">Thời trang</a>
+                            </li>
+                            <li>
+                                <a href="#">Giày</a>
+                            </li>
+                            <li>
+                                <a href="#">Đồ cổ</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery JS -->
+    <script src="js/vendor/jquery-1.12.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- Plugins JS -->
+    <script src="js/plugins.js"></script>
+    <!-- Main JS -->
+    <script src="js/main.js"></script>
 </body>
+
 </html>

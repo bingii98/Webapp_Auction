@@ -4832,7 +4832,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 }
 /* Product Big Image */
 .product-big-image {
-    border: 1px solid #000000;
+    border: 1px solid #ff9900;
     background: beige;
     max-width: 370px;
     width: 100%;

@@ -268,6 +268,62 @@ io.on("connection", function (socket) {
             });
         }
     });
+
+
+    //CHECK AND CREATE ORDER FOR USER HAVE FINAL SOCKET
+    socket.on("CREATE_ORDER_AUCTION_CLIENT",function(productID, userID,ownerID,ownerName) {
+        if (ownerName === "admin") {
+            params = {
+                TableName: 'Admins',
+                Key: {
+                    "adminID": "admin",
+                    "adminName": "admin"
+                },
+            }
+            docClient.scan(params, (err, data) => {
+                if(data.Items.length != 0){
+                    data.Items.forEach(element => {
+                        element.category.forEach(item1 => {
+                            item1.product.forEach(item => {
+                                if(item.productID === productID){
+                                    if(userID === item.auction.bids[item.auction.bids.length - 1].user){
+                                        socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
+                                    }else{
+                                        socket.emit("CREATE_ORDER_AUCTION_SERVER", false);
+                                    }
+                                }
+                            });
+                        });
+                    });
+                }
+            });
+        }else{
+            params = {
+                TableName: 'Businesss',
+                Key: {
+                    "businessID": ownerID,
+                    "businessName": ownerName
+                },
+            }
+            docClient.scan(params, (err, data) => {
+                if(data.Items.length != 0){
+                    data.Items.forEach(element => {
+                        element.category.forEach(item1 => {
+                            item1.product.forEach(item => {
+                                if(item.productID === productID){
+                                    if(userID === sess.userID){
+                                        socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
+                                    }else{
+                                        socket.emit("CREATE_ORDER_AUCTION_SERVER", false);
+                                    }
+                                }
+                            });
+                        });
+                    });
+                }
+            });
+        }
+    });
 });
 
 
@@ -969,6 +1025,11 @@ app.get('/deleteauction', (req, res) => {
     } else {
         res.render('login');
     }
+});
+
+//Create Auction
+app.get('/checkout', (req, res) => {
+    res.render('check-out');
 });
 
 app.get('/contact', (req, res) => {

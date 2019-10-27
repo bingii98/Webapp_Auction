@@ -3,6 +3,7 @@ span.timer {
 }
 
 span.timer1 {
+    display: inline-flex;
     background: black;
     color: white;
     font-weight: bold;
