@@ -195,15 +195,13 @@ function update_Order_Customer(customerID,productID,note,res){
                 },
                 UpdateExpression: "SET orders["+length+"] = :order",
                 ExpressionAttributeValues: {
-                    ':order': [
+                    ':order': 
                         {
                             'productID': productID,
                             'deliverMethod': "Giao hành nhanh",
                             'paymentMethod': "Thanh toán khi nhận hàng",
                             'Note': note,
                         }
-                    ]
-        
                 },
                 ReturnValues: "UPDATED_NEW"
             }

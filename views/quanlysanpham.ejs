@@ -10,7 +10,7 @@
     <script src='js/jquery.min.js'></script>
     <!--SOCKETIO for Sign up-->
     <script src="socket.io/socket.io.js"></script>
-    <script> var socket = io('http://54.175.16.232:3000'); </script>
+    <script> var socket = io('http://localhost:3000'); </script>
     <script>
         $(document).ready(function () {
             $("#addProductBtn").click(function () {
@@ -197,6 +197,7 @@
                     </div>
                 </div> <% var formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }); %> <div class="row" style="margin-top: 20px;">
                     <div class="col-xs-12">
+                        <i>Các sản phẩm đã được khởi động đấu giá và có hóa đơn không được sửa</i>
                         <div class="cart-table table-responsive mb-50">
                             <table class="table">
                                 <thead>
@@ -234,8 +235,27 @@
                                             <p class="cart-stock word-break_break-all"><%=product.productDescribe%></p>
                                         </td>
                                         <td><% if(product.count == 0){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#modalAddAuction" onclick="addAutionBtn('<%=product.productID%>','<%= product.id %>')"><i class="zmdi zmdi-plus"></i></button><% }else{ %><i class="zmdi zmdi-check"></i><% }; %></td>
-                                        <td><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setProductEdit_Input('<%= product.productID %>','<%= product.productName %>','<%=product.productDescribe%>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-edit"></i></button></td>
-                                        <td><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a></td>
+                                        <% let count = 0; %> <%for (var c in product.auction) { count = count + 1; } %>
+                                        <% if(count > 0){ %><% var date = new Date(product.auction.startDate); %><% } %>
+                                        <% var nowdate = new Date(); %>
+                                        <% if(count > 0){ %>
+                                            <% if ((nowdate.getTime() - date.getTime()) < 0) { %>
+                                                <% if (product.auction.bids.length == 0) { %>
+                                                    <td><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setProductEdit_Input('<%= product.productID %>','<%= product.productName %>','<%=product.productDescribe%>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-edit"></i></button></td>
+                                                    <td><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a></td>
+                                                <% } %>
+                                            <% }else{ %>
+                                                <% if (product.auction.bids.length == 0) { %>
+                                                    <td><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setProductEdit_Input('<%= product.productID %>','<%= product.productName %>','<%=product.productDescribe%>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-edit"></i></button></td>
+                                                    <td><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a></td>
+                                                <% }else{ %>
+                                                    <td></td><td></td>
+                                                <% } %>
+                                            <% } %>
+                                        <% }else{ %>
+                                            <td><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setProductEdit_Input('<%= product.productID %>','<%= product.productName %>','<%=product.productDescribe%>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-edit"></i></button></td>
+                                            <td><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a></td>
+                                        <% } %>
                                     </tr> <% i++;%> <% }); %> </tbody>
                             </table>
                         </div>

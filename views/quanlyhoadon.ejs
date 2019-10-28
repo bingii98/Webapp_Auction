@@ -61,62 +61,30 @@
                                 <thead class="thead-dark">
                                     <tr>
                                         <th scope="col" style="text-align: left;"> #</th>
-                                        <th scope="col" style="text-align: left;">Mã HĐ</th>
-                                        <th scope="col" style="text-align: left;">Sản phẩm</th>
+                                        <th scope="col" style="text-align: left;">Mã SP</th>
+                                        <th scope="col" style="text-align: left;">ID KH</th>
                                         <th scope="col" style="text-align: left;">Khách hàng</th>
-                                        <th scope="col" style="text-align: left;">Ngày giao dịch</th>
-                                        <th scope="col" style="text-align: left;">Giá trị</th>
+                                        <th scope="col" style="text-align: left;">PT Giao hàng</th>
+                                        <th scope="col" style="text-align: left;">PT Thanh toán</th>
+                                        <th scope="col" style="text-align: left;">Ghi chú</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>HD12</td>
-                                        <td><a href="#" class="tag-a">Đồ cổ đến từ Mông Cổ</a></td>
-                                        <td><a href="#" class="tag-a">Nguyễn Văn A</a></td>
-                                        <td>14:23:87 27/05/2019</td>
-                                        <td>2.000 VNĐ</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>HD12</td>
-                                        <td><a href="#" class="tag-a">Đồ cổ đến từ Mông Cổ</a></td>
-                                        <td><a href="#" class="tag-a">Nguyễn Văn A</a></td>
-                                        <td>14:23:87 27/05/2019</td>
-                                        <td>2.000 VNĐ</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>HD12</td>
-                                        <td><a href="#" class="tag-a">Đồ cổ đến từ Mông Cổ</a></td>
-                                        <td><a href="#" class="tag-a">Nguyễn Văn A</a></td>
-                                        <td>14:23:87 27/05/2019</td>
-                                        <td>2.000 VNĐ</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">4</th>
-                                        <td>HD12</td>
-                                        <td><a href="#" class="tag-a">Đồ cổ đến từ Mông Cổ</a></td>
-                                        <td><a href="#" class="tag-a">Nguyễn Văn A</a></td>
-                                        <td>14:23:87 27/05/2019</td>
-                                        <td>2.000 VNĐ</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>HD12</td>
-                                        <td><a href="#" class="tag-a">Đồ cổ đến từ Mông Cổ</a></td>
-                                        <td><a href="#" class="tag-a">Nguyễn Văn A</a></td>
-                                        <td>14:23:87 27/05/2019</td>
-                                        <td>2.000 VNĐ</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">6</th>
-                                        <td>HD12</td>
-                                        <td><a href="#" class="tag-a">Đồ cổ đến từ Mông Cổ</a></td>
-                                        <td><a href="#" class="tag-a">Nguyễn Văn A</a></td>
-                                        <td>14:23:87 27/05/2019</td>
-                                        <td>2.000 VNĐ</td>
-                                    </tr>
+                                    <% var i = 0 %>
+                                    <% _uG.forEach(element => { %>
+                                        <% element.orders.forEach(item => { %>
+                                            <tr>
+                                                <th scope="row"><%= i %></th>
+                                                <td><%= item.productID %></td>
+                                                <td><%= element.customerID %></td>
+                                                <td><%= element.customerName %></td>
+                                                <td><%= item.deliverMethod %></a></td>
+                                                <td><%= item.paymentMethod %></a></td>
+                                                <td><%= item.Note %></td>
+                                            </tr>
+                                            <% i++ %>
+                                        <% }) %>
+                                    <% }) %>
                                 </tbody>
                             </table>
                         </div>

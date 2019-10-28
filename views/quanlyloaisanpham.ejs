@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--SOCKETIO for Sign up-->
     <script src="socket.io/socket.io.js"></script>
-    <script> var socket = io('http://54.175.16.232:3000'); </script>
+    <script> var socket = io('http://localhost:3000'); </script>
     <script>
         function checkCategory() {
             var name = checkBusinessName(document.getElementById('categoryName').value);
@@ -135,6 +135,7 @@
                 </div>
                 <div class="row" style="margin-top: 20px;">
                     <div class="col-xs-12">
+                        <i>Các doanh nghiệp không thêm được loại sản phẩm khi trong tình trạng OFF</i>
                         <div class="cart-table table-responsive mb-50">
                             <table class="table">
                                 <thead class="thead-dark">

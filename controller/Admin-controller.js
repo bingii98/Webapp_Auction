@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt-nodejs');
 AWS.config.update({
     "region": "us-east-1",
     "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
-  });
+});
 
 let docClient = new AWS.DynamoDB.DocumentClient();
 
@@ -41,10 +41,7 @@ function getAll_Product_Admin(ejs, res) {
             data.Items.forEach(item => {
                 item.category.forEach(cat => {
                     cat.product.forEach(element => {
-                        let count = 0;
-                        for (var c in element.auction) {
-                            count = count + 1;
-                        }
+                        let count = 0; for (var c in element.auction) { count = count + 1; }
                         var obj = Object.assign(element, { ownerName: item.businessName }, { id: item.businessID }, { loai: cat.categoryName }, { count: count });
                         productList.push(obj);
                     });
@@ -86,8 +83,8 @@ function getAll_Product_Admin(ejs, res) {
 
 
 //get Product (not S)
-function getItem_Product_Admin(customerID,productID,ownerID,ownerName,ejs, res) {
-    if(ownerID === "admin"){
+function getItem_Product_Admin(customerID, productID, ownerID, ownerName, ejs, res) {
+    if (ownerID === "admin") {
         params = {
             TableName: 'Admins',
             Key: {
@@ -96,11 +93,11 @@ function getItem_Product_Admin(customerID,productID,ownerID,ownerName,ejs, res) 
             },
         }
         docClient.scan(params, (err, data) => {
-            if(data.Items.length != 0){
+            if (data.Items.length != 0) {
                 data.Items.forEach(element => {
                     element.category.forEach(item => {
                         item.product.forEach(product => {
-                            if(productID === product.productID){
+                            if (productID === product.productID) {
                                 var obj = Object.assign(product, { customerID: customerID });
                                 res.render(ejs, { _uG: obj });
                             }
@@ -109,7 +106,7 @@ function getItem_Product_Admin(customerID,productID,ownerID,ownerName,ejs, res) 
                 });
             }
         });
-    }else{
+    } else {
         params = {
             TableName: 'Businesss',
             Key: {
@@ -118,11 +115,11 @@ function getItem_Product_Admin(customerID,productID,ownerID,ownerName,ejs, res) 
             },
         }
         docClient.scan(params, (err, data) => {
-            if(data.Items.length != 0){
+            if (data.Items.length != 0) {
                 data.Items.forEach(element => {
                     element.category.forEach(item => {
                         item.product.forEach(product => {
-                            if(productID === product.productID){
+                            if (productID === product.productID) {
                                 var obj = Object.assign(product, { customerID: customerID });
                                 res.render(ejs, { _uG: obj });
                             }
@@ -213,7 +210,7 @@ function add_Product(ObjectB, categoryID, location, res) {
 }
 
 //Get item Product
-function get_Item_Product(id,owner,productID,userID,res){
+function get_Item_Product(id, owner, productID, userID, res) {
     if (owner === "admin") {
         params = {
             TableName: 'Admins',
@@ -223,20 +220,20 @@ function get_Item_Product(id,owner,productID,userID,res){
             },
         }
         docClient.scan(params, (err, data) => {
-            if(data.Items.length != 0){
+            if (data.Items.length != 0) {
                 data.Items.forEach(element => {
                     element.category.forEach(item1 => {
                         item1.product.forEach(item => {
-                            if(item.productID === productID){
-                                var obj = Object.assign(item, { id: id }, { owner: owner }, {userID : userID});
-                                res.render('auction-page',{ _uG : obj});
+                            if (item.productID === productID) {
+                                var obj = Object.assign(item, { id: id }, { owner: owner }, { userID: userID });
+                                res.render('auction-page', { _uG: obj });
                             }
                         });
                     });
                 });
             }
         });
-    }else{
+    } else {
         params = {
             TableName: 'Businesss',
             Key: {
@@ -245,12 +242,12 @@ function get_Item_Product(id,owner,productID,userID,res){
             },
         }
         docClient.scan(params, (err, data) => {
-            if(data.Items.length != 0){
+            if (data.Items.length != 0) {
                 data.forEach(element => {
                     element.product.forEach(item => {
-                        if(item.productID === productID){
+                        if (item.productID === productID) {
                             var obj = Object.assign(item, { id: id }, { owner: owner });
-                                res.render('auction-page',{ _uG : obj});
+                            res.render('auction-page', { _uG: obj });
                         }
                     });
                 });
@@ -287,9 +284,9 @@ function add_Auction(ObjectB, productID, res) {
                                             timeRun: ObjectB.timeRun,
                                             startPrice: ObjectB.startPrice,
                                             isRunning: true,
-                                            winner : "null",
-                                            bids : [
-                                                
+                                            winner: "null",
+                                            bids: [
+
                                             ]
                                         },
                                     },
@@ -339,8 +336,8 @@ function add_Auction(ObjectB, productID, res) {
                                             timeRun: ObjectB.timeRun,
                                             startPrice: ObjectB.startPrice,
                                             isRunning: true,
-                                            winner : "",
-                                            bids : [
+                                            winner: "",
+                                            bids: [
 
                                             ]
                                         },

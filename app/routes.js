@@ -1,14 +1,15 @@
 //============START CONFIG=============//
-const AWS = require('aws-sdk');
-const express = require('express');
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const app = express();
-const ctlBsn = require('../controller/Business-controller');
-const ctlAdmin = require('../controller/Admin-controller');
-const ctlCtm = require('../controller/Customer-controller');
-const docClient = new AWS.DynamoDB.DocumentClient();
-const bcrypt = require('bcrypt-nodejs');
+const AWS = require('aws-sdk'),
+    express = require('express'),
+    bodyParser = require('body-parser'),
+    session = require('express-session'),
+    sharedsession = require("express-socket.io-session"),
+    app = express(),
+    ctlBsn = require('../controller/Business-controller'),
+    ctlAdmin = require('../controller/Admin-controller'),
+    ctlCtm = require('../controller/Customer-controller'),
+    docClient = new AWS.DynamoDB.DocumentClient(),
+    bcrypt = require('bcrypt-nodejs');
 
 //SET VIEW ENGINE
 app.set('view engine', 'ejs');
@@ -286,7 +287,7 @@ io.on("connection", function (socket) {
                     data.Items.forEach(item => {
                         item.category.forEach(cat => {
                             cat.product.forEach(element => {
-                                if(productID === element.productID){
+                                if (productID === element.productID) {
                                     element.auction.bids.forEach(bid => {
                                         productList.push(bid);
                                     });
@@ -317,7 +318,7 @@ io.on("connection", function (socket) {
                     data.Items.forEach(item => {
                         item.category.forEach(cat => {
                             cat.product.forEach(element => {
-                                if(productID === element.productID){
+                                if (productID === element.productID) {
                                     element.auction.bids.forEach(bid => {
                                         productList.push(bid);
                                     });
@@ -403,7 +404,7 @@ app.post('/signup', function (req, res) {
         email: email,
         username: username,
         password: password,
-        orders : [
+        orders: [
 
         ]
     }
@@ -483,7 +484,7 @@ app.get('/quanlydoanhnghiep_sanpham', function (req, res) {
 app.get('/quanlyhoadon', function (req, res) {
     sess = req.session
     if (sess.permission === "admin") {
-        res.render('quanlyhoadon');
+        ctlCtm.getAll_Customer("quanlyhoadon",res);
     } else {
         res.render('login');
     }
@@ -1048,8 +1049,8 @@ app.post('/checkout', (req, res) => {
 });
 
 //Update order
-app.post('/updateorder',(req,res) => {
-    ctlCtm.update_Order_Customer(sess.userID,req.body.productID,req.body.note,res);
+app.post('/updateorder', (req, res) => {
+    ctlCtm.update_Order_Customer(sess.userID, req.body.productID, req.body.note, res);
 });
 
 app.get('/contact', (req, res) => {

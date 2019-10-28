@@ -10,7 +10,7 @@
     <script src='js/jquery.min.js'></script>
     <!--SOCKETIO for Sign up-->
     <script src="socket.io/socket.io.js"></script>
-    <script> var socket = io('http://54.175.16.232:3000'); </script>
+    <script> var socket = io('http://localhost:3000'); </script>
     <script>
         $(document).ready(function () {
             $("#addProductBtn").click(function () {
@@ -119,6 +119,7 @@
                 </div> <% var formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }); %>
                 <div class="row" style="margin-top: 20px;">
                     <div class="col-xs-12">
+                        <i>Phiên đấu giá đã chạy không được phép sửa hoặc xóa</i>
                         <div class="cart-table table-responsive mb-50">
                             <table class="table">
                                 <thead>
