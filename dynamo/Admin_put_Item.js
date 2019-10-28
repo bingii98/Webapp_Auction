@@ -2,8 +2,8 @@ const AWS = require('aws-sdk');
 const bcrypt = require('bcrypt-nodejs');
 
 AWS.config.update({
-  region: "CNM",
-  endpoint: 'http://localhost:8000',
+  "region": "us-east-1",
+  "endpoint": "https://dynamodb.us-east-1.amazonaws.com",
 });
 
 const docClient = new AWS.DynamoDB.DocumentClient();
@@ -49,7 +49,7 @@ docClient.scan(params, (err, data) => {
         username: "admin",
         password: bcrypt.hashSync("admin"),
         category: [
-          
+
         ]
       },
     };
