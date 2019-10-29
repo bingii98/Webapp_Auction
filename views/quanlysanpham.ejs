@@ -24,9 +24,12 @@
                     if (count == 0) {
                         $("#formADD").replaceWith("<h3><strong style='color:red;'>Chưa có loại sản phẩm nào tồn tại!</strong></h3><br><p>Đợi người quản trị thêm loại sản phẩm để thêm sản phẩm!</p>");
                     } else {
-                        data.forEach(element => {
-                            $("#listCaterory").append("<option id=" + element.categoryID + ">" + element.categoryName + "</option>");
-                        });
+                        var html = $("#listCaterory").val();
+                        if (html == null) {
+                            data.forEach(element => {
+                                $("#listCaterory").append("<option id=" + element.categoryID + ">" + element.categoryName + "</option>");
+                            });
+                        }
                     }
                 });
             })
