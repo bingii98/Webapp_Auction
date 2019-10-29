@@ -3,8 +3,9 @@ const bcrypt = require('bcrypt-nodejs');
 
 AWS.config.update({
     "region": "us-east-1",
-    "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
-  });
+    "endpoint": "http://localhost:8000",
+});
+
 
 let docClient = new AWS.DynamoDB.DocumentClient();
 
@@ -19,6 +20,51 @@ function getAll_Customer(ejs, res) {
         } else {
             res.render(ejs, { _uG: data.Items });
         }
+    });
+}
+
+//CHECK USERNAME EXISTS
+async function check_Username(username) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: 'Customers',
+            IndexName: "username_index",
+            FilterExpression: "#username = :username",
+            ExpressionAttributeNames: {
+                "#username": "username",
+            },
+            ExpressionAttributeValues: { ":username": username }
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                if (data.Items.length == 0) {
+                    let params = {
+                        TableName: 'Businesss',
+                        IndexName: "username_index",
+                        FilterExpression: "#username = :username",
+                        ExpressionAttributeNames: {
+                            "#username": "username",
+                        },
+                        ExpressionAttributeValues: { ":username": username }
+                    }
+                    docClient.scan(params, (err, data) => {
+                        if (err) {
+                            console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+                        } else {
+                            if (data.Items.length == 0) {
+                                resolve(true);
+                            } else {
+                                resolve(false);
+                            };
+                        }
+                    });
+                } else {
+                    resolve(false);
+                };
+            }
+        });
     });
 }
 
@@ -148,6 +194,7 @@ async function get_Item_Customer_Username(username) {
 }
 
 function add_Order_Customer(customerID, productID) {
+    console.log("Create order .....!")
     let params = {
         TableName: 'Customers',
         Key: {
@@ -176,42 +223,48 @@ function add_Order_Customer(customerID, productID) {
 }
 
 function update_Order_Customer(customerID,productID,note,res){
+    console.log("Update order .....!")
     let params = {
         TableName: 'Customers',
         Key: {
             "customerID": customerID,
         },
     }
-
     docClient.scan(params, (err, data) => {
         if (err) {
             console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
         } else {
-            var length = data.Items[0].orders.length - 1;
-            let params = {
-                TableName: 'Customers',
-                Key: {
-                    "customerID": customerID,
-                },
-                UpdateExpression: "SET orders["+length+"] = :order",
-                ExpressionAttributeValues: {
-                    ':order': 
-                        {
-                            'productID': productID,
-                            'deliverMethod': "Giao hành nhanh",
-                            'paymentMethod': "Thanh toán khi nhận hàng",
-                            'Note': note,
+            data.Items.forEach(item => {
+                item.orders.forEach(order => {
+                    if(order.productID === productID){
+                        let params = {
+                            TableName: 'Customers',
+                            Key: {
+                                "customerID": customerID,
+                            },
+                            UpdateExpression: "SET orders["+ (item.orders.length - 1) +"] = :order",
+                            ExpressionAttributeValues: {
+                                ':order': 
+                                    {
+                                        'productID': productID,
+                                        'deliverMethod': "Giao hành nhanh",
+                                        'paymentMethod': "Thanh toán khi nhận hàng",
+                                        'Note': note,
+                                    }
+                            },
+                            ReturnValues: "UPDATED_NEW"
                         }
-                },
-                ReturnValues: "UPDATED_NEW"
-            }
-            docClient.update(params, function (err, data) {
-                if (err) {
-                    console.log(`${JSON.stringify(err, null, 2)}`);
-                } else {
-                    res.redirect('/');
-                }
-            });
+                        docClient.update(params, function (err, data) {
+                            if (err) {
+                                console.log(`${JSON.stringify(err, null, 2)}`);
+                            } else {
+                                console.log(4);
+                                res.redirect('/');
+                            }
+                        });
+                    }
+                })
+            })
         }
     });
 };
@@ -225,4 +278,5 @@ module.exports = {
     edit_Item_Customer: edit_Item_Customer,
     add_Order_Customer: add_Order_Customer,
     update_Order_Customer: update_Order_Customer,
+    check_Username: check_Username,
 };

@@ -1,9 +1,11 @@
 const AWS = require('aws-sdk');
 var bcrypt = require('bcrypt-nodejs');
+
 AWS.config.update({
   "region": "us-east-1",
-  "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
+  "endpoint": "http://localhost:8000",
 });
+
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 let params = {

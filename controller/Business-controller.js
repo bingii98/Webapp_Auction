@@ -3,8 +3,9 @@ const bcrypt = require('bcrypt-nodejs');
 
 AWS.config.update({
     "region": "us-east-1",
-    "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
-  });
+    "endpoint": "http://localhost:8000",
+});
+
 
 let docClient = new AWS.DynamoDB.DocumentClient();
 
@@ -19,6 +20,51 @@ function getAll_Business(ejs, res) {
         } else {
             res.render(ejs, { _uG: data.Items });
         }
+    });
+}
+
+//CHECK USERNAME EXISTS
+async function check_Username(username) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: 'Businesss',
+            IndexName: "username_index",
+            FilterExpression: "#username = :username",
+            ExpressionAttributeNames: {
+                "#username": "username",
+            },
+            ExpressionAttributeValues: { ":username": username }
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                if (data.Items.length == 0) {
+                    let params = {
+                        TableName: 'Customers',
+                        IndexName: "username_index",
+                        FilterExpression: "#username = :username",
+                        ExpressionAttributeNames: {
+                            "#username": "username",
+                        },
+                        ExpressionAttributeValues: { ":username": username }
+                    }
+                    docClient.scan(params, (err, data) => {
+                        if (err) {
+                            console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+                        } else {
+                            if (data.Items.length == 0) {
+                                resolve(true);
+                            } else {
+                                resolve(false);
+                            };
+                        }
+                    });
+                } else {
+                    resolve(false);
+                };
+            }
+        });
     });
 }
 
@@ -234,6 +280,133 @@ async function get_Item_Business_Username(username) {
     });
 }
 
+//ADD BID TO ADMIN PRODUCT
+async function Add_Bid_Product(productID, price, ownerID, ownerName,clientUserID) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: 'Businesss'
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                for (let i = 0; i < data.Items.length; i++) {
+                    for (let x = 0; x < data.Items[i].category.length; x++) {
+                        for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                            if (data.Items[i].category[x].product[z].productID === productID) {
+                                let params = {
+                                    TableName: "Businesss",
+                                    Key: {
+                                        "businessID": ownerID,
+                                        "businessName": ownerName
+                                    },
+                                    UpdateExpression: "set category[" + x + "].product[" + z + "].auction.bids = list_append(category[" + x + "].product[" + z + "].auction.bids, :bidAdd)",
+                                    ExpressionAttributeValues: {
+                                        ":bidAdd": [
+                                            {
+                                                user: clientUserID,
+                                                amount: price,
+                                                timeStamp: new Date().getTime(),
+                                            }
+                                        ],
+                                    },
+                                    ReturnValues: "UPDATED_NEW"
+                                };
+                                docClient.update(params, function (err, data) {
+                                    if (err) {
+                                        console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                    } else {
+                                        //EMIT SERVER
+                                        resolve(true);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            };
+        });
+    });
+}
+
+//CREATE_ORDER_AUCTION_CLIENT
+async function Create_Order(productID, userID, ownerID, ownerName) {
+    return new Promise((resolve, reject) => {
+        params = {
+            TableName: 'Businesss',
+            Key: {
+                "businessID": ownerID,
+                "businessName": ownerName
+            },
+        }
+        docClient.scan(params, (err, data) => {
+            if (data.Items.length != 0) {
+                var productList = [];
+                data.Items.forEach(item => {
+                    item.category.forEach(cat => {
+                        cat.product.forEach(element => {
+                            if (productID === element.productID) {
+                                element.auction.bids.forEach(bid => {
+                                    productList.push(bid);
+                                });
+                            }
+                        });
+                    });
+                });
+                productList.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
+                if (userID === productList[productList.length - 1].user) {
+                    ctlCtm.add_Order_Customer(userID, productID);
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            }
+        });
+    });
+}
+
+//UPDATE CATEGORY
+async function Update_Category(categoryID, categoryName) {
+    return new Promise((resolve, reject) => {
+        let params1 = {
+            TableName: 'Businesss',
+        };
+        docClient.scan(params1, function (err, data) {
+            if (err) {
+                console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+            } else {
+                if (data.Items.length != 0) {
+                    data.forEach(element => {
+                        element.category.forEach(item => {
+                            if (item.categoryID === categoryID) {
+                                let params = {
+                                    TableName: 'Businesss',
+                                    Key: {
+                                        "businessID": element.businessID,
+                                        "businessName": element.businessName
+                                    },
+                                    UpdateExpression: "SET category[" + i + "].categoryName = :vals",
+                                    ExpressionAttributeValues: {
+                                        ":vals": categoryName
+                                    }
+                                };
+
+                                docClient.update(params, function (err, data) {
+                                    if (err)
+                                        console.log(err);
+                                    else {
+                                        resolve(true);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                };
+            };
+        });
+    });
+}
+
 
 module.exports = {
     getAll_Business: getAll_Business,
@@ -242,5 +415,9 @@ module.exports = {
     delete_Item_Business_Key: delete_Item_Business_Key,
     add_Item_Business: add_Item_Business,
     edit_Item_Business: edit_Item_Business,
-    get_Item_Business_Username : get_Item_Business_Username,
+    get_Item_Business_Username: get_Item_Business_Username,
+    check_Username: check_Username,
+    Add_Bid_Product: Add_Bid_Product,
+    Create_Order: Create_Order,
+    Update_Category: Update_Category,
 };

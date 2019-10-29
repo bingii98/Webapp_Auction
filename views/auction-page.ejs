@@ -35,12 +35,12 @@
                 }
             });
         });
-        socket.on("Server_sent_data_BID", function (clientUserID, price, dateTime) {
+        socket.on("Server_sent_data_BID", function (data,dateTime) {
             var current_datetime = new Date(dateTime);
             let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes() + ":" + current_datetime.getSeconds();
-            $("#listUserJoin").append("<li><i class='zmdi zmdi-account-circle'></i>&nbsp<span>UserID: " + clientUserID + " - chốt giá " + price + " <i style='font-weight: 100;''>- tại " + formatted_date + "</i></span></li>");
-            $("#priceNow").html(price);
-            $("#userLast").html(clientUserID);
+            $("#listUserJoin").append("<li><i class='zmdi zmdi-account-circle'></i>&nbsp<span>UserID: " + data.user + " - chốt giá " + data.amount + " <i style='font-weight: 100;''>- tại " + formatted_date + "</i></span></li>");
+            $("#priceNow").html(data.amount);
+            $("#userLast").html(data.user);
         });
     </script>
     <!--Favicon -->
@@ -256,11 +256,8 @@
                     </div>
                 </div> <% }else{ %> <h3><strong style="color: red;">Sản phẩm chưa được khởi động đấu giá, cùng chờ nhé!</strong></h3> <% } %> </div>
         </div>
-        <form action="checkout" method="POST" id="formCheckout">
-            <input type="hidden" name="customerID" id="co_customerID">
-            <input type="hidden" name="productID" id="co_productID">
-            <input type="hidden" name="ownerID" id="co_ownerID">
-            <input type="hidden" name="ownerName" id="co_ownerName">
+        <form action="/checkout" method="POST" id="formCheckout">
+            <input type="hidden" name="productID" id="co_productID"  value="<%= _uG.productID %>">
         </form>
         <!-- Bootstrap JS -->
         <script src="js/bootstrap.min.js"></script>

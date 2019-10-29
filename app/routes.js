@@ -27,7 +27,7 @@ app.use(session({
 
 AWS.config.update({
     "region": "us-east-1",
-    "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
+    "endpoint": "http://localhost:8000",
 });
 
 var sess;
@@ -39,135 +39,44 @@ io.on("connection", function (socket) {
 
     //CHECK BUSINESS USER EXIST
     socket.on("Client_sent_data", function (username) {
-        let params = {
-            TableName: 'Businesss',
-            IndexName: "username_index",
-            FilterExpression: "#username = :username",
-            ExpressionAttributeNames: {
-                "#username": "username",
-            },
-            ExpressionAttributeValues: { ":username": username }
-        }
-        docClient.scan(params, (err, data) => {
-            if (err) {
-                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
-            } else {
-                if (data.Items.length == 0) {
-                    let params = {
-                        TableName: 'Customers',
-                        IndexName: "username_index",
-                        FilterExpression: "#username = :username",
-                        ExpressionAttributeNames: {
-                            "#username": "username",
-                        },
-                        ExpressionAttributeValues: { ":username": username }
-                    }
-                    docClient.scan(params, (err, data) => {
-                        if (err) {
-                            console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
-                        } else {
-                            if (data.Items.length == 0) {
-                                socket.emit("Server_sent_data", true);
-                            } else {
-                                socket.emit("Server_sent_data", false);
-                            };
-                        }
-                    });
-                } else {
-                    socket.emit("Server_sent_data", false);
-                };
+        ctlBsn.check_Username(username).then(data => {
+            if(data){
+                socket.emit("Server_sent_data", true);
+            }else{
+                socket.emit("Server_sent_data", false);
             }
-        });
+        })
     });
 
     //CHECK CUSTOMER USER EXIST
     socket.on("Customer_check_username", function (username) {
-        let params = {
-            TableName: 'Customers',
-            IndexName: "username_index",
-            FilterExpression: "#username = :username",
-            ExpressionAttributeNames: {
-                "#username": "username",
-            },
-            ExpressionAttributeValues: { ":username": username }
-        }
-        docClient.scan(params, (err, data) => {
-            if (err) {
-                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
-            } else {
-                if (data.Items.length == 0) {
-                    let params = {
-                        TableName: 'Businesss',
-                        IndexName: "username_index",
-                        FilterExpression: "#username = :username",
-                        ExpressionAttributeNames: {
-                            "#username": "username",
-                        },
-                        ExpressionAttributeValues: { ":username": username }
-                    }
-                    docClient.scan(params, (err, data) => {
-                        if (err) {
-                            console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
-                        } else {
-                            if (data.Items.length == 0) {
-                                socket.emit("Server_reply_username", true);
-                            } else {
-                                socket.emit("Server_reply_username", false);
-                            };
-                        }
-                    });
-                } else {
-                    socket.emit("Server_reply_username", false);
-                };
+        ctlCtm.check_Username(username).then(data => {
+            if(data){
+                socket.emit("Server_reply_username", true);
+            }else{
+                socket.emit("Server_sent_data", false);
             }
         });
     });
 
     //CHECK CATEGORY USER EXIST
     socket.on("Client_sent_data_category", function (categoryName) {
-        let params = {
-            TableName: 'Admins',
-        }
-        docClient.scan(params, (err, data) => {
-            if (err) {
-                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
-            } else {
-                var abc = true;
-                data.Items[0].category.forEach(element => {
-                    if (categoryName === element.categoryName) {
-                        abc = false;
-                    }
-                });
-                if (abc == false) {
-                    socket.emit("Server_sent_data_category", false);
-                } else {
-                    socket.emit("Server_sent_data_category", true);
-                }
+        console.log(1);
+        ctlAdmin.Check_Category(categoryName).then(data => {
+            console.log(2);
+            if(data){
+                socket.emit("Server_sent_data_category", true);
+            }else{
+                socket.emit("Server_sent_data_category", false);
             }
-        });
+        })
     });
 
-    //Get all CATEGORY IN REALTIME
+    //GET ALL CATEGORY IN REALTIME
     socket.on("Client_sent_data_list_category", function () {
-        let params = {
-            TableName: 'Admins',
-        }
-        var CategoryList = [];
-        docClient.scan(params, (err, data) => {
-            if (err) {
-                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
-            } else {
-                data.Items.forEach(item => {
-                    item.category.forEach(cat => {
-                        if (cat.isStatus) {
-                            CategoryList.push(cat);
-                        }
-                    });
-                });
-                console.log(CategoryList);
-                socket.emit("Server_sent_data_list_category", CategoryList);
-            }
-        });
+        ctlAdmin.GetAll_Category().then(data => {
+            socket.emit("Server_sent_data_list_category", data);
+        })
     });
 
     //JOIN ROOM AUCTION
@@ -176,165 +85,39 @@ io.on("connection", function (socket) {
         socket.roomCustom = RoomName;
     })
 
-    //Add BID to AUCTION
+    //ADD BID TO ADMIN PRODUCT
     socket.on("Client_sent_data_BID", function (productID, price, ownerID, ownerName, clientUserID, dateTime) {
-        if (ownerID === "admin") {
-            let params = {
-                TableName: 'Admins'
+        ctlAdmin.Add_Bid_Product(productID,price,clientUserID).then(data => {
+            if (ownerID === "admin") {
+                ctlAdmin.Get_Final_Bid(productID).then(data => {
+                    io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data,dateTime);
+                })
+            } else {
+                ctlBsn.Get_Final_Bid(productID).then(data => {
+                    io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data,dateTime);
+                })
             }
-            docClient.scan(params, (err, data) => {
-                if (err) {
-                    console.error('Error JSON:', JSON.stringify(err, null, 2));
-                } else {
-                    for (let i = 0; i < data.Items.length; i++) {
-                        for (let x = 0; x < data.Items[i].category.length; x++) {
-                            for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
-                                if (data.Items[i].category[x].product[z].productID === productID) {
-                                    let params = {
-                                        TableName: "Admins",
-                                        Key: {
-                                            "adminID": "admin",
-                                            "adminName": "admin"
-                                        },
-                                        UpdateExpression: "set category[" + x + "].product[" + z + "].auction.bids = list_append(category[" + x + "].product[" + z + "].auction.bids, :bidAdd)",
-                                        ExpressionAttributeValues: {
-                                            ":bidAdd": [
-                                                {
-                                                    user: sess.userID,
-                                                    amount: price,
-                                                    timeStamp: new Date().getTime(),
-                                                }
-                                            ],
-                                        },
-                                        ReturnValues: "UPDATED_NEW"
-                                    };
-                                    docClient.update(params, function (err, data) {
-                                        if (err) {
-                                            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-                                        } else {
-                                            //EMIT SERVER
-                                            console.log("Sending " + z + " ....");
-                                            io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", clientUserID, price, dateTime);
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
-                };
-            });
-        } else {
-            let params = {
-                TableName: 'Businesss'
-            }
-            docClient.scan(params, (err, data) => {
-                if (err) {
-                    console.error('Error JSON:', JSON.stringify(err, null, 2));
-                } else {
-                    for (let i = 0; i < data.Items.length; i++) {
-                        for (let x = 0; x < data.Items[i].category.length; x++) {
-                            for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
-                                if (data.Items[i].category[x].product[z].productID === productID) {
-                                    let params = {
-                                        TableName: "Businesss",
-                                        Key: {
-                                            "businessID": ownerID,
-                                            "businessName": ownerName
-                                        },
-                                        UpdateExpression: "set category[" + x + "].product[" + z + "].auction.bids = list_append(category[" + x + "].product[" + z + "].auction.bids, :bidAdd)",
-                                        ExpressionAttributeValues: {
-                                            ":bidAdd": [
-                                                {
-                                                    user: sess.userID,
-                                                    amount: price,
-                                                    timeStamp: new Date().getTime(),
-                                                }
-                                            ],
-                                        },
-                                        ReturnValues: "UPDATED_NEW"
-                                    };
-                                    docClient.update(params, function (err, data) {
-                                        if (err) {
-                                            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-                                        } else {
-                                            //EMIT SERVER
-                                            socket.emit("Server_sent_data_BID", clientUserID, price, dateTime);
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
-                };
-            });
-        }
+        })
     });
 
-
-    //CHECK AND CREATE ORDER FOR USER HAVE FINAL SOCKET
+    //CHECK AND CREATE ORDER FOR USER HAVE BID FINAL
     socket.on("CREATE_ORDER_AUCTION_CLIENT", function (productID, userID, ownerID, ownerName) {
         if (ownerName === "admin") {
-            params = {
-                TableName: 'Admins',
-                Key: {
-                    "adminID": "admin",
-                    "adminName": "admin"
-                },
-            }
-            docClient.scan(params, (err, data) => {
-                if (data.Items.length != 0) {
-                    var productList = [];
-                    data.Items.forEach(item => {
-                        item.category.forEach(cat => {
-                            cat.product.forEach(element => {
-                                if (productID === element.productID) {
-                                    element.auction.bids.forEach(bid => {
-                                        productList.push(bid);
-                                    });
-                                }
-                            });
-                        });
-                    });
-                    productList.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
-                    if (userID === productList[productList.length - 1].user) {
-                        ctlCtm.add_Order_Customer(userID, productID);
-                        socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
-                    } else {
-                        socket.emit("CREATE_ORDER_AUCTION_SERVER", false);
-                    }
+            ctlAdmin.Create_Order(productID, userID).then(data => {
+                if(data){
+                    socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
+                }else{
+                    socket.emit("CREATE_ORDER_AUCTION_SERVER", false);
                 }
-            });
+            })
         } else {
-            params = {
-                TableName: 'Businesss',
-                Key: {
-                    "businessID": ownerID,
-                    "businessName": ownerName
-                },
-            }
-            docClient.scan(params, (err, data) => {
-                if (data.Items.length != 0) {
-                    var productList = [];
-                    data.Items.forEach(item => {
-                        item.category.forEach(cat => {
-                            cat.product.forEach(element => {
-                                if (productID === element.productID) {
-                                    element.auction.bids.forEach(bid => {
-                                        productList.push(bid);
-                                    });
-                                }
-                            });
-                        });
-                    });
-                    productList.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
-                    if (userID === productList[productList.length - 1].user) {
-                        ctlCtm.add_Order_Customer(userID, productID);
-                        socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
-                    } else {
-                        socket.emit("CREATE_ORDER_AUCTION_SERVER", false);
-                    }
+            ctlBsn.Create_Order(productID, userID, ownerID, ownerName).then(data => {
+                if(data){
+                    socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
+                }else{
+                    socket.emit("CREATE_ORDER_AUCTION_SERVER", false);
                 }
-            });
+            })
         }
     });
 });
@@ -347,9 +130,9 @@ app.get('/login', (req, res) => {
 
 //LOG IN
 app.post('/login', (req, res) => {
-    sess = req.session
-    username = req.body.username;
-    password = req.body.password;
+    const sess = req.session
+    const username = req.body.username;
+    const password = req.body.password;
     ctlAdmin.get_Item_Admin_Username(username).then((data) => {
         if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
             sess.permission = "admin";
@@ -435,6 +218,8 @@ app.post('/createCustomer', function (req, res) {
 
 //Home Manager Admin Page
 app.get('/', function (req, res) {
+    sess = req.session
+    console.log("UserID " + sess.userID + " vừa đăng nhập!");
     ctlAdmin.getAll_Product_Admin('index', res);
 });
 
@@ -524,64 +309,10 @@ app.get('/quanlyloaisanpham', function (req, res) {
 
 //Create Category
 app.post('/createCategory', function (req, res) {
-    let params = {
-        TableName: 'Admins'
-    }
-
-    docClient.scan(params, (err, data) => {
-
-        const categoryName = req.body.categoryName;
-        //Thêm items mới với ID tăng dần
-        var categoryID = '';
-        //Lấy ra ID items cuối cùng 
-        if (err) {
-            console.error('Error JSON:', JSON.stringify(err, null, 2));
-        } else {
-            //Tạo ra biến categoryID mới
-            var count = Number(data.Items[0].category.length);
-            console.log('Count: ' + count);
-            if (count != 0) {
-                var max = 0;
-                data.Items[0].category.forEach(item => {
-                    var index = Number(item.categoryID.match(/[^_]*$/));
-                    if (index > max) {
-                        max = index;
-                    }
-                });
-                var indexN = max + 1;
-                categoryID = "CG_" + indexN.toString();
-            } else {
-                categoryID = 'CG_1';
-            }
-            let params = {
-                TableName: 'Admins',
-                Key: {
-                    "adminID": "admin",
-                    "adminName": "admin"
-                },
-                UpdateExpression: "SET #category = list_append(#category, :categoryAdd)",
-                ExpressionAttributeNames: { "#category": "category" },
-                ExpressionAttributeValues: {
-                    ':categoryAdd': [
-                        {
-                            'categoryID': String(categoryID),
-                            'categoryName': String(categoryName),
-                            'isStatus': true,
-                            'product': []
-                        }
-                    ]
-
-                },
-                ReturnValues: "ALL_NEW"
-            };
-
-            docClient.update(params, (err, data) => {
-                if (err) {
-                    console.error(JSON.stringify(err, null, 2));
-                } else {
-                    res.redirect('/quanlyloaisanpham');
-                }
-            })
+    const categoryName = req.body.categoryName;
+    ctlAdmin.Create_Category(categoryName).then(data => {
+        if(data){
+            res.redirect('/quanlyloaisanpham');
         }
     })
 });
@@ -591,130 +322,25 @@ app.post('/updateCategory', (req, res) => {
     var categoryID = req.body.categoryID;
     var categoryName = req.body.categoryName;
 
-    //Update for admin
-    let params = {
-        TableName: 'Admins',
-        Key: {
-            "adminID": "admin",
-            "adminName": "admin"
-        },
-    };
-    docClient.scan(params, function (err, data) {
-        if (err) {
-            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            for (let index = 0; index < data.Items.length; index++) {
-                for (let i = 0; i < data.Items[index].category.length; i++) {
-                    if (data.Items[index].category[i].categoryID === categoryID) {
-                        let params = {
-                            TableName: 'Admins',
-                            Key: {
-                                "adminID": "admin",
-                                "adminName": "admin"
-                            },
-                            UpdateExpression: "SET category[" + i + "].categoryName = :vals",
-                            ExpressionAttributeValues: {
-                                ":vals": categoryName
-                            }
-                        };
-
-                        docClient.update(params, function (err, data) {
-                            if (err)
-                                console.log(err);
-                            else {
-                                console.log("Update category succeeded for Admin");
-                                res.redirect('/quanlyloaisanpham');
-                            }
-                        });
-                    }
+    ctlAdmin.Update_Category(categoryID,categoryName).then(data => {
+        ctlBsn.Update_Category(categoryID,categoryName).then(data1 => {
+            if(data){
+                if(data1){
+                    res.redirect('/quanlyloaisanpham');
                 }
             }
-        }
-    });
-
-    //Update for Business
-    let params1 = {
-        TableName: 'Businesss',
-    };
-    docClient.scan(params1, function (err, data) {
-        if (err) {
-            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            if (data.Items.length != 0) {
-                data.forEach(element => {
-                    element.category.forEach(item => {
-                        if (item.categoryID === categoryID) {
-                            let params = {
-                                TableName: 'Businesss',
-                                Key: {
-                                    "businessID": element.businessID,
-                                    "businessName": element.businessName
-                                },
-                                UpdateExpression: "SET category[" + i + "].categoryName = :vals",
-                                ExpressionAttributeValues: {
-                                    ":vals": categoryName
-                                }
-                            };
-
-                            docClient.update(params, function (err, data) {
-                                if (err)
-                                    console.log(err);
-                                else {
-                                    console.log("Update category succeeded for " + item.businessName);
-                                    res.redirect('/quanlyloaisanpham');
-                                }
-                            });
-                        }
-                    });
-                });
-            }
-        }
-    });
+        })
+    })
 });
 
 //Delete Category
 app.get('/deleteCategory', (req, res) => {
     var categoryID = req.query.categoryID;
-    let params = {
-        TableName: 'Admins',
-        Key: {
-            "adminID": "admin",
-            "adminName": "admin"
-        },
-    };
-    docClient.scan(params, function (err, data) {
-        if (err) {
-            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            for (let index = 0; index < data.Items.length; index++) {
-                for (let i = 0; i < data.Items[index].category.length; i++) {
-                    if (data.Items[index].category[i].categoryID === categoryID) {
-                        console.log(data.Items[index].category[i].categoryID);
-                        let params = {
-                            TableName: 'Admins',
-                            Key: {
-                                "adminID": "admin",
-                                "adminName": "admin"
-                            },
-                            UpdateExpression: "SET category[" + i + "].isStatus = :vals",
-                            ExpressionAttributeValues: {
-                                ":vals": false
-                            }
-                        };
-
-                        docClient.update(params, function (err, data) {
-                            if (err)
-                                console.log(err);
-                            else {
-                                console.log("UpdateItem succeeded:", JSON.stringify(data));
-                                res.redirect('/quanlyloaisanpham');
-                            }
-                        });
-                    }
-                }
-            }
+    ctlAdmin.Delete_Category(categoryID).then(data => {
+        if(data){
+            res.redirect('/quanlyloaisanpham');
         }
-    });
+    })
 });
 
 //Create Product
@@ -1043,19 +669,31 @@ app.get('/deleteauction', (req, res) => {
     }
 });
 
-//Create Auction
-app.post('/checkout', (req, res) => {
-    ctlAdmin.getItem_Product_Admin(req.body.customerID, req.body.productID, req.body.ownerID, req.body.ownerName, "check-out", res);
-});
-
 //Update order
 app.post('/updateorder', (req, res) => {
+    sess = req.session;
     ctlCtm.update_Order_Customer(sess.userID, req.body.productID, req.body.note, res);
 });
 
 app.get('/contact', (req, res) => {
     res.render('contact')
 });
+
+
+app.post('/checkout', (req,res) =>  {
+    sess = req.session;
+    var productID = req.body.productID;
+    ctlCtm.add_Order_Customer(sess.userID,productID);
+    ctlAdmin.Get_Product(productID).then(data => {
+        if(data.auction.bids[data.auction.bids.length - 1].user === sess.userID){
+            res.render('check-out', { _uG: data });
+        }else{
+            res.redirect("/");
+        }
+    });
+
+
+})
 
 
 //404 PAGE

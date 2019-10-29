@@ -14,6 +14,7 @@
         function checkCategory() {
             var name = checkBusinessName(document.getElementById('categoryName').value);
             if (name) {
+                console.log(1);
                 socket.emit("Client_sent_data_category", document.getElementById('categoryName').value);
                 socket.on("Server_sent_data_category", function (data) {
                     if (data) {

@@ -7,18 +7,7 @@ $(function () {
 	$('.timer1').startTimer({
 		//Event when complit
 		onComplete: function (element) {
-			socket.emit("CREATE_ORDER_AUCTION_CLIENT", $("#clientProductID").val(), $("#clientUserID").val(),$("#clientOwnerID").val(),$("#clientOwnerName").val());
-			socket.on("CREATE_ORDER_AUCTION_SERVER",function(data){
-				if(data){
-					$("#co_customerID").val($("#clientUserID").val());
-					$("#co_productID").val($("#clientProductID").val());
-					$("#co_ownerID").val($("#clientOwnerID").val());
-					$("#co_ownerName").val($("#clientOwnerName").val());
-					$("#formCheckout").submit();
-				}else{
-					$(location).attr('href', '/');
-				}
-			});
+			$("#formCheckout").submit();
 		}
 	});
 })
