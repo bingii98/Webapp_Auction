@@ -1,9 +1,10 @@
 const AWS = require('aws-sdk');
 const bcrypt = require('bcrypt-nodejs');
+var ctlAdmin = require('../controller/Admin-controller')
 
 AWS.config.update({
     "region": "us-east-1",
-    "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
+    "endpoint": "http://localhost:8000",
 });
 
 
@@ -126,7 +127,12 @@ function get_Items_Business_Key(id, name, location, res) {
             data.Items.forEach(item => {
                 item.category.forEach(cat => {
                     cat.product.forEach(element => {
-                        productList.push(element);
+                        let count = 0;
+                        for (var c in element.auction) {
+                            count = count + 1;
+                        }
+                        var obj = Object.assign(element, { ownerName: name }, { id: id }, { loai: cat.categoryName }, { count: count });
+                        productList.push(obj);
                     });
                 });
             });
@@ -202,7 +208,6 @@ function add_Item_Business(ObjectB, location, res) {
                 console.log('Count: ' + count);
             }
 
-            //Import
             let params = {
                 TableName: 'Businesss',
                 Item: {
@@ -215,13 +220,6 @@ function add_Item_Business(ObjectB, location, res) {
                     username: ObjectB.username,
                     password: ObjectB.password,
                     category: [
-                        {
-                            catID: "CR_1",
-                            categoryName: "Đồ điện tử",
-                            product: [
-
-                            ],
-                        }
                     ]
                 },
             };
@@ -237,6 +235,194 @@ function add_Item_Business(ObjectB, location, res) {
         }
     });
 }
+
+//ADD PRODUCT BUSINESS
+async function add_Product(ObjectB, categoryName, username) {
+    return new Promise((resolve, reject) => {
+        Check_Category_Exists(username, categoryName).then(data => {
+            if (data) {
+                QueryCreateProduct(ObjectB, username, categoryName).then(data => {
+                    resolve(true);
+                });
+            } else {
+                Create_Category(categoryName, username).then(data => {
+                    if (data) {
+                        QueryCreateProduct(ObjectB, username, categoryName).then(data => {
+                            resolve(true);
+                        });;
+                    }
+                })
+            }
+        })
+    });
+}
+
+
+//QUERY CREATE PRODUCT
+async function QueryCreateProduct(ObjectB, username, categoryName) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: 'Businesss',
+            IndexName: 'username_index',
+            FilterExpression: 'username = :username',
+            ExpressionAttributeValues: { ":username": username }
+
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                var index = '';
+                var max = 0;
+                data.Items.forEach(item => {
+                    item.category.forEach(element => {
+                        element.product.forEach(item1 => {
+                            var index = Number(item1.productID.match(/[^_]*$/));
+                            if (index > max) {
+                                max = index;
+                            }
+                        });
+                    });
+                });
+
+                var productID = data.Items[0].businessID + "PRD_" + (max + 1).toString();
+
+                data.Items[0].category.forEach(item => {
+                    if (categoryName === item.categoryName) {
+                        index = Number(item.categoryID.match(/\d+/g)) - 1
+                    }
+                    let params = {
+                        TableName: 'Businesss',
+                        Key: {
+                            "businessID": data.Items[0].businessID,
+                            "businessName": data.Items[0].businessName
+                        },
+                        UpdateExpression: "SET #category[" + index + "].#product = list_append(#category[" + index + "].#product, :categoryAdd)",
+                        ExpressionAttributeNames: { "#category": "category", "#product": "product" },
+                        ExpressionAttributeValues: {
+                            ':categoryAdd': [
+                                {
+                                    productID: productID,
+                                    productName: ObjectB.productName,
+                                    productDescribe: ObjectB.productDescribe,
+                                    productImage: "https://cdn.tgdd.vn/Files/2019/09/12/1197622/f4_800x600.jpg",
+                                    auction: {
+                                    }
+                                }
+                            ],
+                        },
+                        ReturnValues: "ALL_NEW"
+                    };
+                    docClient.update(params, function (err, data) {
+                        if (err) {
+                            console.error("Error JSON:", JSON.stringify(err, null, 2));
+                        } else {
+                            resolve(true);
+                        }
+                    });
+                })
+            }
+        })
+    })
+}
+
+//CREATE CATEGORY
+async function Create_Category(categoryName, username) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: 'Businesss',
+            IndexName: 'username_index',
+            FilterExpression: 'username = :username',
+            ExpressionAttributeValues: { ":username": username }
+
+        }
+        docClient.scan(params, (err, data) => {
+            //Lấy ra ID items cuối cùng 
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                console.log()
+                //Thêm items mới với ID tăng dần
+                var categoryID = '';
+                var businessID = data.Items[0].businessID;
+                var businessName = data.Items[0].businessName;
+                var count = Number(data.Items[0].category.length);
+                if (count != 0) {
+                    var max = 0;
+                    data.Items[0].category.forEach(item => {
+                        var index = Number(item.categoryID.match(/[^_]*$/));
+                        if (index > max) {
+                            max = index;
+                        }
+                    });
+                    var indexN = max + 1;
+                    categoryID = "CG_" + indexN.toString();
+                } else {
+                    categoryID = 'CG_1';
+                }
+                let params = {
+                    TableName: 'Businesss',
+                    Key: {
+                        "businessID": businessID,
+                        "businessName": businessName
+                    },
+                    UpdateExpression: "SET #category = list_append(#category, :categoryAdd)",
+                    ExpressionAttributeNames: { "#category": "category" },
+                    ExpressionAttributeValues: {
+                        ':categoryAdd': [
+                            {
+                                'categoryID': String(categoryID),
+                                'categoryName': String(categoryName),
+                                'isStatus': true,
+                                'product': []
+                            }
+                        ]
+                    },
+                    ReturnValues: "ALL_NEW"
+                };
+                docClient.update(params, (err, data) => {
+                    if (err) {
+                        console.error(JSON.stringify(err, null, 2));
+                    } else {
+                        resolve(true);
+                    }
+                })
+            }
+        })
+    });
+}
+
+//CHECK CATEGORY EXISTS
+async function Check_Category_Exists(username, categoryName) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: 'Businesss',
+            IndexName: 'username_index',
+            FilterExpression: 'username = :username',
+            ExpressionAttributeValues: { ":username": username }
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                data.Items.forEach(element => {
+                    var count = 0;
+                    element.category.forEach(item => {
+                        if (item.categoryName === categoryName) {
+                            count++;
+                        }
+                    })
+                    if (count == 0) {
+                        resolve(false)
+                    } else {
+                        resolve(true)
+                    }
+                })
+            }
+        });
+    });
+}
+
 
 function edit_Item_Business(ObjectB, location, res) {
     let params = {
@@ -280,8 +466,50 @@ async function get_Item_Business_Username(username) {
     });
 }
 
+async function get_ListProduct_Business_Username(username) {
+    return new Promise((resolve, reject) => {
+        let params1 = {
+            TableName: "Businesss",
+            IndexName: 'username_index',
+            FilterExpression: 'username = :username',
+            ExpressionAttributeValues: { ":username": username }
+        }
+        docClient.scan(params1, (err, data) => {
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                data.Items.forEach(item => {
+                    var productList = [];
+                    item.category.forEach(cat => {
+                        cat.product.forEach(element => {
+                            let count = 0;
+                            for (var c in element.auction) {
+                                count = count + 1;
+                            }
+                            if (count != 0) {
+                                var obj = Object.assign(element, { ownerName: data.Item[0].businessName }, { id: data.Item[0].businessID }, { loai: cat.categoryName });
+                                productList.push(obj);
+                            }
+                        });
+                    });
+                    productList.sort(function (a, b) {
+                        var nameA = a.productName.toLowerCase(), nameB = b.productName.toLowerCase()
+                        if (nameA < nameB) //sort string ascending
+                            return -1
+                        if (nameA > nameB)
+                            return 1
+                        return 0 //default return value (no sorting)
+                    });
+                    console.log(productList);
+                    resolve(productList);
+                });
+            }
+        });
+    });
+}
+
 //ADD BID TO ADMIN PRODUCT
-async function Add_Bid_Product(productID, price, ownerID, ownerName,clientUserID) {
+async function Add_Bid_Product(productID, price, ownerID, ownerName, clientUserID) {
     return new Promise((resolve, reject) => {
         let params = {
             TableName: 'Businesss'
@@ -407,7 +635,6 @@ async function Update_Category(categoryID, categoryName) {
     });
 }
 
-
 module.exports = {
     getAll_Business: getAll_Business,
     getAll_Product_Business: getAll_Product_Business,
@@ -420,4 +647,6 @@ module.exports = {
     Add_Bid_Product: Add_Bid_Product,
     Create_Order: Create_Order,
     Update_Category: Update_Category,
+    add_Product: add_Product,
+    get_ListProduct_Business_Username: get_ListProduct_Business_Username,
 };

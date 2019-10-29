@@ -27,7 +27,7 @@ app.use(session({
 
 AWS.config.update({
     "region": "us-east-1",
-    "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
+    "endpoint": "http://localhost:8000",
 });
 
 var sess;
@@ -35,14 +35,14 @@ const server = app.listen(3000, () => { console.log("Server running at port 3000
 const io = require('socket.io').listen(server);
 
 //SocketIO FUNCTION START
-io.on("connection", function (socket) {
+io.on("connection", (socket) => {
 
     //CHECK BUSINESS USER EXIST
     socket.on("Client_sent_data", function (username) {
         ctlBsn.check_Username(username).then(data => {
-            if(data){
+            if (data) {
                 socket.emit("Server_sent_data", true);
-            }else{
+            } else {
                 socket.emit("Server_sent_data", false);
             }
         })
@@ -51,9 +51,9 @@ io.on("connection", function (socket) {
     //CHECK CUSTOMER USER EXIST
     socket.on("Customer_check_username", function (username) {
         ctlCtm.check_Username(username).then(data => {
-            if(data){
+            if (data) {
                 socket.emit("Server_reply_username", true);
-            }else{
+            } else {
                 socket.emit("Server_sent_data", false);
             }
         });
@@ -64,9 +64,9 @@ io.on("connection", function (socket) {
         console.log(1);
         ctlAdmin.Check_Category(categoryName).then(data => {
             console.log(2);
-            if(data){
+            if (data) {
                 socket.emit("Server_sent_data_category", true);
-            }else{
+            } else {
                 socket.emit("Server_sent_data_category", false);
             }
         })
@@ -87,14 +87,14 @@ io.on("connection", function (socket) {
 
     //ADD BID TO ADMIN PRODUCT
     socket.on("Client_sent_data_BID", function (productID, price, ownerID, ownerName, clientUserID, dateTime) {
-        ctlAdmin.Add_Bid_Product(productID,price,clientUserID).then(data => {
+        ctlAdmin.Add_Bid_Product(productID, price, clientUserID).then(data => {
             if (ownerID === "admin") {
                 ctlAdmin.Get_Final_Bid(productID).then(data => {
-                    io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data,dateTime);
+                    io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data, dateTime);
                 })
             } else {
                 ctlBsn.Get_Final_Bid(productID).then(data => {
-                    io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data,dateTime);
+                    io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data, dateTime);
                 })
             }
         })
@@ -104,17 +104,17 @@ io.on("connection", function (socket) {
     socket.on("CREATE_ORDER_AUCTION_CLIENT", function (productID, userID, ownerID, ownerName) {
         if (ownerName === "admin") {
             ctlAdmin.Create_Order(productID, userID).then(data => {
-                if(data){
+                if (data) {
                     socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
-                }else{
+                } else {
                     socket.emit("CREATE_ORDER_AUCTION_SERVER", false);
                 }
             })
         } else {
             ctlBsn.Create_Order(productID, userID, ownerID, ownerName).then(data => {
-                if(data){
+                if (data) {
                     socket.emit("CREATE_ORDER_AUCTION_SERVER", true);
-                }else{
+                } else {
                     socket.emit("CREATE_ORDER_AUCTION_SERVER", false);
                 }
             })
@@ -138,6 +138,7 @@ app.post('/login', (req, res) => {
             sess.permission = "admin";
             sess.userID = "admin";
             sess.userName = "admin";
+            sess.username = data[0].username;
             res.redirect('/quanlysanpham');
         } else {
             ctlBsn.get_Item_Business_Username(username).then((data) => {
@@ -145,14 +146,15 @@ app.post('/login', (req, res) => {
                     sess.permission = "business";
                     sess.userID = data[0].businessID;
                     sess.userName = data[0].businessName;
-                    res.redirect('/quanlysanpham');
+                    sess.username = data[0].username;
+                    res.redirect('quanlysanpham_doanhnghiep');
                 } else {
                     ctlCtm.get_Item_Customer_Username(username).then((data) => {
                         if (data.length === 1 && bcrypt.compareSync(password, data[0].password)) {
                             sess.permission = "customer";
                             sess.userID = data[0].customerID;
                             sess.userName = data[0].customerName;
-                            console.log(sess.userName);
+                            sess.username = data[0].username;
                             res.redirect('/');
                         } else {
                             res.redirect('/login');
@@ -165,14 +167,14 @@ app.post('/login', (req, res) => {
 });
 
 //LOG OUT
-app.get('/logout', function (req, res) {
+app.get('/logout', (req, res) => {
     req.session.destroy(function (err) {
         res.redirect('/');
     });
 });
 
 //SIGN UP
-app.post('/signup', function (req, res) {
+app.post('/signup', (req, res) => {
     const customerName = req.body.customerName;
     const address = req.body.address;
     const phone = req.body.phone;
@@ -196,7 +198,7 @@ app.post('/signup', function (req, res) {
 });
 
 //Create Customer
-app.post('/createCustomer', function (req, res) {
+app.post('/createCustomer', (req, res) => {
     const customerName = req.body.customerName;
     const address = req.body.address;
     const phone = req.body.phone;
@@ -217,44 +219,69 @@ app.post('/createCustomer', function (req, res) {
 });
 
 //Home Manager Admin Page
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
     sess = req.session
-    console.log("UserID " + sess.userID + " vừa đăng nhập!");
-    ctlAdmin.getAll_Product_Admin('index', res);
+    if (sess.permission === "admin" || sess.permission === "business" || sess.permission === "customer") {
+        ctlAdmin.getAll_Product_Admin('index', sess.userID, true, res);
+    } else {
+        ctlAdmin.getAll_Product_Admin('index', "null", false, res);
+    }
 });
 
 //Product Manager Admin Page
-app.get('/admin', function (req, res) {
+app.get('/admin', (req, res) => {
     sess = req.session
     if (sess.permission === "admin") {
-        ctlAdmin.getAll_Product_Admin('quanlysanpham', res);
+        ctlAdmin.getAll_Product_Admin('quanlysanpham', sess.userID, true, res);
     } else {
         res.render('login');
     }
 });
 
 //Product Manager Admin Page
-app.get('/quanlysanpham', function (req, res) {
+app.get('/quanlysanpham', (req, res) => {
     sess = req.session
     if (sess.permission === "admin") {
-        ctlAdmin.getAll_Product_Admin('quanlysanpham', res);
+        ctlAdmin.getAll_Product_Admin('quanlysanpham', sess.userID, true, res);
     } else {
         res.render('login');
     }
 });
+
+//Product Manager Business Page
+app.get('/quanlysanpham_doanhnghiep', (req, res) => {
+    sess = req.session
+    if (sess.permission === "business") {
+        ctlBsn.get_Items_Business_Key(sess.userID, sess.userName, 'quanlysanpham_doanhnghiep', res);
+    } else {
+        res.render('login');
+    }
+});
+
+//Auction Manager Business Page
+app.get('/quanlydaugia_doanhnghiep', (req, res) => {
+    sess = req.session
+    if (sess.permission === "business") {
+        ctlBsn.get_ListProduct_Business_Username(sess.username).then(data => {
+            res.render('quanlydaugia_doanhnghiep', { _uG: data });
+        });
+    } else {
+        res.render('login');
+    }
+})
 
 //Auction Manager Admin Page
-app.get('/quanlydaugia', function (req, res) {
+app.get('/quanlydaugia', (req, res) => {
     sess = req.session
     if (sess.permission === "admin") {
-        ctlAdmin.getAll_Product_Admin('quanlydaugia', res);
+        ctlAdmin.getAll_Product_Admin('quanlydaugia', sess.userID, true, res);
     } else {
         res.render('login');
     }
 });
 
 //Product - Business Manager Admin Page
-app.get('/quanlydoanhnghiep_sanpham', function (req, res) {
+app.get('/quanlydoanhnghiep_sanpham', (req, res) => {
     sess = req.session
     if (sess.permission === "admin") {
         var id = req.query.businessID;
@@ -266,17 +293,17 @@ app.get('/quanlydoanhnghiep_sanpham', function (req, res) {
 });
 
 //Order Manager Admin Page
-app.get('/quanlyhoadon', function (req, res) {
+app.get('/quanlyhoadon', (req, res) => {
     sess = req.session
     if (sess.permission === "admin") {
-        ctlCtm.getAll_Customer("quanlyhoadon",res);
+        ctlCtm.getAll_Customer("quanlyhoadon", res);
     } else {
         res.render('login');
     }
 });
 
 //Customer Manager Admin Page
-app.get('/quanlykhachhang', function (req, res) {
+app.get('/quanlykhachhang', (req, res) => {
     sess = req.session
     if (sess.permission === "admin") {
         ctlCtm.getAll_Customer('quanlykhachhang', res);
@@ -286,7 +313,7 @@ app.get('/quanlykhachhang', function (req, res) {
 });
 
 //Business Manager Admin Page
-app.get('/quanlydoanhnghiep', function (req, res) {
+app.get('/quanlydoanhnghiep', (req, res) => {
     sess = req.session
     if (sess.permission === "admin") {
         ctlBsn.getAll_Business('quanlydoanhnghiep', res);
@@ -297,7 +324,7 @@ app.get('/quanlydoanhnghiep', function (req, res) {
 
 
 //Category Manager Admin Page
-app.get('/quanlyloaisanpham', function (req, res) {
+app.get('/quanlyloaisanpham', (req, res) => {
     sess = req.session
     if (sess.permission === "admin") {
         ctlAdmin.getAll_Category('quanlyloaisanpham', res);
@@ -308,10 +335,10 @@ app.get('/quanlyloaisanpham', function (req, res) {
 
 
 //Create Category
-app.post('/createCategory', function (req, res) {
+app.post('/createCategory', (req, res) => {
     const categoryName = req.body.categoryName;
     ctlAdmin.Create_Category(categoryName).then(data => {
-        if(data){
+        if (data) {
             res.redirect('/quanlyloaisanpham');
         }
     })
@@ -322,10 +349,10 @@ app.post('/updateCategory', (req, res) => {
     var categoryID = req.body.categoryID;
     var categoryName = req.body.categoryName;
 
-    ctlAdmin.Update_Category(categoryID,categoryName).then(data => {
-        ctlBsn.Update_Category(categoryID,categoryName).then(data1 => {
-            if(data){
-                if(data1){
+    ctlAdmin.Update_Category(categoryID, categoryName).then(data => {
+        ctlBsn.Update_Category(categoryID, categoryName).then(data1 => {
+            if (data) {
+                if (data1) {
                     res.redirect('/quanlyloaisanpham');
                 }
             }
@@ -337,29 +364,56 @@ app.post('/updateCategory', (req, res) => {
 app.get('/deleteCategory', (req, res) => {
     var categoryID = req.query.categoryID;
     ctlAdmin.Delete_Category(categoryID).then(data => {
-        if(data){
+        if (data) {
             res.redirect('/quanlyloaisanpham');
         }
     })
 });
 
-//Create Product
+//Create Product ADMIN
 app.post('/createproduct', (req, res) => {
-    const productName = req.body.productName;
-    const productDescribe = req.body.productDescribe;
-    const categoryID = req.body.categoryID;
+    if (sess.permission === "admin") {
+        const productName = req.body.productName;
+        const productDescribe = req.body.productDescribe;
+        const categoryID = req.body.categoryID;
 
-    const ObjectB = {
-        productName: productName,
-        productDescribe: productDescribe
+        const ObjectB = {
+            productName: productName,
+            productDescribe: productDescribe
+        }
+        ctlAdmin.add_Product(ObjectB, categoryID, '/quanlysanpham', res);
+    } else {
+        res.redirect('/login')
     }
-    ctlAdmin.add_Product(ObjectB, categoryID, '/quanlysanpham', res);
+});
+
+//Create Product BUSINESS
+app.post('/createproductbusiness', (req, res) => {
+    if (sess.permission === "business") {
+        sess = req.session
+        const productName = req.body.productName;
+        const productDescribe = req.body.productDescribe;
+        const categoryName = req.body.categoryName;
+
+        const ObjectB = {
+            productName: productName,
+            productDescribe: productDescribe,
+        }
+
+        ctlBsn.add_Product(ObjectB, categoryName, sess.username).then(data => {
+            if (data) {
+                res.redirect("/quanlysanpham_doanhnghiep")
+            }
+        })
+    } else {
+        res.redirect('/login')
+    }
 });
 
 //Delete Product
-app.get('/deleteProduct', function (req, res) {
+app.get('/deleteProduct', (req, res) => {
     sess = req.session
-    if (sess.permission === "admin") {
+    if (sess.permission === "admin" || sess.permission === "business") {
         var owner = req.query.owner;
         var productID = req.query.productID;
         if (owner === "admin") {
@@ -387,7 +441,11 @@ app.get('/deleteProduct', function (req, res) {
                                         if (err) {
                                             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                         } else {
-                                            res.redirect('/quanlysanpham');
+                                            if (sess.permission === "admin") {
+                                                res.redirect('/quanlysanpham');
+                                            } else {
+                                                res.redirect('/quanlysanpham_doanhnghiep');
+                                            }
                                         }
                                     });
                                     break;
@@ -401,8 +459,8 @@ app.get('/deleteProduct', function (req, res) {
             let params = {
                 TableName: 'Businesss',
                 Key: {
-                    businessID: req.query.id,
-                    businessName: owner,
+                    "businessID": sess.userID,
+                    "businessName": sess.userName
                 }
             }
             docClient.scan(params, (err, data) => {
@@ -416,8 +474,8 @@ app.get('/deleteProduct', function (req, res) {
                                     let params = {
                                         TableName: "Businesss",
                                         Key: {
-                                            "businessID": req.query.id,
-                                            "businessName": owner
+                                            "businessID": sess.userID,
+                                            "businessName": sess.userName
                                         },
                                         UpdateExpression: "REMOVE category[" + x + "].product[" + z + "]",
                                         ReturnValues: "UPDATED_NEW"
@@ -426,7 +484,11 @@ app.get('/deleteProduct', function (req, res) {
                                         if (err) {
                                             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                         } else {
-                                            res.redirect('/quanlysanpham');
+                                            if (sess.permission === "admin") {
+                                                res.redirect('/quanlysanpham');
+                                            } else {
+                                                res.redirect('/quanlysanpham_doanhnghiep');
+                                            }
                                         }
                                     });
                                     break
@@ -443,9 +505,9 @@ app.get('/deleteProduct', function (req, res) {
 });
 
 //Update Product
-app.get('/editProduct', function (req, res) {
+app.get('/editProduct', (req, res) => {
     sess = req.session
-    if (sess.permission === "admin") {
+    if (sess.permission === "admin" || sess.permission === "business") {
         var owner = req.query.owner;
         var id = req.query.id;
         var productID = req.query.productID;
@@ -480,7 +542,11 @@ app.get('/editProduct', function (req, res) {
                                         if (err) {
                                             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                         } else {
-                                            res.redirect('/quanlysanpham');
+                                            if (sess.permission === "admin") {
+                                                res.redirect('/quanlysanpham');
+                                            } else {
+                                                res.redirect('/quanlysanpham_doanhnghiep');
+                                            }
                                         }
                                     });
                                     break
@@ -494,8 +560,8 @@ app.get('/editProduct', function (req, res) {
             let params = {
                 TableName: 'Businesss',
                 Key: {
-                    businessID: req.query.id,
-                    businessName: owner,
+                    "businessID": sess.userID,
+                    "businessName": sess.userName
                 }
             }
             docClient.scan(params, (err, data) => {
@@ -509,8 +575,8 @@ app.get('/editProduct', function (req, res) {
                                     let params = {
                                         TableName: "Businesss",
                                         Key: {
-                                            "businessID": id,
-                                            "businessName": owner
+                                            "businessID": sess.userID,
+                                            "businessName": sess.userName
                                         },
                                         UpdateExpression: "set category[" + x + "].product[" + z + "].productName =:n, category[" + x + "].product[" + z + "].productDescribe =:d",
                                         ExpressionAttributeValues: {
@@ -522,7 +588,11 @@ app.get('/editProduct', function (req, res) {
                                         if (err) {
                                             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                         } else {
-                                            res.redirect('/quanlysanpham');
+                                            if (sess.permission === "admin") {
+                                                res.redirect('/quanlysanpham');
+                                            } else {
+                                                res.redirect('/quanlysanpham_doanhnghiep');
+                                            }
                                         }
                                     });
                                     break
@@ -539,7 +609,7 @@ app.get('/editProduct', function (req, res) {
 });
 
 //Add Business
-app.post('/createbusiness', function (req, res) {
+app.post('/createbusiness', (req, res) => {
     const businessName = req.body.businessName;
     const address = req.body.address;
     const phone = req.body.phone;
@@ -559,14 +629,14 @@ app.post('/createbusiness', function (req, res) {
 });
 
 //Delete Business
-app.get('/deletebusiness', function (req, res) {
+app.get('/deletebusiness', (req, res) => {
     var businessid = req.query.businessid;
     var businessname = req.query.businessname;
     ctlBsn.delete_Item_Business_Key(businessid, businessname, '/quanlydoanhnghiep', res);
 });
 
 //Update Business
-app.get('/editBusiness', function (req, res) {
+app.get('/editBusiness', (req, res) => {
     sess = req.session
     if (sess.permission === "admin") {
         const businessID = req.query.businessID;
@@ -589,7 +659,7 @@ app.get('/editBusiness', function (req, res) {
 });
 
 //Update Customer
-app.post('/editCustomer', function (req, res) {
+app.post('/editCustomer', (req, res) => {
     sess = req.session
     const customerID = req.body.customerID;
     const customerName = req.body.customerName;
@@ -611,7 +681,7 @@ app.post('/editCustomer', function (req, res) {
 });
 
 //Delete Customer
-app.get('/deleteCustomer', function (req, res) {
+app.get('/deleteCustomer', (req, res) => {
     var customerID = req.query.customerID;
     ctlCtm.delete_Item_Customer_Key(customerID, '/quanlykhachhang', res);
 });
@@ -642,9 +712,10 @@ app.post('/createauction', (req, res) => {
         timeRun: timeRun,
         startPrice: startPrice,
         businessID: businessID,
-        owner: sess.permission
+        owner: sess.permission,
+        userName : sess.userName,
     }
-    if (sess.permission === "admin") {
+    if (sess.permission === "admin" || sess.permission === "business") {
         ctlAdmin.add_Auction(ObjectB, productID, res);
     } else {
         res.render('login');
@@ -680,20 +751,30 @@ app.get('/contact', (req, res) => {
 });
 
 
-app.post('/checkout', (req,res) =>  {
+app.post('/checkout', (req, res) => {
     sess = req.session;
     var productID = req.body.productID;
-    ctlCtm.add_Order_Customer(sess.userID,productID);
+    ctlCtm.add_Order_Customer(sess.userID, productID);
     ctlAdmin.Get_Product(productID).then(data => {
-        if(data.auction.bids[data.auction.bids.length - 1].user === sess.userID){
+        if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
             res.render('check-out', { _uG: data });
-        }else{
+        } else {
             res.redirect("/");
         }
     });
-
-
 })
+
+app.post('/lichsudaugia', (req, res) => {
+    sess = req.session
+    sess = req.session
+    if (sess.permission === "customer") {
+        ctlCtm.get_Item_Customer_Username(sess.username).then(data => {
+            res.render('lichsudaugia', { _uG: data });
+        })
+    } else {
+        res.redirect('/');
+    }
+});
 
 
 //404 PAGE

@@ -11,42 +11,12 @@
     <!-- jQuery JS -->
     <script src="js/vendor/jquery-1.12.0.min.js"></script>
     <script src="socket.io/socket.io.js"></script>
-    <script> var socket = io('http://54.175.16.232:3000'); </script>
-    <script>
-        $(document).ready(function () {
-            socket.emit("JOIN_ROOM_AUCTION_CLIENT", $("#clientProductID").val());
-
-            $("#btnActionAuction").click(function () {
-                var re = /^[0-9]+(\.[0-9]{1,2})?$/;
-                var priceHT = $("#priceNow").text();
-                var priceDR = $("#priceAuctionbyUser").val();
-                var ownerID = $("#clientOwnerID").val();
-                var ownerName = $("#clientOwnerName").val();
-                var productID = $("#clientProductID").val();
-                if (!re.test(priceDR)) {
-                    $('#error_AuctionPrice').text('Định dạng tiền không đúng!');
-                } else {
-                    if (Number(priceDR) > Number(priceHT) + 999) {
-                        $('#error_AuctionPrice').text('');
-                        socket.emit("Client_sent_data_BID", productID, priceDR, ownerID, ownerName, $("#clientUserID").val(), new Date());
-                    } else {
-                        $('#error_AuctionPrice').text('Giá đưa ra phải lớn hơn giá hiện tại 1000!');
-                    }
-                }
-            });
-        });
-        socket.on("Server_sent_data_BID", function (data,dateTime) {
-            var current_datetime = new Date(dateTime);
-            let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes() + ":" + current_datetime.getSeconds();
-            $("#listUserJoin").append("<li><i class='zmdi zmdi-account-circle'></i>&nbsp<span>UserID: " + data.user + " - chốt giá " + data.amount + " <i style='font-weight: 100;''>- tại " + formatted_date + "</i></span></li>");
-            $("#priceNow").html(data.amount);
-            $("#userLast").html(data.user);
-        });
-    </script>
+    <script> var socket = io('http://localhost:3000'); </script>
     <!--Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i"
+        rel="stylesheet">
     <!-- CSS -->
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -89,7 +59,181 @@
                     <img src="img/logo.png" alt="logo" />
                 </a>
             </div>
-            <!-- Menu Wrapper 1 --> <% include element/headerC %>
+            <!-- Header 1-->
+            <div class="header-area sticky header-area-1  clearfix">
+                <!-- Header Left 1 -->
+                <div class="header-left header-left-1 float-left">
+                    <a href="/" class="logo">
+                        <img src="img/logo.png" alt="logo" />
+                    </a>
+                </div>
+                <!-- Menu Wrapper 1 -->
+                <div class="menu-wrapper menu-wrapper-1 hidden-sm hidden-xs text-center">
+                    <div class="menu menu-1">
+                        <nav>
+                            <ul>
+                                <li class="active">
+                                    <a href="/">TRANG CHỦ</a>
+                                </li>
+                                <li>
+                                    <a>LOẠI</a>
+                                    <div class="mega-menu">
+                                        <ul>
+                                            <li>
+                                                <a href="/">CÁC LOẠI</a>
+                                            </li>
+                                            <li>
+                                                <a href="/sanpham?loai=xeco&sapxep=&tinhtrang=all">Xe cộ</a>
+                                            </li>
+                                            <li>
+                                                <a href="/sanpham?loai=donoithat&sapxep=&tinhtrang=all">Đồ nội thất</a>
+                                            </li>
+                                            <li>
+                                                <a href="/sanpham?loai=dodienthu&sapxep=&tinhtrang=all">Đồ điện tử</a>
+                                            </li>
+                                            <li>
+                                                <a href="/sanpham?loai=thoitrang&sapxep=&tinhtrang=all">Thời trang</a>
+                                            </li>
+                                            <li>
+                                                <a href="/sanpham?loai=giay&sapxep=&tinhtrang=all">Giày</a>
+                                            </li>
+                                            <li>
+                                                <a href="/sanpham?loai=doco&sapxep=&tinhtrang=all">Đồ cổ</a>
+                                            </li>
+                                        </ul>
+                                        <ul>
+                                            <li>
+                                                <a href="#">TÌM THEO</a>
+                                            </li>
+                                            <li>
+                                                <a href="/sanpham?loai=&sapxep=ten&tinhtrang=all">Tên</a>
+                                            </li>
+                                            <li>
+                                                <a href="/sanpham?loai=doco&sapxep=thoigian&tinhtrang=all">Thời gian</a>
+                                            </li>
+                                        </ul>
+                                        <div class="menu-banner">
+                                            <a href="#">
+                                                <img src="img/menu-banner.jpg" alt="" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <a>Tình trạng</a>
+                                    <ul class="sub-menu">
+                                        <li>
+                                            <a href="/sanpham?loai=&sapxep=&tinhtrang=dangdaugia">Đang đấu giá</a>
+                                        </li>
+                                        <li>
+                                            <a href="/sanpham?loai=&sapxep=&tinhtrang=chuadaugia">Đã lên sàng</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a>Chính sách</a>
+                                    <ul class="sub-menu">
+                                        <li>
+                                            <a href="#">Chính sách đấu giá</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Chính sách giao hàng</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="/contact">Liên hệ</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <!-- Header Right 1 -->
+                <div class="header-right header-right-1 float-right">
+                    <!-- Account Menu -->
+                    <div class="account-menu account-menu-1 float-right">
+                        <button data-toggle="dropdown" class="acc-menu-toggle"><i
+                                class="zmdi zmdi-settings"></i></button>
+                        <ul class="acc-menu-dropdown dropdown-menu right">
+                            <li>
+                                <form action="lichsudaugia" method="POST" id="FormLSDG"><input type="hidden"
+                                        value="<%= _uG.userID %>"><a href="#" id="submitFormLSDG">Xem lịch sử đấu
+                                        giá</a></form>
+                            </li>
+                            <li><a href='/logout'>Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Mobile Menu Wrapper 1 -->
+                <div class="mobile-menu-wrapper mobile-menu-wrapper-1 hidden-md hidden-lg">
+                    <div class="mobile-menu mobile-menu-1">
+                        <nav>
+                            <ul>
+                                <li class="active">
+                                    <a href="index.html">TRANG CHỦ</a>
+                                </li>
+                                <li>
+                                    <a>LOẠI</a>
+                                    <ul>
+                                        <li>
+                                            <a href="/">CÁC LOẠI</a>
+                                            <ul>
+                                                <li>
+                                                    <a href="/sanpham?loai=xeco&sapxep=&tinhtrang=all">Xe cộ</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/sanpham?loai=donoithat&sapxep=&tinhtrang=all">Đồ nội
+                                                        thất</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/sanpham?loai=dodienthu&sapxep=&tinhtrang=all">Đồ điện
+                                                        tử</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/sanpham?loai=thoitrang&sapxep=&tinhtrang=all">Thời
+                                                        trang</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/sanpham?loai=giay&sapxep=&tinhtrang=all">Giày</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/sanpham?loai=doco&sapxep=&tinhtrang=all">Đồ cổ</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a>Tìm theo</a>
+                                            <ul>
+                                                <li>
+                                                    <a href="/sanpham?loai=&sapxep=ten&tinhtrang=all">Tên</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/sanpham?loai=doco&sapxep=thoigian&tinhtrang=all">Thời
+                                                        gian</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a>Chính sách</a>
+                                    <ul>
+                                        <li>
+                                            <a href="#">Chính sách đấu giá</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Chính sách giao hàng</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="/contact">Liện hệ</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
             <!-- Header Right 1 -->
             <div class="header-right header-right-1 float-right">
                 <!-- Account Menu -->
@@ -97,17 +241,11 @@
                     <button data-toggle="dropdown" class="acc-menu-toggle"><i class="zmdi zmdi-settings"></i></button>
                     <ul class="acc-menu-dropdown dropdown-menu right">
                         <li>
-                            <a href="#">Thông tin cá nhân</a>
+                            <form action="lichsudaugia" method="POST" id="FormLSDG"><input type="hidden"
+                                    value="<%= _uG.userID %>"><a href="#" id="submitFormLSDG">Xem lịch sử đấu giá</a>
+                            </form>
                         </li>
-                        <li>
-                            <a href="#">Lịch sử đấu giá</a>
-                        </li>
-                        <li>
-                            <a href="#">Xem chi tiết hoá đơn</a>
-                        </li>
-                        <li>
-                            <a href="#">Đăng xuất</a>
-                        </li>
+                        <li><a href='/logout'>Đăng xuất</a></li>
                     </ul>
                 </div>
             </div>
@@ -182,18 +320,21 @@
         </div>
         <!-- Home Slider -->
         <div class="single-product-area pb-90 pt-90">
-            <div class="container"> <% var date = new Date(_uG.auction.startDate); %> <% var nowdate = new Date(); %> <% if((nowdate.getTime() - date.getTime()) > 0){ %> <div class="row">
+            <div class="container"> <% var date = new Date(_uG.auction.startDate); %> <% var nowdate = new Date(); %>
+                <% if((nowdate.getTime() - date.getTime()) > 0){ %> <div class="row">
                     <div class="col-xs-12">
                         <div class="single-product-wrap border">
                             <div class="single-product-image">
                                 <div class="product-big-image tab-content">
                                     <div class="tab-pane active" id="pro-img-1">
                                         <img src="img/product/1.jpg" alt="" />
-                                        <a class="pro-img-popup" href="img/product/1.jpg"><i class="zmdi zmdi-search"></i></a>
+                                        <a class="pro-img-popup" href="img/product/1.jpg"><i
+                                                class="zmdi zmdi-search"></i></a>
                                     </div>
                                     <div style="padding: 10px;">
                                         <h4><strong><%= _uG.productName %></strong></h4>
-                                        <h5><strong>Sở hữu: <p style="text-transform: uppercase;"><i><%= _uG.owner %></i></p></strong></h5>
+                                        <h5><strong>Sở hữu: <p style="text-transform: uppercase;">
+                                                    <i><%= _uG.owner %></i></p></strong></h5>
                                         <p><%= _uG.productDescribe %></p>
                                         <input type="hidden" id="clientOwnerID" value="<%= _uG.id %>">
                                         <input type="hidden" id="clientOwnerName" value="<%= _uG.owner %>">
@@ -205,20 +346,26 @@
                             <div class="single-product-content fix">
                                 <h3 class="single-pro-title"><%= _uG.auction.auctionName %></h3>
                                 <div class="single-product-price-ratting fix">
-                                    <p class="pro-ratting float-left"><span class="timer1" data-seconds-left="<%= _uG.auction.timeRun - ((nowdate.getTime() - date.getTime())/1000) %>">Còn&nbsp;</span>
+                                    <p class="pro-ratting float-left"><span class="timer1"
+                                            data-seconds-left="<%= _uG.auction.timeRun - ((nowdate.getTime() - date.getTime())/1000) %>">Còn&nbsp;</span>
                                     </p>
                                 </div>
                                 <div class="single-product-price-ratting fix">
                                     <p style="font-weight: bold;">Giá hiện tại:</p>
                                     <h3 class="single-pro-price float-left">
-                                        <p class="new" style="color: red;" id="priceNow"><% if(_uG.auction.bids.length > 0){ %><%= _uG.auction.bids[_uG.auction.bids.length - 1].amount %><% }else{ %><%= _uG.auction.startPrice %><% } %></p>
+                                        <p class="new" style="color: red;" id="priceNow">
+                                            <% if(_uG.auction.bids.length > 0){ %><%= _uG.auction.bids[_uG.auction.bids.length - 1].amount %><% }else{ %><%= _uG.auction.startPrice %><% } %>
+                                        </p>
                                     </h3>
                                 </div>
                                 <div class="single-product-price-ratting fix">
-                                    <p style="margin: 0px; font-style: italic; margin-top: 10px;">User đang giữ giá cao nhất:</p>
+                                    <p style="margin: 0px; font-style: italic; margin-top: 10px;">User đang giữ giá cao
+                                        nhất:</p>
                                     <h3 class="single-pro-price float-left" style="color: #ff9900;">
                                         <span><i class="zmdi zmdi-star" style="font-size: 20px;">&nbsp</i></span><span>
-                                            <p style="font-weight: bold; font-size: 14px;" id="userLast"> <% if(_uG.auction.bids.length ==0){ %> Chưa có <% }else{ %> <%= _uG.auction.bids[_uG.auction.bids.length - 1].user %> <% } %> </p>
+                                            <p style="font-weight: bold; font-size: 14px;" id="userLast">
+                                                <% if(_uG.auction.bids.length ==0){ %> Chưa có <% }else{ %>
+                                                <%= _uG.auction.bids[_uG.auction.bids.length - 1].user %> <% } %> </p>
                                         </span>
                                     </h3>
                                 </div>
@@ -226,13 +373,16 @@
                                     <h5>Đưa ra giá (VNĐ)</h5>
                                     <br>
                                     <div class="pro-qty float-left">
-                                        <input value="0" name="qtybutton" class="cart-plus-minus-box" type="text" id="priceAuctionbyUser">
+                                        <input value="0" name="qtybutton" class="cart-plus-minus-box" type="text"
+                                            id="priceAuctionbyUser">
                                     </div>
                                 </div>
-                                <label id="error_AuctionPrice" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                <label id="error_AuctionPrice"
+                                    style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                 <div class="single-product-action-quantity fix">
                                     <div class="pro-details-action float-left">
-                                        <button class="pro-details-act-btn btn-text active" id="btnActionAuction"><i class="zmdi zmdi-case"></i>Đấu giá</button>
+                                        <button class="pro-details-act-btn btn-text active" id="btnActionAuction"><i
+                                                class="zmdi zmdi-case"></i>Đấu giá</button>
                                     </div>
                                 </div>
                             </div>
@@ -248,16 +398,23 @@
                                     <!-- Product Info Tab -->
                                     <div id="description" class="pro-details-tab pro-dsc-tab tab-pane active">
                                         <ul style="font-weight: bold; line-height: 40px;" id="listUserJoin">
-                                            <!--LIST BIDS--> <% _uG.auction.bids.forEach(item => { %> <% var current_datetime = new Date(item.timeStamp); %> <% let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes() + ":" + current_datetime.getSeconds() %> <li><i class='zmdi zmdi-account-circle'></i>&nbsp<span>UserID: <%= item.user %> - chốt giá <%= item.amount %> <i style="font-weight: 100;">- tại <%= formatted_date %></i></span></li> <% }) %> </ul>
+                                            <!--LIST BIDS--> <% _uG.auction.bids.forEach(item => { %>
+                                            <% var current_datetime = new Date(item.timeStamp); %>
+                                            <% let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes() + ":" + current_datetime.getSeconds() %>
+                                            <li><i class='zmdi zmdi-account-circle'></i>&nbsp<span>UserID:
+                                                    <%= item.user %> - chốt giá <%= item.amount %> <i
+                                                        style="font-weight: 100;">- tại <%= formatted_date %></i></span>
+                                            </li> <% }) %> </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> <% }else{ %> <h3><strong style="color: red;">Sản phẩm chưa được khởi động đấu giá, cùng chờ nhé!</strong></h3> <% } %> </div>
+                </div> <% }else{ %> <h3><strong style="color: red;">Sản phẩm chưa được khởi động đấu giá, cùng chờ
+                        nhé!</strong></h3> <% } %> </div>
         </div>
         <form action="/checkout" method="POST" id="formCheckout">
-            <input type="hidden" name="productID" id="co_productID"  value="<%= _uG.productID %>">
+            <input type="hidden" name="productID" id="co_productID" value="<%= _uG.productID %>">
         </form>
         <!-- Bootstrap JS -->
         <script src="js/bootstrap.min.js"></script>
@@ -266,6 +423,39 @@
         <!-- Main JS -->
         <script src="js/main.js"></script>
         <script src="js/countdown.js"></script>
+        <script>
+            $(document).ready(function () {
+                socket.emit("JOIN_ROOM_AUCTION_CLIENT", $("#clientProductID").val());
+                $("#btnActionAuction").click(function () {
+                    var re = /^[0-9]+(\.[0-9]{1,2})?$/;
+                    var priceHT = $("#priceNow").text();
+                    var priceDR = $("#priceAuctionbyUser").val();
+                    var ownerID = $("#clientOwnerID").val();
+                    var ownerName = $("#clientOwnerName").val();
+                    var productID = $("#clientProductID").val();
+                    if (!re.test(priceDR)) {
+                        $('#error_AuctionPrice').text('Định dạng tiền không đúng!');
+                    } else {
+                        if (Number(priceDR) > Number(priceHT) + 999) {
+                            $('#error_AuctionPrice').text('');
+                            socket.emit("Client_sent_data_BID", productID, priceDR, ownerID, ownerName, $("#clientUserID").val(), new Date());
+                        } else {
+                            $('#error_AuctionPrice').text('Giá đưa ra phải lớn hơn giá hiện tại 1000!');
+                        }
+                    }
+                });
+            });
+            socket.on("Server_sent_data_BID", function (data, dateTime) {
+                var current_datetime = new Date(dateTime);
+                let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes() + ":" + current_datetime.getSeconds();
+                $("#listUserJoin").prepend("<li><i class='zmdi zmdi-account-circle'></i>&nbsp<span>UserID: " + data.user + " - chốt giá " + data.amount + " <i style='font-weight: 100;''>- tại " + formatted_date + "</i></span></li>");
+                $("#priceNow").html(data.amount);
+                $("#userLast").html(data.user);
+            });
+            $("#submitFormLSDG").click(function () {
+                $("#FormLSDG").submit();
+            })
+        </script>
 </body>
 
 </html>

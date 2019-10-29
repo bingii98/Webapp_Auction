@@ -74,7 +74,7 @@
     </div>
     <!-- Body main wrapper start -->
     <div class="wrapper bg-white fix">
-        <!-- Header 4 --> <% include element/header %>
+        <!-- Header 4 --> <% include element/headerB %>
         <!-- Cart Area -->
         <div class="cart-area pb-90 pt-90 mt-100">
             <div class="container">
@@ -90,7 +90,7 @@
                                 <div class="right">
                                     <div class="form">
                                         <h2 class="title">Thêm sản phẩm đấu giá</h2>
-                                        <form method="POST" action="/createproduct" id="formADD">
+                                        <form method="POST" action="/createproductbusiness" id="formADD">
                                             <input type='hidden' name='categoryID' id='categoryID_txt'>
                                             <div class="input-wrapper">
                                                 <label for="">Tên sản phẩm</label>
@@ -206,7 +206,6 @@
                                         <th class="id">ID</th>
                                         <th class="price">Hình ảnh</th>
                                         <th class="stock">Tên</th>
-                                        <th class="stock">Sở hữu</th>
                                         <th class="mota">Mô tả</th>
                                         <th class="remove" style="width: 50px;">Thêm PĐG</th>
                                         <th class="remove" style="width: 50px;">Sửa</th>
@@ -224,11 +223,6 @@
                                         <td>
                                             <strong>
                                                 <p class="cart-stock"><%=product.productName%></p>
-                                            </strong>
-                                        </td>
-                                        <td>
-                                            <strong>
-                                                <p class="cart-stock"><%=product.ownerName%></p>
                                             </strong>
                                         </td>
                                         <td>

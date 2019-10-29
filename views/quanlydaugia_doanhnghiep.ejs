@@ -74,7 +74,7 @@
     </div>
     <!-- Body main wrapper start -->
     <div class="wrapper bg-white fix">
-        <!-- Header 4 --> <% include element/header %>
+        <!-- Header 4 --> <% include element/headerB %>
         <!-- Cart Area -->
         <div class="cart-area pb-90 pt-90 mt-100">
             <div class="container">
@@ -133,48 +133,54 @@
                                         <th class="remove" style="width: 50px;">TT</th>
                                         <th class="remove" style="width: 50px;">Xoá</th>
                                     </tr>
-                                </thead><% var i = 1%> <tbody>
+                                </thead><% var i = 1%> 
+                                <tbody>
                                     <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %>
-                                    <% _uG.forEach((product) => { %> <tr> <% if(product.count != 0){ %> <td>
+                                    <% _uG.forEach((product) => { %> 
+                                        <tr> 
+                                            <td>
                                             <strong><%= i %></strong></td>
-                                        <td>
-                                            <div class="cart-product text-left fix">
-                                                <img src="img/product/2.jpg" alt="" />
-                                                <div class="details fix">
-                                                    <a href="#"> <%=product.productName%></a>
-                                                    <p><%=product.productID%></p>
-                                                    <p>Business : <%=product.ownerName%></p>
-                                                    <p>Loại : <%=product.loai%></p>
+                                            <td>
+                                                <div class="cart-product text-left fix">
+                                                    <img src="img/product/2.jpg" alt="" />
+                                                    <div class="details fix">
+                                                        <a href="#"> <%= product.productName%></a>
+                                                        <p><%=product.productID%></p>
+                                                        <p>Business : <%=product.ownerName%></p>
+                                                        <p>Loại : <%=product.loai%></p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <strong>
-                                                <p class="cart-stock"><%=product.auction.auctionName%></p>
-                                            </strong>
-                                        </td>
-                                        <td> <%let current_datetime = new Date(product.auction.startDate);%>
-                                            <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%>
-                                            <p class="cart-stock"><%=formatted_date%></p>
-                                        </td>
-                                        <td>
-                                            <p class="cart-stock"><%=product.auction.timeRun%> giây</p>
-                                        </td>
-                                        <td>
-                                            <p class="cart-stock"><%=product.auction.startPrice%></p>
-                                        </td>
-                                        <td>
-                                            <p class="cart-stock"><% if(product.auction.isRunning){ %> ON <%}else{%> OFF
-                                                <% } %></p>
-                                        </td>
-                                        <% var date = new Date(product.auction.startDate); %>
-                                        <% var nowdate = new Date(); %>
-                                        <td><% if ((nowdate.getTime() - date.getTime()) < 0) { %>
-                                            <a
-                                                onclick="setHrefDel('/deleteauction?productID=<%= product.productID %>&owner=<%= product.ownerName %>&businessID=<%= product.id %>')"><button
-                                                    class="cd-popup-trigger cart-pro-remove"><i
-                                                        class="zmdi zmdi-close"></i></button></a><% } %></td>
-                                    </tr> <% i++;%> <% }; %> <% }); %> </tbody>
+                                            </td>
+                                            <td>
+                                                <strong>
+                                                    <p class="cart-stock"><%=product.auction.auctionName%></p>
+                                                </strong>
+                                            </td>
+                                            <td> <%let current_datetime = new Date(product.auction.startDate);%>
+                                                <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%>
+                                                <p class="cart-stock"><%=formatted_date%></p>
+                                            </td>
+                                            <td>
+                                                <p class="cart-stock"><%=product.auction.timeRun%> giây</p>
+                                            </td>
+                                            <td>
+                                                <p class="cart-stock"><%=product.auction.startPrice%></p>
+                                            </td>
+                                            <td>
+                                                <p class="cart-stock"><% if(product.auction.isRunning){ %> ON <%}else{%> OFF<% } %></p>
+                                            </td>
+                                            <% var date = new Date(product.auction.startDate); %>
+                                            <% var nowdate = new Date(); %>
+                                            <td>
+                                            <% if ((nowdate.getTime() - date.getTime()) < 0) { %>
+                                                <a onclick="setHrefDel('/deleteauction?productID=<%= product.productID %>&owner=<%= product.ownerName %>&businessID=<%= product.id %>')"><button
+                                                        class="cd-popup-trigger cart-pro-remove"><i
+                                                            class="zmdi zmdi-close"></i></button></a><% } %>
+                                            </td>
+                                    </tr> 
+                                    <% i++;%> 
+                                    <% }); %> 
+                                </tbody>
                             </table>
                         </div>
                     </div>

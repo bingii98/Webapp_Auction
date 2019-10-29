@@ -3,9 +3,8 @@ const bcrypt = require('bcrypt-nodejs');
 
 AWS.config.update({
     "region": "us-east-1",
-    "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
+    "endpoint": "http://localhost:8000",
 });
-
 
 let docClient = new AWS.DynamoDB.DocumentClient();
 
@@ -27,9 +26,8 @@ async function get_Item_Admin_Username(username) {
     });
 }
 
-
 //Push danh sách Product của Admin và Business
-function getAll_Product_Admin(ejs, res) {
+function getAll_Product_Admin(ejs, userID,booleanB, res) {
     let params = {
         TableName: 'Businesss'
     }
@@ -39,15 +37,18 @@ function getAll_Product_Admin(ejs, res) {
             console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
         } else {
             var productList = [];
-
             data.Items.forEach(item => {
-                item.category.forEach(cat => {
-                    cat.product.forEach(element => {
-                        let count = 0; for (var c in element.auction) { count = count + 1; }
-                        var obj = Object.assign(element, { ownerName: item.businessName }, { id: item.businessID }, { loai: cat.categoryName }, { count: count });
-                        productList.push(obj);
+                if(item.category.length > 0){
+                    item.category.forEach(cat => {
+                        if(cat.product.length){
+                            cat.product.forEach(element => {
+                                let count = 0; for (var c in element.auction) { count = count + 1; }
+                                var obj = Object.assign(element, { ownerName: item.businessName }, { id: item.businessID }, { loai: cat.categoryName }, { count: count });
+                                productList.push(obj);
+                            });
+                        }
                     });
-                });
+                }
             });
 
             let params1 = {
@@ -76,13 +77,11 @@ function getAll_Product_Admin(ejs, res) {
                     return 0 //default return value (no sorting)
                 });
 
-                res.render(ejs, { _uG: productList });
+                res.render(ejs, { _uG: productList , booleanB : booleanB, userID: userID });
             });
         }
     });
 }
-
-
 
 //get Product (not S)
 function getItem_Product_Admin(customerID, productID, ownerID, ownerName, ejs, res) {
@@ -260,6 +259,7 @@ function get_Item_Product(id, owner, productID, userID, res) {
 
 //Push Auction for Product
 function add_Auction(ObjectB, productID, res) {
+    console.log(ObjectB);
     if (ObjectB.owner === "admin") {
         let params = {
             TableName: 'Admins'
@@ -313,7 +313,7 @@ function add_Auction(ObjectB, productID, res) {
             TableName: 'Businesss',
             Key: {
                 businessID: ObjectB.businessID,
-                businessName: owner,
+                businessName: ObjectB.userName,
             }
         }
         docClient.scan(params, (err, data) => {
@@ -327,8 +327,8 @@ function add_Auction(ObjectB, productID, res) {
                                 let params = {
                                     TableName: "Businesss",
                                     Key: {
-                                        "businessID": id,
-                                        "businessName": owner
+                                        "businessID": ObjectB.businessID,
+                                        "businessName": ObjectB.userName
                                     },
                                     UpdateExpression: "set category[" + x + "].product[" + z + "].auction =:auc",
                                     ExpressionAttributeValues: {
@@ -338,7 +338,7 @@ function add_Auction(ObjectB, productID, res) {
                                             timeRun: ObjectB.timeRun,
                                             startPrice: ObjectB.startPrice,
                                             isRunning: true,
-                                            winner: "",
+                                            winner: "null",
                                             bids: [
 
                                             ]
@@ -350,7 +350,7 @@ function add_Auction(ObjectB, productID, res) {
                                     if (err) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                     } else {
-                                        res.redirect('/quanlydaugia');
+                                        res.redirect('/quanlysanpham_doanhnghiep');
                                     }
                                 });
                                 break
@@ -649,7 +649,6 @@ async function Create_Category(categoryName) {
     });
 }
 
-
 //UPDATE CATEGORY
 async function Update_Category(categoryID, categoryName) {
     return new Promise((resolve, reject) => {
@@ -769,7 +768,6 @@ async function Get_Final_Bid(productID) {
 //GET PRODUCT (AUCTION)a
 async function Get_Product(productID) {
     return new Promise((resolve, reject) => {
-        console.log(1);
         let params = {
             TableName: 'Admins',
         }
@@ -777,7 +775,6 @@ async function Get_Product(productID) {
             if (err) {
                 console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
             } else {
-                console.log(2);
                 data.Items.forEach(item => {
                     item.category.forEach(category => {
                         category.product.forEach(product => {
@@ -786,6 +783,24 @@ async function Get_Product(productID) {
                             }
                         });
                     });
+                })
+            }
+        });
+    });
+}
+
+//GET PRODUCT (AUCTION)a
+async function Get_all_Category_admin() {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: 'Admins',
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                data.Items.forEach(item => {
+                    resolve(item.category);     
                 })
             }
         });
@@ -810,4 +825,5 @@ module.exports = {
     Delete_Category: Delete_Category,
     Get_Final_Bid: Get_Final_Bid,
     Get_Product: Get_Product,
+    Get_all_Category_admin: Get_all_Category_admin,
 };
