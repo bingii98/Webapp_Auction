@@ -245,11 +245,13 @@ function get_Item_Product(id, owner, productID, userID, res) {
         docClient.scan(params, (err, data) => {
             if (data.Items.length != 0) {
                 data.Items.forEach(element => {
-                    element.product.forEach(item => {
-                        if (item.productID === productID) {
-                            var obj = Object.assign(item, { id: id }, { owner: owner });
-                            res.render('auction-page', { _uG: obj });
-                        }
+                    element.category.forEach(item1 => {
+                        item1.product.forEach(item => {
+                            if (item.productID === productID) {
+                                var obj = Object.assign(item, { id: id }, { owner: owner }, { userID: userID });
+                                res.render('auction-page', { _uG: obj });
+                            }
+                        });
                     });
                 });
             }

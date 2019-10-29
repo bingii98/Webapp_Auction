@@ -222,6 +222,9 @@ function add_Order_Customer(customerID, productID) {
 }
 
 function update_Order_Customer(customerID,productID,note,res){
+    if(note == null){
+        note = "null"
+    }
     console.log("Update order .....!")
     let params = {
         TableName: 'Customers',

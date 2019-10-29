@@ -87,17 +87,31 @@ io.on("connection", (socket) => {
 
     //ADD BID TO ADMIN PRODUCT
     socket.on("Client_sent_data_BID", function (productID, price, ownerID, ownerName, clientUserID, dateTime) {
-        ctlAdmin.Add_Bid_Product(productID, price, clientUserID).then(data => {
-            if (ownerID === "admin") {
-                ctlAdmin.Get_Final_Bid(productID).then(data => {
-                    io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data, dateTime);
-                })
-            } else {
-                ctlBsn.Get_Final_Bid(productID).then(data => {
-                    io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data, dateTime);
-                })
-            }
-        })
+        if (ownerID === "admin") {
+            ctlAdmin.Add_Bid_Product(productID, price, clientUserID).then(data => {
+                if (ownerID === "admin") {
+                    ctlAdmin.Get_Final_Bid(productID).then(data => {
+                        io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data, dateTime);
+                    })
+                } else {
+                    ctlBsn.Get_Final_Bid(productID, ownerID, ownerName).then(data => {
+                        io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data, dateTime);
+                    })
+                }
+            })
+        }else{
+            ctlBsn.Add_Bid_Product(productID, price, clientUserID,ownerID, ownerName).then(data => {
+                if (ownerID === "admin") {
+                    ctlAdmin.Get_Final_Bid(productID).then(data => {
+                        io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data, dateTime);
+                    })
+                } else {
+                    ctlBsn.Get_Final_Bid(productID, ownerID, ownerName).then(data => {
+                        io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data, dateTime);
+                    })
+                }
+            })
+        }
     });
 
     //CHECK AND CREATE ORDER FOR USER HAVE BID FINAL
@@ -713,7 +727,7 @@ app.post('/createauction', (req, res) => {
         startPrice: startPrice,
         businessID: businessID,
         owner: sess.permission,
-        userName : sess.userName,
+        userName: sess.userName,
     }
     if (sess.permission === "admin" || sess.permission === "business") {
         ctlAdmin.add_Auction(ObjectB, productID, res);

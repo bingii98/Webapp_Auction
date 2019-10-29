@@ -487,7 +487,7 @@ async function get_ListProduct_Business_Username(username) {
                                 count = count + 1;
                             }
                             if (count != 0) {
-                                var obj = Object.assign(element, { ownerName: data.Item[0].businessName }, { id: data.Item[0].businessID }, { loai: cat.categoryName });
+                                var obj = Object.assign(element, { ownerName: data.Items[0].businessName }, { id: data.Items[0].businessID }, { loai: cat.categoryName });
                                 productList.push(obj);
                             }
                         });
@@ -635,6 +635,95 @@ async function Update_Category(categoryID, categoryName) {
     });
 }
 
+
+//ADD BID TO ADMIN PRODUCT
+async function Add_Bid_Product(productID, price, clientUserID, businessID, businessName) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: 'Businesss',
+            Key: {
+                "businessID": businessID,
+                "businessName": businessName
+            },
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                for (let i = 0; i < data.Items.length; i++) {
+                    for (let x = 0; x < data.Items[i].category.length; x++) {
+                        for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                            if (data.Items[i].category[x].product[z].productID === productID) {
+                                let params = {
+                                    TableName: "Businesss",
+                                    Key: {
+                                        "businessID": businessID,
+                                        "businessName": businessName
+                                    },
+                                    UpdateExpression: "set category[" + x + "].product[" + z + "].auction.bids = list_append(category[" + x + "].product[" + z + "].auction.bids, :bidAdd)",
+                                    ExpressionAttributeValues: {
+                                        ":bidAdd": [
+                                            {
+                                                user: clientUserID,
+                                                amount: price,
+                                                timeStamp: new Date().getTime(),
+                                            }
+                                        ],
+                                    },
+                                    ReturnValues: "UPDATED_NEW"
+                                };
+                                docClient.update(params, function (err, data) {
+                                    if (err) {
+                                        console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                    } else {
+                                        //EMIT SERVER
+                                        resolve(true);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            };
+        });
+    });
+}
+
+
+//GET FINAL BID OF PRODUCT (AUCTION)
+async function Get_Final_Bid(productID, ownerID, ownerName) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: 'Businesss',
+            Key : {
+                "businessID" : ownerID,
+                "businessName" : ownerName
+            }
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                if(err){
+                    console.error("Error JSON:", JSON.stringify(err, null, 2));
+                }else{
+                    data.Items.forEach(item => {
+                        item.category.forEach(category => {
+                            category.product.forEach(product => {
+                                if (product.productID == productID) {
+                                    if (product.auction.bids.length != 0) {
+                                        resolve(product.auction.bids[product.auction.bids.length - 1]);
+                                    }
+                                }
+                            });
+                        });
+                    })
+                }
+            }
+        });
+    });
+}
+
 module.exports = {
     getAll_Business: getAll_Business,
     getAll_Product_Business: getAll_Product_Business,
@@ -649,4 +738,5 @@ module.exports = {
     Update_Category: Update_Category,
     add_Product: add_Product,
     get_ListProduct_Business_Username: get_ListProduct_Business_Username,
+    Get_Final_Bid: Get_Final_Bid,
 };
