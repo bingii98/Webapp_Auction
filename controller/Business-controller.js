@@ -724,6 +724,35 @@ async function Get_Final_Bid(productID, ownerID, ownerName) {
     });
 }
 
+
+//GET PRODUCT (AUCTION)
+async function Get_Product(productID,ownerID,ownerName) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: 'Businesss',
+            Key : {
+                "businessID" : ownerID,
+                "businessName" : ownerName
+            }
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                data.Items.forEach(item => {
+                    item.category.forEach(category => {
+                        category.product.forEach(product => {
+                            if (product.productID === productID) {
+                                resolve(product);
+                            }
+                        });
+                    });
+                })
+            }
+        });
+    });
+}
+
 module.exports = {
     getAll_Business: getAll_Business,
     getAll_Product_Business: getAll_Product_Business,
@@ -739,4 +768,5 @@ module.exports = {
     add_Product: add_Product,
     get_ListProduct_Business_Username: get_ListProduct_Business_Username,
     Get_Final_Bid: Get_Final_Bid,
+    Get_Product: Get_Product,
 };

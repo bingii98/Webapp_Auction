@@ -415,6 +415,8 @@
         </div>
         <form action="/checkout" method="POST" id="formCheckout">
             <input type="hidden" name="productID" id="co_productID" value="<%= _uG.productID %>">
+            <input type="hidden" name="ownerID" id="co_productID" value="<%= _uG.id %>">
+            <input type="hidden" name="ownerName" id="co_productID" value="<%= _uG.owner %>">
         </form>
         <!-- Bootstrap JS -->
         <script src="js/bootstrap.min.js"></script>

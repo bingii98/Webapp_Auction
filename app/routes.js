@@ -99,8 +99,8 @@ io.on("connection", (socket) => {
                     })
                 }
             })
-        }else{
-            ctlBsn.Add_Bid_Product(productID, price, clientUserID,ownerID, ownerName).then(data => {
+        } else {
+            ctlBsn.Add_Bid_Product(productID, price, clientUserID, ownerID, ownerName).then(data => {
                 if (ownerID === "admin") {
                     ctlAdmin.Get_Final_Bid(productID).then(data => {
                         io.sockets.in(socket.roomCustom).emit("Server_sent_data_BID", data, dateTime);
@@ -757,7 +757,13 @@ app.get('/deleteauction', (req, res) => {
 //Update order
 app.post('/updateorder', (req, res) => {
     sess = req.session;
-    ctlCtm.update_Order_Customer(sess.userID, req.body.productID, req.body.note, res);
+    var note;
+    if(req.body.note == ""){
+        note = "null"
+    }else{
+        note = req.body.note
+    }
+    ctlCtm.update_Order_Customer(sess.userID, req.body.productID, note, res);
 });
 
 app.get('/contact', (req, res) => {
@@ -768,14 +774,34 @@ app.get('/contact', (req, res) => {
 app.post('/checkout', (req, res) => {
     sess = req.session;
     var productID = req.body.productID;
+    var ownerID = req.body.ownerID;
+    var ownerName = req.body.ownerName;
     ctlCtm.add_Order_Customer(sess.userID, productID);
-    ctlAdmin.Get_Product(productID).then(data => {
-        if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
-            res.render('check-out', { _uG: data });
-        } else {
-            res.redirect("/");
-        }
-    });
+    if (ownerID === "admin") {
+        ctlAdmin.Get_Product(productID).then(data => {
+            if(data.auction.bids.length != 0){
+                if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
+                    res.render('check-out', { _uG: data });
+                } else {
+                    res.redirect("/");
+                }
+            }else{
+                res.redirect("/");
+            }
+        });
+    } else {
+        ctlBsn.Get_Product(productID,ownerID,ownerName).then(data => {
+            if(data.auction.bids.length != 0){
+                if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
+                    res.render('check-out', { _uG: data });
+                } else {
+                    res.redirect("/");
+                }
+            }else{
+                res.redirect("/");
+            }
+        });
+    }
 })
 
 app.post('/lichsudaugia', (req, res) => {
