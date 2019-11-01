@@ -1,5 +1,7 @@
 const AWS = require('aws-sdk');
 const bcrypt = require('bcrypt-nodejs');
+const s3 = new AWS.S3();
+var fs = require('fs');
 
 AWS.config.update({
     "region": "us-east-1",
@@ -27,7 +29,7 @@ async function get_Item_Admin_Username(username) {
 }
 
 //Push danh sách Product của Admin và Business
-function getAll_Product_Admin(ejs, userID,booleanB, res) {
+function getAll_Product_Admin(ejs, userID, booleanB, res) {
     let params = {
         TableName: 'Businesss'
     }
@@ -38,9 +40,9 @@ function getAll_Product_Admin(ejs, userID,booleanB, res) {
         } else {
             var productList = [];
             data.Items.forEach(item => {
-                if(item.category.length > 0){
+                if (item.category.length > 0) {
                     item.category.forEach(cat => {
-                        if(cat.product.length){
+                        if (cat.product.length) {
                             cat.product.forEach(element => {
                                 let count = 0; for (var c in element.auction) { count = count + 1; }
                                 var obj = Object.assign(element, { ownerName: item.businessName }, { id: item.businessID }, { loai: cat.categoryName }, { count: count });
@@ -77,7 +79,7 @@ function getAll_Product_Admin(ejs, userID,booleanB, res) {
                     return 0 //default return value (no sorting)
                 });
 
-                res.render(ejs, { _uG: productList , booleanB : booleanB, userID: userID });
+                res.render(ejs, { _uG: productList, booleanB: booleanB, userID: userID });
             });
         }
     });
@@ -155,6 +157,12 @@ function getAll_Category(ejs, res) {
 
 //Thêm sản phẩm ADMIN
 function add_Product(ObjectB, categoryID, location, res) {
+    AWS.config.update({
+        "region": "us-east-1",
+        "endpoint": "http://s3.us-east-1.amazonaws.com",
+    });
+    var buffer = fs.readFileSync(ObjectB.productImage.path);
+    console.log(ObjectB.productImage.path)
     let params = {
         TableName: 'Admins'
     }
@@ -191,8 +199,8 @@ function add_Product(ObjectB, categoryID, location, res) {
                     {
                         productID: productID,
                         productName: ObjectB.productName,
-                        productDescribe: ObjectB.productDescribe,
-                        productImage: "https://cdn.tgdd.vn/Files/2019/09/12/1197622/f4_800x600.jpg",
+                        productDescribe: productID,
+                        productImage: "augdjsgdjjd",
                         auction: {
                         }
                     }
@@ -200,6 +208,7 @@ function add_Product(ObjectB, categoryID, location, res) {
             },
             ReturnValues: "ALL_NEW"
         };
+        console.log( ObjectB.productImage.headers.filename);
         docClient.update(params, function (err, data) {
             if (err) {
                 console.error("Error JSON:", JSON.stringify(err, null, 2));
@@ -802,7 +811,7 @@ async function Get_all_Category_admin() {
                 console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
             } else {
                 data.Items.forEach(item => {
-                    resolve(item.category);     
+                    resolve(item.category);
                 })
             }
         });

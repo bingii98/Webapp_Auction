@@ -93,7 +93,7 @@
                                 <div class="right">
                                     <div class="form">
                                         <h2 class="title">Thêm sản phẩm đấu giá</h2>
-                                        <form method="POST" action="/createproduct" id="formADD">
+                                        <form method="POST" action="/createproduct" id="formADD" enctype="multipart/form-data">
                                             <input type='hidden' name='categoryID' id='categoryID_txt'>
                                             <div class="input-wrapper">
                                                 <label for="">Tên sản phẩm</label>
@@ -111,7 +111,7 @@
                                             <label id="error_productDescribe" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
                                             <div class="input-wrapper">
                                                 <label for="">Chọn hình ảnh</label>
-                                                <input id="image" type="file" placeholder="Image">
+                                                <input id="image" type="file" placeholder="Image" name="productImage">
                                             </div>
                                             <button class="btn" type="button" id="submitAddProduct"><span>Xác nhận</span></button>
                                         </form>

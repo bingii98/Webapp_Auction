@@ -4834,7 +4834,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 .product-big-image {
     border: 1px solid #ff9900;
     background: beige;
-    max-width: 370px;
+    max-width: 650px;
     width: 100%;
 }
 .product-big-image .tab-pane {
@@ -5853,7 +5853,6 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 .billing-details {
     background-color: #f6f6f6;
     overflow: hidden;
-    padding: 30px;
 }
 .billing-details h4 {
     color: #333333;

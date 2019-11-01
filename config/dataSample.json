@@ -1,0 +1,136 @@
+[
+  {
+    "businessID": "BSN_1",
+    "businessName": "ABC Cake",
+    "isStatus": true,
+    "address": "QUang Trung - Gò Vấp",
+    "email": "october15th98@gmail.com",
+    "phone": "0827374414",
+    "username": "bingii98",
+    "password": "123",
+    "category": [
+      {
+        "catID": "CR_1",
+        "categoryName": "Xe cộ",
+        "product": [
+          {
+            "productID": "PR_1",
+            "productName": "XE HONDA CIVIC",
+            "productDescribe": "Tại thị trường Việt Nam, mẫu xe Honda Civic ngay khi ra mắt luôn nhận được sự phản hồi tích cực từ người tiêu dùng. Trải qua 10 thế hệ, sedan hạng C thể thao cỡ nhỏ này đã nhanh chóng đặt chân vào danh sách Top 10 mẫu xe bán chạy nhất mọi thời đại, Honda Civic đã trở thành đại diện tiêu biểu của Honda, về sự nhạy bén, về tính linh hoạt và đặc biệt là về độ tin cậy.",
+            "productImage": "https://hondaotophattien.com.vn/vnt_upload/product/civic2019/honda-civic-2019.jpg",
+            "auction": {
+              "auctionID": "BSN_1PR_1",
+              "auctionName": "Xe Honda Civic Bứt phá kiến tạo xu hướng",
+              "startDate": "11/01/2019 7:07 AM",
+              "timeRun": 12000,
+              "startPrice": 10000,
+              "isRunning": true
+            }
+          },
+          {
+            "productID": "PR_2",
+            "productName": "Ducati Streetfighter V4 2020",
+            "productDescribe": "Qua hình ảnh, dễ nhận thấy Streetfighter V4 khá giống Panigale V4 với kiểu dáng thiết kế sắc nét, dữ tợn. Phần đầu đèn có tạo hình siêu ngầu và hung dữ, hệ thống Winglets (cánh gió) được trang bị tiêu chuẩn kể từ khi xuất xưởng.",
+            "productImage": "https://cms-i.autodaily.vn/du-lieu/2019/10/28/ducati-streetfigther-v4-2020-13.jpg",
+            "auction": {
+              "auctionID": "BSN_1PR_2",
+              "auctionName": "CHIẾN BINH DUCATI STREETFIGHTER V4 2020 TRÌNH LÀNG, GIÁ TỪ 22.200 USD",
+              "startDate": "11/01/2019 7:07 AM",
+              "timeRun": 12000,
+              "startPrice": 10000,
+              "isRunning": true
+            }
+          }
+        ]
+      },
+      {
+        "catID": "CR_2",
+        "categoryName": "Đồ nội thất",
+        "product": [
+          {
+          }
+        ]
+      },
+      {
+        "catID": "CR_3",
+        "categoryName": "Đồ điện tử",
+        "product": [
+          {
+            "productID": "PR_1",
+            "productName": "Aphone 10 XMas",
+            "productDescribe": "Cụm camera trân châu đường đen.",
+            "productImage": "https://cdn.tgdd.vn/Files/2019/09/12/1197622/f4_800x600.jpg",
+            "auction": {
+              "auctionID": "AC_1",
+              "auctionName": "Iphone 11 đầu tiên",
+              "startDate": "10/30/2019 7:07 AM",
+              "timeRun": 12000,
+              "startPrice": 10000,
+              "isRunning": true
+            }
+          }
+        ]
+      },
+      {
+        "catID": "CR_4",
+        "categoryName": "Thời trang",
+        "product": [
+          {
+            "productID": "PR_1",
+            "productName": "Aphone 10 XMas",
+            "productDescribe": "Cụm camera trân châu đường đen.",
+            "productImage": "https://cdn.tgdd.vn/Files/2019/09/12/1197622/f4_800x600.jpg",
+            "auction": {
+              "auctionID": "AC_1",
+              "auctionName": "Iphone 11 đầu tiên",
+              "startDate": "10/30/2019 7:07 AM",
+              "timeRun": 12000,
+              "startPrice": 10000,
+              "isRunning": true
+            }
+          }
+        ]
+      },
+      {
+        "catID": "CR_5",
+        "categoryName": "Giày",
+        "product": [
+          {
+            "productID": "PR_1",
+            "productName": "Aphone 10 XMas",
+            "productDescribe": "Cụm camera trân châu đường đen.",
+            "productImage": "https://cdn.tgdd.vn/Files/2019/09/12/1197622/f4_800x600.jpg",
+            "auction": {
+              "auctionID": "AC_1",
+              "auctionName": "Iphone 11 đầu tiên",
+              "startDate": "10/30/2019 7:07 AM",
+              "timeRun": 12000,
+              "startPrice": 10000,
+              "isRunning": true
+            }
+          }
+        ]
+      },
+      {
+        "catID": "CR_6",
+        "categoryName": "Đồ cổ",
+        "product": [
+          {
+            "productID": "PR_1",
+            "productName": "Aphone 10 XMas",
+            "productDescribe": "Cụm camera trân châu đường đen.",
+            "productImage": "https://cdn.tgdd.vn/Files/2019/09/12/1197622/f4_800x600.jpg",
+            "auction": {
+              "auctionID": "AC_1",
+              "auctionName": "Iphone 11 đầu tiên",
+              "startDate": "10/30/2019 7:07 AM",
+              "timeRun": 12000,
+              "startPrice": 10000,
+              "isRunning": true
+            }
+          }
+        ]
+      }
+    ] 
+  }
+]

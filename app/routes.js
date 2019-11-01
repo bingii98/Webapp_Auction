@@ -9,7 +9,8 @@ const AWS = require('aws-sdk'),
     ctlAdmin = require('../controller/Admin-controller'),
     ctlCtm = require('../controller/Customer-controller'),
     docClient = new AWS.DynamoDB.DocumentClient(),
-    bcrypt = require('bcrypt-nodejs');
+    bcrypt = require('bcrypt-nodejs'),
+    multiparty = require('multiparty');
 
 //SET VIEW ENGINE
 app.set('view engine', 'ejs');
@@ -27,7 +28,7 @@ app.use(session({
 
 AWS.config.update({
     "region": "us-east-1",
-    "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
+    "endpoint": "http://localhost:8000",
 });
 
 var sess;
@@ -387,15 +388,19 @@ app.get('/deleteCategory', (req, res) => {
 //Create Product ADMIN
 app.post('/createproduct', (req, res) => {
     if (sess.permission === "admin") {
-        const productName = req.body.productName;
-        const productDescribe = req.body.productDescribe;
-        const categoryID = req.body.categoryID;
-
-        const ObjectB = {
-            productName: productName,
-            productDescribe: productDescribe
-        }
-        ctlAdmin.add_Product(ObjectB, categoryID, '/quanlysanpham', res);
+        var form = new multiparty.Form();
+        form.parse(req, function (err, fields, files) {
+            const productName = String(fields.productName);
+            const productDescribe = String(fields.productDescribe);
+            const categoryID = String(fields.categoryID);
+            const ObjectB = {
+                productName: productName,
+                productDescribe: productDescribe,
+                productImage: files.productImage[0],
+            }
+            ctlAdmin.add_Product(ObjectB, categoryID, '/quanlysanpham', res);
+            console.log(files.productImage[0]);
+        })
     } else {
         res.redirect('/login')
     }
@@ -758,9 +763,9 @@ app.get('/deleteauction', (req, res) => {
 app.post('/updateorder', (req, res) => {
     sess = req.session;
     var note;
-    if(req.body.note == ""){
+    if (req.body.note == "") {
         note = "null"
-    }else{
+    } else {
         note = req.body.note
     }
     ctlCtm.update_Order_Customer(sess.userID, req.body.productID, note, res);
@@ -779,25 +784,25 @@ app.post('/checkout', (req, res) => {
     ctlCtm.add_Order_Customer(sess.userID, productID);
     if (ownerID === "admin") {
         ctlAdmin.Get_Product(productID).then(data => {
-            if(data.auction.bids.length != 0){
+            if (data.auction.bids.length != 0) {
                 if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
                     res.render('check-out', { _uG: data });
                 } else {
                     res.redirect("/");
                 }
-            }else{
+            } else {
                 res.redirect("/");
             }
         });
     } else {
-        ctlBsn.Get_Product(productID,ownerID,ownerName).then(data => {
-            if(data.auction.bids.length != 0){
+        ctlBsn.Get_Product(productID, ownerID, ownerName).then(data => {
+            if (data.auction.bids.length != 0) {
                 if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
                     res.render('check-out', { _uG: data });
                 } else {
                     res.redirect("/");
                 }
-            }else{
+            } else {
                 res.redirect("/");
             }
         });
@@ -816,6 +821,10 @@ app.post('/lichsudaugia', (req, res) => {
     }
 });
 
+
+app.get('/checkout', (req, res) => {
+    res.render('check-out1')
+})
 
 //404 PAGE
 app.use((req, res) => {
