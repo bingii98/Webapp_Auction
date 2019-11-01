@@ -321,6 +321,7 @@
                 if (name && date && price && timerun) {
                     var date = new Date($("#startDate").val());
                     var nowdate = new Date();
+                    nowdate = nowdate.setMonth(nowdate.getMonth() - 1);
                     var time = Number($("#timeRun").val());
                     if (((date.getTime() - nowdate.getTime()) - 30) > 0) {
                         $("#formAddAuction").submit();
