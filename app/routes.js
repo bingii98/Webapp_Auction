@@ -724,7 +724,6 @@ app.post('/createauction', (req, res) => {
     const startPrice = req.body.startPrice;
     const productID = req.body.productID;
     const businessID = req.body.businessID;
-
     const ObjectB = {
         auctionName: auctionName,
         startDate: startDate,
