@@ -32,7 +32,7 @@ AWS.config.update({
 });
 
 var sess;
-const server = app.listen(3000, () => { console.log("Server running at port 3000!") });
+const server = app.listen(301, () => { console.log("Server running at port 3000!") });
 const io = require('socket.io').listen(server);
 
 //SocketIO FUNCTION START
