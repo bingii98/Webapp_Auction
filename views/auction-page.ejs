@@ -11,7 +11,7 @@
     <!-- jQuery JS -->
     <script src="js/vendor/jquery-1.12.0.min.js"></script>
     <script src="socket.io/socket.io.js"></script>
-    <script> var socket = io('http://54.175.16.232:3000'); </script>
+    <script> var socket = io('http://localhost:3000'); </script>
     <!--Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
     <!-- Google Fonts -->
@@ -238,7 +238,7 @@
             <div class="header-right header-right-1 float-right">
                 <!-- Account Menu -->
                 <div class="account-menu account-menu-1 float-right">
-                    <button data-toggle="dropdown" class="acc-menu-toggle"><i class="zmdi zmdi-settings"></i></button>
+                        <button data-toggle="dropdown" class="acc-menu-toggle"><i class="zmdi zmdi-settings"><span style="font-family: 'Open Sans', sans-serif; font-weight: bold; text-transform: uppercase; font-size: 14px; line-height: 20px;"> Menu</span></i></button>
                     <ul class="acc-menu-dropdown dropdown-menu right">
                         <li>
                             <form action="lichsudaugia" method="POST" id="FormLSDG"><input type="hidden"
@@ -327,9 +327,8 @@
                             <div class="single-product-image">
                                 <div class="product-big-image tab-content">
                                     <div class="tab-pane active" id="pro-img-1">
-                                        <img src="img/product/1.jpg" alt="" />
-                                        <a class="pro-img-popup" href="img/product/1.jpg"><i
-                                                class="zmdi zmdi-search"></i></a>
+                                        <img src="https://abctestsdsd.s3.amazonaws.com/<%=_uG.productImage%>" alt="" />
+                                        <a class="pro-img-popup" href="#"><i class="zmdi zmdi-search"></i></a>
                                     </div>
                                     <div style="padding: 10px;">
                                         <h4><strong><%= _uG.productName %></strong></h4>
@@ -438,11 +437,13 @@
                     if (!re.test(priceDR)) {
                         $('#error_AuctionPrice').text('Định dạng tiền không đúng!');
                     } else {
-                        if (Number(priceDR) > Number(priceHT) + 999) {
+                        if (Number(priceDR) < Number(priceHT) + 999) {
+                            $('#error_AuctionPrice').text('Giá đưa ra phải lớn hơn giá hiện tại 1000!');
+                        } else if(Number(priceDR) > 100000000){
+                            $('#error_AuctionPrice').text('Giá đưa ra phải nhỏ hơn 100.000.000');
+                        }else{
                             $('#error_AuctionPrice').text('');
                             socket.emit("Client_sent_data_BID", productID, priceDR, ownerID, ownerName, $("#clientUserID").val(), new Date());
-                        } else {
-                            $('#error_AuctionPrice').text('Giá đưa ra phải lớn hơn giá hiện tại 1000!');
                         }
                     }
                 });

@@ -10,7 +10,7 @@
     <script src='js/jquery.min.js'></script>
     <!--SOCKETIO for Sign up-->
     <script src="socket.io/socket.io.js"></script>
-    <script> var socket = io('http://54.175.16.232:3000'); </script>
+    <script> var socket = io('http://localhost:3000'); </script>
     <script>
         $(document).ready(function () {
             $("#addProductBtn").click(function () {
@@ -79,55 +79,51 @@
     <div class="wrapper bg-white fix">
         <!-- Header 4 --> <% include element/headerB %>
         <!-- Cart Area -->
-        <div class="cart-area pb-90 pt-90 mt-100">
+        <div class="cart-area pt-90 mt-100">
             <div class="container">
                 <div class="row">
                     <div class="procced-checkout col-md-12 col-xs-12">
-                        <button id="addProductBtn" class="btn btn-open checkout-link">
-                            <span>Thêm sản phẩm đấu giá</span></button>
+                        <button class="btn btn-open checkout-link" data-toggle="modal" data-target="#modalAddCategory" id="addProductBtn"><span>Thêm sản phẩm đấu giá</span></button>
                     </div>
-                    <section class="modal">
-                        <div class="wrapper">
-                            <div class="container">
-                                <span class="icon-close"></span>
-                                <div class="right">
-                                    <div class="form">
-                                        <h2 class="title">Thêm sản phẩm đấu giá</h2>
-                                        <form method="POST" action="/createproductbusiness" id="formADD">
-                                            <input type='hidden' name='categoryID' id='categoryID_txt'>
-                                            <div class="input-wrapper">
-                                                <label for="">Tên sản phẩm</label>
-                                                <input name="productName" id="productName_txt" type="text"
-                                                    placeholder="Name" onblur="checkproductName(this.value)">
-                                            </div>
-                                            <label id="error_productName"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Chọn loại sản phẩm</label>
-                                                <select name="categoryName" id="listCaterory"></select>
-                                            </div>
-                                            <div class="input-wrapper">
-                                                <label for="">Mô tả</label>
-                                                <input name="productDescribe" id="productDescribe_txt" type="text"
-                                                    placeholder="Name" onblur="checkproductDescribe(this.value)">
-                                            </div>
-                                            <label id="error_productDescribe"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Chọn hình ảnh</label>
-                                                <input id="image" type="file" placeholder="Image">
-                                            </div>
-                                            <button class="btn" type="button" id="submitAddProduct"><span>Xác
-                                                    nhận</span></button>
-                                        </form>
-                                    </div>
+                    <div id="modalAddCategory" class="modal fade" role="dialog" style="z-index: 2000;">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title"><strong>THÊM SẢN PHẨM</strong></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="/createproductbusiness" id="formADD" enctype="multipart/form-data">
+                                        <input type='hidden' name='categoryID' id='categoryID_txt'>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Tên sản phẩm</label>
+                                            <input name="productName" id="productName_txt" type="text" onblur="checkproductName(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_productName" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Chọn loại sản phẩm</label>
+                                            <select name="categoryName" id="listCaterory" class="txtEdit"></select>
+                                        </div>
+                                        <div class="input-wrapper" style="padding-top: 25px;">
+                                            <label class="labelEdit">Mô tả<br><i style="color: green;">Mô tả ngắn về xuất xứ, tình trạng sản phẩm</i></label>
+                                            <input name="productDescribe" id="productDescribe_txt" type="text" onblur="checkproductDescribe(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_productDescribe" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Chọn hình ảnh <br><i style="color: green;">Các file có đuôi gif|jpg|jpeg|tiff|png và kích thước nhỏ hơn 2MB</i></label>
+                                            <input id="productImage" type="file" class="txtEdit" name="productImage" accept="image/x-png,image/gif,image/jpeg" class="txtEdit">
+                                        </div>
+                                        <label id="error_productImage" class="error-label"></label>
+                                        <button class="btnModal" type="button" id="submitAddProduct" style="margin-top: 30px;"><span>Xác nhận</span></button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    </div>
                     <!-- Modal EDIT -->
-                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -142,20 +138,15 @@
                                         <input name="productID" id="productIDEdit" type="hidden">
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Tên:</label>
-                                            <input name="productName" class="txtEdit" id="edit_bnPhone" type="text"
-                                                onblur="checkproductName_edit(this.value)">
-                                            <label id="error_productName_edit"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                            <input name="productName" class="txtEdit" id="edit_bnPhone" type="text" onblur="checkproductName_edit(this.value)">
+                                            <label id="error_productName_edit" class="error-label"></label>
                                         </div>
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Mô tả:</label>
-                                            <input name="productDescribe" class="txtEdit" id="edit_bnEmail" type="text"
-                                                onblur="checkproductDescribe_edit(this.value)"><br>
-                                            <label id="error_productDescribe_edit"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                            <input name="productDescribe" class="txtEdit" id="edit_bnEmail" type="text" onblur="checkproductDescribe_edit(this.value)"><br>
+                                            <label id="error_productDescribe_edit" class="error-label"></label>
                                         </div><br>
-                                        <button onclick="checkEditProduct();" class="btn btn-warning" id="btnEdit"
-                                            type="button" style="padding: 5px;">Xác nhận</button>
+                                        <button onclick="checkEditProduct();" class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px;">Xác nhận</button>
                                     </form>
                                 </div>
                             </div>
@@ -173,58 +164,44 @@
                                     <h4 class="modal-title"><strong>THÊM PHIÊN ĐẤU GIÁ</strong></h4>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="/createauction" style="padding: 20px;" method="POST"
-                                        id="formAddAuction">
+                                    <form action="/createauction" style="padding: 20px;" method="POST" id="formAddAuction">
                                         <input type="hidden" id="productID_addAuc" name="productID">
                                         <input type="hidden" id="businessID_addAuc" name="businessID">
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Tên phiên đấu giá:</label>
-                                            <input type="text" name="auctionName" id="auctionName" class="txtEdit"
-                                                onblur="checkAuctionName(this.value)">
-                                            <label id="error_AuctionName"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                            <input type="text" name="auctionName" id="auctionName" class="txtEdit" onblur="checkAuctionName(this.value)">
+                                            <label id="error_AuctionName" class="error-label"></label>
                                         </div>
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Thời gian khởi động đấu giá:</label>
                                             <div class="form-group">
                                                 <div class="input-group date" id="datetimepicker1">
-                                                    <input type="text" class="form-control" name="startDate"
-                                                        id="startDate" class="txtEdit"
-                                                        onblur="checkAuctionDate(this.value)" />
+                                                    <input type="text" class="form-control txtEdit" name="startDate" id="startDate" class="txtEdit" onblur="checkAuctionDate(this.value)" />
                                                     <span class="input-group-addon">
                                                         <span class="">Chọn ngày</span>
                                                     </span>
                                                 </div>
                                             </div>
-                                            <label id="error_AuctionDate"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                            <label id="error_AuctionDate" class="error-label"></label>
                                         </div>
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Nhập giá:</label>
-                                            <input type="text" name="startPrice" id="startPrice" class="txtEdit"
-                                                onblur="checkAuctionPrice(this.value)">
-                                            <label id="error_AuctionPrice"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                            <input type="text" name="startPrice" id="startPrice" class="txtEdit" onblur="checkAuctionPrice(this.value)">
+                                            <label id="error_AuctionPrice" class="error-label"></label>
                                         </div>
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Hạn chạy đấu giá:</label>
-                                            <input type="text" name="timeRun" id="timeRun" class="txtEdit"
-                                                onblur="checkAuctionTimeRun(this.value)">
-                                            <label id="error_AuctionTimeRun"
-                                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
+                                            <input type="text" name="timeRun" id="timeRun" class="txtEdit" onblur="checkAuctionTimeRun(this.value)">
+                                            <label id="error_AuctionTimeRun" class="error-label"></label>
                                         </div>
-                                        <button class="btn btn-warning" type="button"
-                                            style="padding: 5px; margin-top: 50px;" id="CheckFormAddAuction">Xác
-                                            nhận</button>
+                                        <button class="btnModal" type="button" id="CheckFormAddAuction">Xác nhận</button>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> <% var formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }); %>
-                <div class="row" style="margin-top: 20px;">
+                </div> <% var formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }); %> <div class="row" style="margin-top: 20px;">
                     <div class="col-xs-12">
-                        <i>Các sản phẩm đã được khởi động đấu giá hoặc có hóa đơn không được sửa</i>
                         <div class="cart-table table-responsive mb-50">
                             <table class="table">
                                 <thead>
@@ -238,18 +215,13 @@
                                         <th class="remove" style="width: 50px;">Sửa</th>
                                         <th class="remove" style="width: 50px;">Xoá</th>
                                     </tr>
-                                </thead><% var i = 1%> <tbody>
-                                    <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %>
-                                    <% _uG.forEach((product) => { %>
-                                    <%let current_datetime = new Date(product.auction.startDate);%>
-                                    <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%>
-                                    <tr>
+                                </thead><% var i = 1%> <tbody> <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %> <% _uG.forEach((product) => { %> <%let current_datetime = new Date(product.auction.startDate);%> <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%> <tr>
                                         <td><strong><%= i %></strong></td>
                                         <td>
                                             <div class="cart-stock idTag"><%=product.productID%></div>
                                         </td>
                                         <td>
-                                            <p class="cart-product text-left fix"><img src="img/product/2.jpg" alt="" />
+                                            <p class="cart-product text-left fix"><img src="https://abctestsdsd.s3.amazonaws.com/<%=product.productImage%>" alt="" />
                                             </p>
                                         </td>
                                         <td>
@@ -260,50 +232,22 @@
                                         <td>
                                             <p class="cart-stock word-break_break-all"><%=product.productDescribe%></p>
                                         </td>
-                                        <td><% if(product.count == 0){ %><button class="cart-pro-remove"
-                                                data-toggle="modal" data-target="#modalAddAuction"
-                                                onclick="addAutionBtn('<%=product.productID%>','<%= product.id %>')"><i
-                                                    class="zmdi zmdi-plus"></i></button><% }else{ %><i
-                                                class="zmdi zmdi-check"></i><% }; %></td>
-                                        <% let count = 0; %> <%for (var c in product.auction) { count = count + 1; } %>
-                                        <% if(count > 0){ %><% var date = new Date(product.auction.startDate); %><% } %>
-                                        <% var nowdate = new Date(); %>
-                                        <% if(count > 0){ %>
-                                        <% if ((nowdate.getTime() - date.getTime()) < 0) { %>
-                                        <% if (product.auction.bids.length == 0) { %>
-                                        <td></td>
-                                        <td><a
-                                                onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button
-                                                    class="cd-popup-trigger cart-pro-remove"><i
-                                                        class="zmdi zmdi-close"></i></button></a></td>
-                                        <% } %>
-                                        <% }else{ %>
-                                        <% if (product.auction.bids.length == 0) { %>
-                                        <td></td>
-                                        <td><a
-                                                onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button
-                                                    class="cd-popup-trigger cart-pro-remove"><i
-                                                        class="zmdi zmdi-close"></i></button></a></td>
-                                        <% }else{ %>
-                                        <td></td>
-                                        <td></td>
-                                        <% } %>
-                                        <% } %>
-                                        <% }else{ %>
-                                        <td><button class="cart-pro-remove" data-toggle="modal"
-                                                data-target="#exampleModalCenter"
-                                                onclick="setProductEdit_Input('<%= product.productID %>','<%= product.productName %>','<%=product.productDescribe%>','<%= product.id %>','<%= product.ownerName %>')"><i
-                                                    class="zmdi zmdi-edit"></i></button></td>
-                                        <td><a
-                                                onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button
-                                                    class="cd-popup-trigger cart-pro-remove"><i
-                                                        class="zmdi zmdi-close"></i></button></a></td>
-                                        <% } %>
+                                        <td><% if(product.count == 0){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#modalAddAuction" onclick="addAutionBtn('<%=product.productID%>','<%= product.id %>')"><i class="zmdi zmdi-plus"></i></button><% }else{ %><i class="zmdi zmdi-check"></i><% }; %></td> <% let count = 0; %> <%for (var c in product.auction) { count = count + 1; } %> <% if(count > 0){ %><% var date = new Date(product.auction.startDate); %><% } %> <% var nowdate = new Date(); %> <% if(count > 0){ %> <% if ((nowdate.getTime() - date.getTime()) < 0) { %> <% if (product.auction.bids.length == 0) { %> <td></td>
+                                        <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% } %> <% }else{ %> <% if (product.auction.bids.length == 0) { %> <td></td>
+                                        <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% }else{ %> <td></td>
+                                        <td></td> <% } %> <% } %> <% }else{ %> <td><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setProductEdit_Input('<%= product.productID %>','<%= product.productName %>','<%=product.productDescribe%>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-edit"></i></button></td>
+                                        <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% } %>
                                     </tr> <% i++;%> <% }); %> </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="container-fuild" style="background: #2c3338; padding-bottom: 100px; margin-top: 100px;">
+                <h4 class="modal-title"><strong style="color: white;">QUY ĐỊNH VỀ SẢN PHẨM</strong></h4>
+                <p style="text-align: center;color: white; padding-top: 30px;"> - Sản phẩm <strong>không được xóa hoặc sửa</strong> khi có <strong>một trong</strong> các điều kiện sau:</p>
+                <p style="text-align: center;color: white;"> 1. Sản phẩm chưa có phiên đấu giá</p>
+                <p style="text-align: center;color: white;"> <i>Đối với các sản phẩm có phiên đấu giá bạn phải xóa phiên đấu giá trước khi muốn xóa hoặc sửa sản phẩm</i></p>
             </div>
         </div>
         <div class="cd-popup" role="alert">
@@ -349,7 +293,16 @@
                 var name = $("#productName_txt").val();
                 var des = $("#productDescribe_txt").val()
                 if (checkproductName(name) && checkproductDescribe(des)) {
-                    $("#formADD").submit();
+                    if ($('#productImage').get(0).files.length === 0) {
+                        $('#error_productImage').text("Chưa chọn ảnh!");
+                    } else if (!(/\.(gif|jpg|jpeg|tiff|png)$/i).test($("#productImage").val())) {
+                        $('#error_productImage').text("Chỉ được chọn tập tin là hình ảnh! (gif|jpg|jpeg|tiff|png)");
+                    } else if ($('#productImage')[0].files[0].size > 2097152) {
+                        $('#error_productImage').text("Chỉ chấp nhận kích thước ảnh nhỏ hơn 2MB!");
+                    } else {
+                        $('#formADD').submit();
+                        $('#error_productImage').text("");
+                    }
                 }
             });
 

@@ -10,7 +10,7 @@
 
     <!--SOCKETIO for Sign up-->
     <script src="socket.io/socket.io.js"></script>
-    <script> var socket = io('http://54.175.16.232:3001'); </script>
+    <script> var socket = io('http://localhost:3000'); </script>
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
 
@@ -145,7 +145,7 @@
             <div class="header-right header-right-1 float-right">
                 <!-- Account Menu -->
                 <div class="account-menu account-menu-1 float-right">
-                    <button data-toggle="dropdown" class="acc-menu-toggle"><i class="zmdi zmdi-settings"></i></button>
+                    <button data-toggle="dropdown" class="acc-menu-toggle"><i class="zmdi zmdi-settings"><span style="font-family: 'Open Sans', sans-serif; font-weight: bold; text-transform: uppercase; font-size: 14px; line-height: 20px;"> Menu</span></i></button>
                     <% if(booleanB){ %>
                     <ul class="acc-menu-dropdown dropdown-menu right">
                         <li><form action="lichsudaugia" method="POST" id="FormLSDG"><input type="hidden" value="<%= userID %>"><a href="#" id="submitFormLSDG">Xem lịch sử đấu giá</a></form></li>
@@ -334,13 +334,13 @@
                             <% _uG.forEach((item) => { %>
                             <% var date = new Date(item.auction.startDate); %>
                             <% var nowdate = new Date(); %>
-                            <% if((nowdate.getTime() - date.getTime() < item.auction.timeRun*1000){ %>
+                            <% if(nowdate.getTime() - date.getTime() < item.auction.timeRun*1000){ %>
                             <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="sin-product">
                                     <div class="pro-image fix">
                                         <a href="/sanphamdaugia?sanpham=<%=item.productID%>&owner=<%=item.ownerName%>&ownerid=<%=item.id%>"
                                             class="image">
-                                            <img src="img/product/2.jpg" alt="">
+                                            <img src="http://abctestsdsd.s3.amazonaws.com/<%=item.productImage%>" alt="">
                                         </a>
                                         <div class="pro-action">
                                             <a href="/sanphamdaugia?sanpham=<%=item.productID%>&owner=<%=item.ownerName%>&ownerid=<%=item.id%>"
@@ -356,92 +356,92 @@
                                                 <% if(date.getHours() < 10){ %>
                                                 <% if(date.getMinutes() < 10){ %>
                                                 <% if(date.getDate() < 10){ %>
-                                                <% if(date.getMonth() < 10){ %>
+                                                <% if((date.getMonth() + 1) < 10){ %>
                                                 <span style="color:green;">Giờ:
                                                     0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày:
-                                                    0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    0<%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% }else{ %>
                                                 <span style="color:green;">Giờ:
                                                     0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày:
-                                                    0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    0<%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% } %>
                                                 <% }else{ %>
-                                                <% if(date.getMonth() < 10){ %>
+                                                <% if((date.getMonth() + 1) < 10){ %>
                                                 <span style="color:green;">Giờ:
                                                     0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày:
-                                                    <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    <%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% }else{ %>
                                                 <span style="color:green;">Giờ:
                                                     0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày:
-                                                    <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    <%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% } %>
                                                 <% } %>
                                                 <% }else{ %>
                                                 <% if(date.getDate() < 10){ %>
-                                                <% if(date.getMonth() < 10){ %>
+                                                <% if((date.getMonth() + 1) < 10){ %>
                                                 <span style="color:green;">Giờ:
                                                     0<%=date.getHours()%>:<%=date.getMinutes()%> - Ngày:
-                                                    0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    0<%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% }else{ %>
                                                 <span style="color:green;">Giờ:
                                                     0<%=date.getHours()%>:<%=date.getMinutes()%> - Ngày:
-                                                    0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    0<%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% } %>
                                                 <% }else{ %>
-                                                <% if(date.getMonth() < 10){ %>
+                                                <% if((date.getMonth() + 1) < 10){ %>
                                                 <span style="color:green;">Giờ:
                                                     0<%=date.getHours()%>:<%=date.getMinutes()%> - Ngày:
-                                                    <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    <%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% }else{ %>
                                                 <span style="color:green;">Giờ:
                                                     0<%=date.getHours()%>:<%=date.getMinutes()%> - Ngày:
-                                                    <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    <%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% } %>
                                                 <% } %>
                                                 <% } %>
                                                 <% }else{ %>
                                                 <% if(date.getMinutes() < 10){ %>
                                                 <% if(date.getDate() < 10){ %>
-                                                <% if(date.getMonth() < 10){ %>
+                                                <% if((date.getMonth() + 1) < 10){ %>
                                                 <span style="color:green;">Giờ:
                                                     <%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày:
-                                                    0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    0<%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% }else{ %>
                                                 <span style="color:green;">Giờ:
                                                     <%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày:
-                                                    0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    0<%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% } %>
                                                 <% }else{ %>
-                                                <% if(date.getMonth() < 10){ %>
+                                                <% if((date.getMonth() + 1) < 10){ %>
                                                 <span style="color:green;">Giờ:
                                                     <%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày:
-                                                    <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    <%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% }else{ %>
                                                 <span style="color:green;">Giờ:
                                                     <%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày:
-                                                    <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    <%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% } %>
                                                 <% } %>
                                                 <% }else{ %>
                                                 <% if(date.getDate() < 10){ %>
-                                                <% if(date.getMonth() < 10){ %>
+                                                <% if((date.getMonth() + 1) < 10){ %>
                                                 <span style="color:green;">Giờ:
                                                     <%=date.getHours()%>:<%=date.getMinutes()%> - Ngày:
-                                                    0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    0<%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% }else{ %>
                                                 <span style="color:green;">Giờ:
                                                     <%=date.getHours()%>:<%=date.getMinutes()%> - Ngày:
-                                                    0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    0<%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% } %>
                                                 <% }else{ %>
-                                                <% if(date.getMonth() < 10){ %>
+                                                <% if((date.getMonth() + 1) < 10){ %>
                                                 <span style="color:green;">Giờ:
                                                     <%=date.getHours()%>:<%=date.getMinutes()%> - Ngày:
-                                                    <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    <%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% }else{ %>
                                                 <span style="color:green;">Giờ:
                                                     <%=date.getHours()%>:<%=date.getMinutes()%> - Ngày:
-                                                    <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                    <%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                                 <% } %>
                                                 <% } %>
                                                 <% } %>
@@ -484,7 +484,7 @@
                             <div class="sin-list-product clearfix">
                                 <div class="pro-image col-md-3 col-sm-5 col-xs-12">
                                     <a href="#" class="image fix">
-                                        <img src="img/product/1.jpg" alt="" />
+                                        <img src="http://abctestsdsd.s3.amazonaws.com/<%=item.productImage%>" alt="" />
                                     </a>
                                     <div class="pro-action">
                                         <a href="/sanphamdaugia?sanpham=<%=item.productID%>&owner=<%=item.ownerName%>&ownerid=<%=item.id%>"
@@ -504,92 +504,92 @@
                                             <% if(date.getHours() < 10){ %>
                                             <% if(date.getMinutes() < 10){ %>
                                             <% if(date.getDate() < 10){ %>
-                                            <% if(date.getMonth() < 10){ %>
+                                            <% if((date.getMonth() + 1) < 10){ %>
                                             <span style="color:green;">Giờ:
                                                 0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày:
-                                                0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                0<%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% }else{ %>
                                             <span style="color:green;">Giờ:
                                                 0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày:
-                                                0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                0<%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% } %>
                                             <% }else{ %>
-                                            <% if(date.getMonth() < 10){ %>
+                                            <% if((date.getMonth() + 1) < 10){ %>
                                             <span style="color:green;">Giờ:
                                                 0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày:
-                                                <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                <%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% }else{ %>
                                             <span style="color:green;">Giờ:
                                                 0<%=date.getHours()%>:0<%=date.getMinutes()%> - Ngày:
-                                                <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                <%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% } %>
                                             <% } %>
                                             <% }else{ %>
                                             <% if(date.getDate() < 10){ %>
-                                            <% if(date.getMonth() < 10){ %>
+                                            <% if((date.getMonth() + 1) < 10){ %>
                                             <span style="color:green;">Giờ: 0<%=date.getHours()%>:<%=date.getMinutes()%>
                                                 - Ngày:
-                                                0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                0<%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% }else{ %>
                                             <span style="color:green;">Giờ: 0<%=date.getHours()%>:<%=date.getMinutes()%>
                                                 - Ngày:
-                                                0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                0<%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% } %>
                                             <% }else{ %>
-                                            <% if(date.getMonth() < 10){ %>
+                                            <% if((date.getMonth() + 1) < 10){ %>
                                             <span style="color:green;">Giờ: 0<%=date.getHours()%>:<%=date.getMinutes()%>
                                                 - Ngày:
-                                                <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                <%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% }else{ %>
                                             <span style="color:green;">Giờ: 0<%=date.getHours()%>:<%=date.getMinutes()%>
                                                 - Ngày:
-                                                <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                <%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% } %>
                                             <% } %>
                                             <% } %>
                                             <% }else{ %>
                                             <% if(date.getMinutes() < 10){ %>
                                             <% if(date.getDate() < 10){ %>
-                                            <% if(date.getMonth() < 10){ %>
+                                            <% if((date.getMonth() + 1) < 10){ %>
                                             <span style="color:green;">Giờ: <%=date.getHours()%>:0<%=date.getMinutes()%>
                                                 - Ngày:
-                                                0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                0<%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% }else{ %>
                                             <span style="color:green;">Giờ: <%=date.getHours()%>:0<%=date.getMinutes()%>
                                                 - Ngày:
-                                                0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                0<%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% } %>
                                             <% }else{ %>
-                                            <% if(date.getMonth() < 10){ %>
+                                            <% if((date.getMonth() + 1) < 10){ %>
                                             <span style="color:green;">Giờ: <%=date.getHours()%>:0<%=date.getMinutes()%>
                                                 - Ngày:
-                                                <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                <%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% }else{ %>
                                             <span style="color:green;">Giờ: <%=date.getHours()%>:0<%=date.getMinutes()%>
                                                 - Ngày:
-                                                <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                <%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% } %>
                                             <% } %>
                                             <% }else{ %>
                                             <% if(date.getDate() < 10){ %>
-                                            <% if(date.getMonth() < 10){ %>
+                                            <% if((date.getMonth() + 1) < 10){ %>
                                             <span style="color:green;">Giờ: <%=date.getHours()%>:<%=date.getMinutes()%>
                                                 - Ngày:
-                                                0<%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                0<%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% }else{ %>
                                             <span style="color:green;">Giờ: <%=date.getHours()%>:<%=date.getMinutes()%>
                                                 - Ngày:
-                                                0<%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                0<%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% } %>
                                             <% }else{ %>
-                                            <% if(date.getMonth() < 10){ %>
+                                            <% if((date.getMonth() + 1) < 10){ %>
                                             <span style="color:green;">Giờ: <%=date.getHours()%>:<%=date.getMinutes()%>
                                                 - Ngày:
-                                                <%=date.getDate()%>/0<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                <%=date.getDate()%>/0<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% }else{ %>
                                             <span style="color:green;">Giờ: <%=date.getHours()%>:<%=date.getMinutes()%>
                                                 - Ngày:
-                                                <%=date.getDate()%>/<%=date.getMonth()%>/<%=date.getFullYear()%></span>
+                                                <%=date.getDate()%>/<%=(date.getMonth() + 1)%>/<%=date.getFullYear()%></span>
                                             <% } %>
                                             <% } %>
                                             <% } %>
@@ -621,25 +621,6 @@
                             <% } %>
                             <% }); %>
                             <!--END Content PAGE PRODUCT-->
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <!-- Shop Bottom Bar -->
-                    <div class="shop-top-bar text-center col-xs-12">
-                        <!-- Product Pagination -->
-                        <div class="pagination">
-                            <ul>
-                                <li>
-                                    <a href="#"><i class="zmdi zmdi-chevron-left"></i></a>
-                                </li>
-                                <li class="active">
-                                    <a href="#">1</a>
-                                </li>
-                                <li>
-                                    <a href="#"><i class="zmdi zmdi-chevron-right"></i></a>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>

@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--SOCKETIO for Sign up-->
     <script src="socket.io/socket.io.js"></script>
-    <script> var socket = io('http://54.175.16.232:3000'); </script>
+    <script> var socket = io('http://localhost:3000'); </script>
     <script>
         function checkBusiness() {
             var name = checkBusinessName(document.getElementById('businessName').value);
@@ -79,59 +79,60 @@
             <div class="container">
                 <div class="row">
                     <div class="procced-checkout col-md-12 col-xs-12">
-                        <button class="btn btn-open checkout-link">
-                            <span>Thêm doanh nghiệp</span></button>
+                        <button class="btn btn-open checkout-link" data-toggle="modal" data-target="#modalAddBusiness"><span>THÊM DOANH NGHIỆP</span></button>
                     </div>
-                    <section class="modal">
-                        <div class="wrapper">
-                            <div class="container">
-                                <span class="icon-close"></span>
-                                <div class="right">
-                                    <div class="form">
-                                        <h2 class="title">Thêm doanh nghiệp</h2>
-                                        <form action="createbusiness" method="POST" id="autopass">
-                                            <div class="input-wrapper">
-                                                <label for="">Tên doanh nghiệp</label>
-                                                <input name="businessName" id="businessName" type="text" placeholder="Name" onblur="checkBusinessName(this.value)">
-                                            </div>
-                                            <label id="error_businessName" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Tên người dùng:</label>
-                                                <input name="username" id="username" type="text" placeholder="User" onblur="checkUsername(this.value)">
-                                            </div>
-                                            <label id="error_username" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Mật khẩu:</label>
-                                                <input name="password" type="text" placeholder="Password" id="passwordA" onblur="checkPassword(this.value)">
-                                            </div>
-                                            <label id="error_password" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Nhập lại mật khẩu:</label>
-                                                <input name="re-password" id="re-password" type="text" placeholder="Re-Password" onblur="checkConfirmPassword(this.value)">
-                                            </div>
-                                            <label id="error_repassword" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Địa chỉ:</label>
-                                                <input name="address" id="address" type="text" placeholder="Address" onblur="checkAddress(this.value)">
-                                            </div>
-                                            <label id="error_address" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Số điện thoại:</label>
-                                                <input name="phone" id="phoneA" type="text" placeholder="Telephone Number" onblur="checkPhone(this.value)">
-                                            </div>
-                                            <label id="error_phone" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Email:</label>
-                                                <input name="email" id="email" type="email" placeholder="Name" id="email" onblur="checkEmail(this.value)">
-                                            </div>
-                                            <label id="error_email" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <button class="btn btn-success" type="button" onclick="checkBusiness();"><span>Xác nhận</span></button>
-                                        </form>
-                                    </div>
+                    <div id="modalAddBusiness" class="modal fade" role="dialog" style="z-index: 2000;">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title"><strong>THÊM DOANH NGHIỆP</strong></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="createbusiness" method="POST" id="autopass">
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Tên doanh nghiệp</label>
+                                            <input name="businessName" id="businessName" type="text" onblur="checkBusinessName(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_businessName" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Tên người dùng:<br><i style="color: green;">Mỗi tài khoản chỉ gồm 1 username duy nhất và không trùng lặp</i></label>
+                                            <input name="username" id="username" type="text" onblur="checkUsername(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_username" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Mật khẩu:</label>
+                                            <input name="password" type="text" id="passwordA" onblur="checkPassword(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_password" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Nhập lại mật khẩu:</label>
+                                            <input name="re-password" id="re-password" type="text" onblur="checkConfirmPassword(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_repassword" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Địa chỉ:</label>
+                                            <input name="address" id="address" type="text" onblur="checkAddress(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_address" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Số điện thoại:<br><i style="color: green;">Các số điện thoại hiện hành tại VN gồm 10 số và bắt đầu từ 0</i></label>
+                                            <input name="phone" id="phoneA" type="text" onblur="checkPhone(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_phone" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Email:</label>
+                                            <input name="email" id="email" type="email" id="email" onblur="checkEmail(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_email" class="error-label"></label>
+                                        <button class="btnModal" type="button" onclick="checkBusiness();"><span>Xác nhận</span></button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    </div>
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -140,6 +141,7 @@
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
+                                    <h4 class="modal-title"><strong>CHỈNH SỬA THÔNG TIN DOANH NGHIỆP</strong></h4>
                                 </div>
                                 <div class="modal-body">
                                     <form action="editBusiness" style="margin: 20px;" id="formEdit">
@@ -160,7 +162,7 @@
                                             <input name="email" class="txtEdit" id="edit_bnEmail" type="text" onblur="checkEmailEdit(this.value)"><br>
                                             <label id="error_email_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                         </div><br>
-                                        <button onclick="checkEditBusiness();" class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px;">Xác nhận</button>
+                                        <button onclick="checkEditBusiness();" class="btnModal" id="btnEdit" type="button">Xác nhận</button>
                                     </form>
                                 </div>
                             </div>

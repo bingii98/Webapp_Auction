@@ -1,0 +1,70 @@
+<div class="procced-checkout col-md-12 col-xs-12">
+    <button class="btn btn-open checkout-link" data-toggle="modal" data-target="#modalAddCategory" id="addProductBtn"><span>Thêm sản phẩm đấu giá</span></button>
+</div>
+<div id="modalAddCategory" class="modal fade" role="dialog" style="z-index: 2000;">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title"><strong>THÊM LOẠI SẢN PHẨM</strong></h4>
+            </div>
+            <div class="modal-body">
+                </form>
+                <form action="createCategory" method="POST" id="categoryForm">
+                    <div class="input-wrapper">
+                        <label class="labelEdit">Nhập tên loại:</label>
+                        <input id="categoryName" type="text" onblur="checkCustomerName(this.value)" name="categoryName" class="txtEdit">
+                    </div>
+                    <label id="error_customerName" class="error-label"></label>
+                    <button class="btnModal" type="button" onclick="checkCategory();"><span>Thêm</span></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="procced-checkout col-md-12 col-xs-12">
+        <button id="addProductBtn" class="btn btn-open checkout-link">
+            <span>Thêm sản phẩm đấu giá</span></button>
+    </div>
+    <section class="modal">
+        <div class="wrapper">
+            <div class="container">
+                <span class="icon-close"></span>
+                <div class="right">
+                    <div class="form">
+                        <h2 class="title">Thêm sản phẩm đấu giá</h2>
+                        <form method="POST" action="/createproductbusiness" id="formADD">
+                            <input type='hidden' name='categoryID' id='categoryID_txt'>
+                            <div class="input-wrapper">
+                                <label for="">Tên sản phẩm</label>
+                                <input name="productName" id="productName_txt" type="text"
+                                    placeholder="Name" onblur="checkproductName(this.value)">
+                            </div>
+                            <label id="error_productName"
+                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
+                            <div class="input-wrapper">
+                                <label for="">Chọn loại sản phẩm</label>
+                                <select name="categoryName" id="listCaterory"></select>
+                            </div>
+                            <div class="input-wrapper">
+                                <label for="">Mô tả</label>
+                                <input name="productDescribe" id="productDescribe_txt" type="text"
+                                    placeholder="Name" onblur="checkproductDescribe(this.value)">
+                            </div>
+                            <label id="error_productDescribe"
+                                style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
+                            <div class="input-wrapper">
+                                <label for="">Chọn hình ảnh</label>
+                                <input id="image" type="file" placeholder="Image">
+                            </div>
+                            <button class="btn" type="button" id="submitAddProduct"><span>Xác
+                                    nhận</span></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

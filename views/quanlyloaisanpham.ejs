@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--SOCKETIO for Sign up-->
     <script src="socket.io/socket.io.js"></script>
-    <script> var socket = io('http://54.175.16.232:3000'); </script>
+    <script> var socket = io('http://localhost:3000'); </script>
     <script>
         function checkCategory() {
             var name = checkBusinessName(document.getElementById('categoryName').value);
@@ -83,33 +83,35 @@
     <div class="wrapper bg-white fix">
         <!-- Header 4 --> <% include element/header %>
         <!-- Cart Area -->
-        <div class="cart-area pb-90 pt-90 mt-100">
+        <div class="cart-area pt-90 mt-100">
             <div class="container">
                 <div class="row">
                     <div class="procced-checkout col-md-12 col-xs-12">
-                        <button class="btn btn-open checkout-link">
-                            <span>Thêm loại sản phẩm</span></button>
+                        <button class="btn btn-open checkout-link" data-toggle="modal" data-target="#modalAddCategory"><span>THÊM LOẠI SẢN PHẨM</span></button>
                     </div>
-                    <section class="modal">
-                        <div class="wrapper">
-                            <div class="container">
-                                <span class="icon-close"></span>
-                                <div class="right">
-                                    <div class="form">
-                                        <h2 class="title">Thêm loại sản phẩm</h2>
-                                        <form action="createCategory" method="POST" id="categoryForm">
-                                            <div class="input-wrapper">
-                                                <label for="">Nhập tên loại:</label>
-                                                <input id="categoryName" type="text" placeholder="Name" onblur="checkCustomerName(this.value)" name="categoryName">
-                                            </div>
-                                            <label id="error_customerName" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <button class="card__btn" type="button" onclick="checkCategory();"><span>Thêm</span></button>
-                                        </form>
-                                    </div>
+                    <div id="modalAddCategory" class="modal fade" role="dialog" style="z-index: 2000;">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title"><strong>THÊM LOẠI SẢN PHẨM</strong></h4>
+                                </div>
+                                <div class="modal-body">
+                                    </form>
+                                    <form action="createCategory" method="POST" id="categoryForm">
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Nhập tên loại:</label>
+                                            <input id="categoryName" type="text" onblur="checkCustomerName(this.value)" name="categoryName" class="txtEdit">
+                                        </div>
+                                        <label id="error_customerName" class="error-label"></label>
+                                        <button class="btnModal" type="button" onclick="checkCategory();"><span>Thêm</span></button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    </div>
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -118,16 +120,17 @@
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
+                                    <h4 class="modal-title"><strong>CHỈNH SỬA LOẠI SẢN PHẨM</strong></h4>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="updateCategory" style="margin: 20px;" id="formEdit" method="POST" >
-                                        <input type="hidden" id="editCategoryID" name="categoryID"/>
+                                    <form action="updateCategory" style="margin: 20px;" id="formEdit" method="POST">
+                                        <input type="hidden" id="editCategoryID" name="categoryID" />
                                         <div class="input-wrapper">
-                                            <label class="labelEdit">Tên loại:</label>
+                                            <label class="labelEdit">Tên loại:<br><i style="color: green;">Tên duy nhất và không trùng với tên cũ</i></label>
                                             <input name="categoryName" class="txtEdit" id="edit_categoryName" type="text" onblur="checkCategoryName(this.value)">
                                             <label id="error_CategoryName" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                         </div>
-                                        <button onclick="checkCategoryEdit();" class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px;">Xác nhận</button>
+                                        <button onclick="checkCategoryEdit();" class="btnModal" id="btnEdit" type="button">Xác nhận</button>
                                     </form>
                                 </div>
                             </div>
@@ -136,7 +139,6 @@
                 </div>
                 <div class="row" style="margin-top: 20px;">
                     <div class="col-xs-12">
-                        <i>Các doanh nghiệp không thêm được loại sản phẩm khi trong tình trạng OFF</i>
                         <div class="cart-table table-responsive mb-50">
                             <table class="table">
                                 <thead class="thead-dark">
@@ -161,6 +163,13 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="container-fuild" style="background: #2c3338; padding-bottom: 100px; margin-top: 100px;">
+                <h4 class="modal-title"><strong style="color: white;">QUY ĐỊNH VỀ LOẠI SẢN PHẨM</strong></h4>
+                <p style="text-align: center;color: white; padding-top: 30px;"> - Loại sản phẩm sẻ <strong>không được xóa hoàn toàn</strong></p>
+                <p style="text-align: center;color: white;"> 1. Xóa loại sản phẩm sẻ đưa loại sản phẩm về trạng thái không hoạt động</p>
+                <p style="text-align: center;color: white;"> 2. Loại sản phẩm không hoạt động sẻ không thể thêm sản phẩm nhưng các sản phẩm trong danh sách này vẫn tồn tại</p>
+                <p style="text-align: center;color: white;"> 3. Không thể khôi phục loại sản phẩm ngưng hoạt động, vui lòng chắn chắn hành động của mình!</p>
             </div>
         </div>
         <!--Footer--> <% include element/footer %>

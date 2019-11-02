@@ -11,12 +11,11 @@
     <!-- jQuery JS -->
     <script src="js/vendor/jquery-1.12.0.min.js"></script>
     <script src="socket.io/socket.io.js"></script>
-    <script> var socket = io('http://54.175.16.232:3000'); </script>
+    <script> var socket = io('http://localhost:3000'); </script>
     <!--Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
     <!-- CSS -->
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -160,27 +159,29 @@
                                 <thead class="thead-dark">
                                     <tr>
                                         <th scope="col" style="text-align: left;"> #</th>
-                                        <th scope="col" style="text-align: left;">Mã SP</th>
+                                        <th scope="col" style="text-align: left;">Sản phẩm</th>
+                                        <th scope="col" style="text-align: left;">Tiền đấu giá thành công</th>
                                         <th scope="col" style="text-align: left;">PT Thanh toán</th>
                                         <th scope="col" style="text-align: left;">PT Giao hàng</th>
                                         <th scope="col" style="text-align: left;">Ghi chú</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <% var i = 0 %>
-                                    <% _uG.forEach(item => { %>
-                                        <% item.orders.forEach(order => { %>
-                                            <tr>
-                                                <td><%= i %></td>
-                                                <td><%= order.productID %></td>
-                                                <td><%= order.deliverMethod %></td>
-                                                <td><%= order.paymentMethod %></td>
-                                                <td><%= order.Note %></td>
-                                            </tr>
-                                            <% i ++ %>
-                                        <% }); %>
-                                    <% }); %>
-                                </tbody>
+                                <tbody> <% var i = 0 %> <% _uG.forEach(item => { %> <% item.orders.forEach(order => { %> <tr>
+                                        <td><%= i %></td>
+                                        <td>
+                                            <div class="cart-product text-left fix">
+                                                <img src="https://abctestsdsd.s3.amazonaws.com/<%=order.product.productImage%>" alt="" />
+                                                <div class="details fix">
+                                                    <p><%=order.productID%></p>
+                                                    <a href="#"> <%=order.product.productName%></a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><%= order.amount %></td>
+                                        <td><%= order.deliverMethod %></td>
+                                        <td><%= order.paymentMethod %></td>
+                                        <td><%= order.Note %></td>
+                                    </tr> <% i ++ %> <% }); %> <% }); %> </tbody>
                             </table>
                         </div>
                     </div>

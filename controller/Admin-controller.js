@@ -1,11 +1,12 @@
-const AWS = require('aws-sdk');
-const bcrypt = require('bcrypt-nodejs');
-const s3 = new AWS.S3();
-var fs = require('fs');
+const AWS = require('aws-sdk'),
+    s3 = new AWS.S3(),
+    fs = require('fs'),
+    ctlCtm = require('../controller/Customer-controller');
 
 AWS.config.update({
     "region": "us-east-1",
-    "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
+    "endpoint": "http://localhost:8000",
+    //"endpoint": "http://dynamodb.us-east-1.amazonaws.com"
 });
 
 let docClient = new AWS.DynamoDB.DocumentClient();
@@ -161,8 +162,6 @@ function add_Product(ObjectB, categoryID, location, res) {
         "region": "us-east-1",
         "endpoint": "http://s3.us-east-1.amazonaws.com",
     });
-    var buffer = fs.readFileSync(ObjectB.productImage.path);
-    console.log(ObjectB.productImage.path)
     let params = {
         TableName: 'Admins'
     }
@@ -200,7 +199,7 @@ function add_Product(ObjectB, categoryID, location, res) {
                         productID: productID,
                         productName: ObjectB.productName,
                         productDescribe: productID,
-                        productImage: "augdjsgdjjd",
+                        productImage: ObjectB.productImage.originalFilename,
                         auction: {
                         }
                     }
@@ -208,7 +207,6 @@ function add_Product(ObjectB, categoryID, location, res) {
             },
             ReturnValues: "ALL_NEW"
         };
-        console.log( ObjectB.productImage.headers.filename);
         docClient.update(params, function (err, data) {
             if (err) {
                 console.error("Error JSON:", JSON.stringify(err, null, 2));
@@ -216,6 +214,21 @@ function add_Product(ObjectB, categoryID, location, res) {
                 res.redirect(location);
             }
         });
+        //UPLOAD IMAGE TO S3 SERVICE - AWS\
+        const BUCKET = 'abctestsdsd'
+        const localImage = ObjectB.productImage.path;
+        s3.putObject({
+            Bucket: BUCKET,
+            Body: fs.readFileSync(localImage),
+            Key: ObjectB.productImage.originalFilename
+        })
+            .promise()
+            .then(response => {
+                console.log(`Done! - `, response)
+            })
+            .catch(err => {
+                console.log('failed:', err)
+            })
     });
 }
 
@@ -270,7 +283,6 @@ function get_Item_Product(id, owner, productID, userID, res) {
 
 //Push Auction for Product
 function add_Auction(ObjectB, productID, res) {
-    console.log(ObjectB);
     if (ObjectB.owner === "admin") {
         let params = {
             TableName: 'Admins'
@@ -434,8 +446,8 @@ function delete_Auction(ObjectB, productID, res) {
                                 let params = {
                                     TableName: "Businesss",
                                     Key: {
-                                        "businessID": id,
-                                        "businessName": owner
+                                        "businessID": ObjectB.businessID,
+                                        "businessName": ObjectB.owner
                                     },
                                     UpdateExpression: "set category[" + x + "].product[" + z + "].auction =:auc",
                                     ExpressionAttributeValues: {
@@ -448,7 +460,7 @@ function delete_Auction(ObjectB, productID, res) {
                                     if (err) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                     } else {
-                                        res.redirect('/quanlydaugia');
+                                        res.redirect('/quanlydaugia_doanhnghiep');
                                     }
                                 });
                                 break
@@ -463,7 +475,6 @@ function delete_Auction(ObjectB, productID, res) {
 
 //CHECK CATEGORY USER EXIST
 async function Check_Category(categoryName) {
-    console.log("ABC");
     return new Promise((resolve, reject) => {
         let params = {
             TableName: 'Admins',
@@ -579,16 +590,21 @@ async function Create_Order(productID, userID) {
                         cat.product.forEach(element => {
                             if (productID === element.productID) {
                                 element.auction.bids.forEach(bid => {
-                                    productList.push(bid);
+                                    productList.push(element);
                                 });
                             }
                         });
                     });
                 });
                 productList.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
-                if (userID === productList[productList.length - 1].user) {
-                    ctlCtm.add_Order_Customer(userID, productID);
-                    resolve(true);
+                if (userID === productList[0].auction.bids[productList[0].auction.bids.length - 1].user) {
+                    ctlCtm.add_Order_Customer(userID, productList[0]).then(data => {
+                        if (data) {
+                            resolve(true);
+                        } else {
+                            resolve(false);
+                        }
+                    });
                 } else {
                     resolve(false);
                 }
@@ -612,7 +628,6 @@ async function Create_Category(categoryName) {
             } else {
                 //Tạo ra biến categoryID mới
                 var count = Number(data.Items[0].category.length);
-                console.log('Count: ' + count);
                 if (count != 0) {
                     var max = 0;
                     data.Items[0].category.forEach(item => {
@@ -722,7 +737,6 @@ async function Delete_Category(categoryID) {
                 for (let index = 0; index < data.Items.length; index++) {
                     for (let i = 0; i < data.Items[index].category.length; i++) {
                         if (data.Items[index].category[i].categoryID === categoryID) {
-                            console.log(data.Items[index].category[i].categoryID);
                             let params = {
                                 TableName: 'Admins',
                                 Key: {

@@ -1,10 +1,12 @@
-const AWS = require('aws-sdk');
-const bcrypt = require('bcrypt-nodejs');
-var ctlAdmin = require('../controller/Admin-controller')
+const AWS = require('aws-sdk'),
+    s3 = new AWS.S3(),
+    fs = require('fs'),
+    ctlCtm = require('../controller/Customer-controller');
 
 AWS.config.update({
     "region": "us-east-1",
-    "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
+    "endpoint": "http://localhost:8000",
+    //"endpoint": "http://dynamodb.us-east-1.amazonaws.com"
 });
 
 
@@ -205,7 +207,6 @@ function add_Item_Business(ObjectB, location, res) {
                 businessID = "BSN_" + indexN.toString();
             } else {
                 businessID = 'BSN_1';
-                console.log('Count: ' + count);
             }
 
             let params = {
@@ -261,6 +262,10 @@ async function add_Product(ObjectB, categoryName, username) {
 //QUERY CREATE PRODUCT
 async function QueryCreateProduct(ObjectB, username, categoryName) {
     return new Promise((resolve, reject) => {
+        AWS.config.update({
+            "region": "us-east-1",
+            "endpoint": "http://s3.us-east-1.amazonaws.com",
+        });
         let params = {
             TableName: 'Businesss',
             IndexName: 'username_index',
@@ -305,7 +310,7 @@ async function QueryCreateProduct(ObjectB, username, categoryName) {
                                     productID: productID,
                                     productName: ObjectB.productName,
                                     productDescribe: ObjectB.productDescribe,
-                                    productImage: "https://cdn.tgdd.vn/Files/2019/09/12/1197622/f4_800x600.jpg",
+                                    productImage: ObjectB.productImage.originalFilename,
                                     auction: {
                                     }
                                 }
@@ -323,6 +328,21 @@ async function QueryCreateProduct(ObjectB, username, categoryName) {
                 })
             }
         })
+        //UPLOAD IMAGE TO S3 SERVICE - AWS\
+        const BUCKET = 'abctestsdsd'
+        const localImage = ObjectB.productImage.path;
+        s3.putObject({
+            Bucket: BUCKET,
+            Body: fs.readFileSync(localImage),
+            Key: ObjectB.productImage.originalFilename
+        })
+            .promise()
+            .then(response => {
+                console.log(`Done! - `, response);
+            })
+            .catch(err => {
+                console.log('failed:', err)
+            })
     })
 }
 
@@ -341,7 +361,7 @@ async function Create_Category(categoryName, username) {
             if (err) {
                 console.error('Error JSON:', JSON.stringify(err, null, 2));
             } else {
-                console.log()
+
                 //Thêm items mới với ID tăng dần
                 var categoryID = '';
                 var businessID = data.Items[0].businessID;
@@ -500,7 +520,6 @@ async function get_ListProduct_Business_Username(username) {
                             return 1
                         return 0 //default return value (no sorting)
                     });
-                    console.log(productList);
                     resolve(productList);
                 });
             }
@@ -575,16 +594,21 @@ async function Create_Order(productID, userID, ownerID, ownerName) {
                         cat.product.forEach(element => {
                             if (productID === element.productID) {
                                 element.auction.bids.forEach(bid => {
-                                    productList.push(bid);
+                                    productList.push(element);
                                 });
                             }
                         });
                     });
                 });
                 productList.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
-                if (userID === productList[productList.length - 1].user) {
-                    ctlCtm.add_Order_Customer(userID, productID);
-                    resolve(true);
+                if (userID === productList[0].auction.bids[productList[0].auction.bids.length - 1].user) {
+                    ctlCtm.add_Order_Customer(userID, productList).then(data => {
+                        if (data) {
+                            resolve(true);
+                        } else {
+                            resolve(false);
+                        }
+                    });
                 } else {
                     resolve(false);
                 }
@@ -621,7 +645,7 @@ async function Update_Category(categoryID, categoryName) {
 
                                 docClient.update(params, function (err, data) {
                                     if (err)
-                                        console.log(err);
+                                        FGTHee(err);
                                     else {
                                         resolve(true);
                                     }
@@ -695,18 +719,18 @@ async function Get_Final_Bid(productID, ownerID, ownerName) {
     return new Promise((resolve, reject) => {
         let params = {
             TableName: 'Businesss',
-            Key : {
-                "businessID" : ownerID,
-                "businessName" : ownerName
+            Key: {
+                "businessID": ownerID,
+                "businessName": ownerName
             }
         }
         docClient.scan(params, (err, data) => {
             if (err) {
                 console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
             } else {
-                if(err){
+                if (err) {
                     console.error("Error JSON:", JSON.stringify(err, null, 2));
-                }else{
+                } else {
                     data.Items.forEach(item => {
                         item.category.forEach(category => {
                             category.product.forEach(product => {
@@ -726,13 +750,13 @@ async function Get_Final_Bid(productID, ownerID, ownerName) {
 
 
 //GET PRODUCT (AUCTION)
-async function Get_Product(productID,ownerID,ownerName) {
+async function Get_Product(productID, ownerID, ownerName) {
     return new Promise((resolve, reject) => {
         let params = {
             TableName: 'Businesss',
-            Key : {
-                "businessID" : ownerID,
-                "businessName" : ownerName
+            Key: {
+                "businessID": ownerID,
+                "businessName": ownerName
             }
         }
         docClient.scan(params, (err, data) => {

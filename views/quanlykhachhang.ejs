@@ -8,31 +8,30 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--SOCKETIO for Sign up-->
-    <script src="socket.io/socket.io.js"></script>    
-    <script> var socket = io('http://54.175.16.232:3000'); </script>
-
+    <script src="socket.io/socket.io.js"></script>
+    <script> var socket = io('http://localhost:3000'); </script>
     <script>
-            function checkCustomer() {
-                var name = checkCustomerName(document.getElementById('customerName').value);
-                var username = checkUsername(document.getElementById('username').value);
-                var pass = checkPassword(document.getElementById('passwordA').value);
-                var repass = checkConfirmPassword(document.getElementById('re-password').value);
-                var address = checkAddress(document.getElementById('address').value);
-                var phone = checkPhone(document.getElementById('phoneA').value);
-                var mail = checkEmail(document.getElementById('email').value);
-                if (name && username && pass && repass && address && phone && mail) {
-                    socket.emit("Customer_check_username", document.getElementById('username').value);
-                    socket.on("Server_reply_username", function (data) {
-                        if (data) {
-                            document.getElementById("autopass").submit();
-                        } else {
-                            document.getElementById("error_username").innerHTML = "Username đã tồn tại";
-                        }
-                    });
-                }
+        function checkCustomer() {
+            var name = checkCustomerName(document.getElementById('customerName').value);
+            var username = checkUsername(document.getElementById('username').value);
+            var pass = checkPassword(document.getElementById('passwordA').value);
+            var repass = checkConfirmPassword(document.getElementById('re-password').value);
+            var address = checkAddress(document.getElementById('address').value);
+            var phone = checkPhone(document.getElementById('phoneA').value);
+            var mail = checkEmail(document.getElementById('email').value);
+            if (name && username && pass && repass && address && phone && mail) {
+                socket.emit("Customer_check_username", document.getElementById('username').value);
+                socket.on("Server_reply_username", function (data) {
+                    if (data) {
+                        document.getElementById("autopass").submit();
+                    } else {
+                        document.getElementById("error_username").innerHTML = "Username đã tồn tại";
+                    }
+                });
             }
-    
-        </script>
+        }
+
+    </script>
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
     <!-- Google Fonts -->
@@ -80,59 +79,59 @@
             <div class="container">
                 <div class="row">
                     <div class="procced-checkout col-md-12 col-xs-12">
-                        <button class="btn btn-open checkout-link">
-                            <span>Thêm khách hàng</span>
+                        <button class="btn btn-open checkout-link" data-toggle="modal" data-target="#modalAddCustomer"><span>Thêm khách hàng</span></button>
                     </div>
-                    <section class="modal">
-                        <div class="wrapper">
-                            <div class="container">
-                                <span class="icon-close"></span>
-                                <div class="right">
-                                    <div class="form">
-                                        <h2 class="title">Thêm khách hàng</h2>
-                                        <form action="/createCustomer" method="POST" id="autopass">
-                                            <div class="input-wrapper">
-                                                <label for="">Tên khách hàng</label>
-                                                <input name="customerName" id="customerName" type="text" placeholder="Name" onblur="checkCustomerName(this.value)">
-                                            </div>
-                                            <label id="error_customerName" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Tên người dùng:</label>
-                                                <input name="username" id="username" type="text" placeholder="User" onblur="checkUsername(this.value)">
-                                            </div>
-                                            <label id="error_username" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Mật khẩu:</label>
-                                                <input name="password" type="text" placeholder="Password" id="passwordA" onblur="checkPassword(this.value)">
-                                            </div>
-                                            <label id="error_password" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Nhập lại mật khẩu:</label>
-                                                <input name="re-password" id="re-password" type="text" placeholder="Re-Password" onblur="checkConfirmPassword(this.value)">
-                                            </div>
-                                            <label id="error_repassword" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Địa chỉ:</label>
-                                                <input name="address" id="address" type="text" placeholder="Address" onblur="checkAddress(this.value)">
-                                            </div>
-                                            <label id="error_address" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Số điện thoại:</label>
-                                                <input name="phone" id="phoneA" type="text" placeholder="Telephone Number" onblur="checkPhone(this.value)">
-                                            </div>
-                                            <label id="error_phone" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <div class="input-wrapper">
-                                                <label for="">Email:</label>
-                                                <input name="email" id="email" type="email" placeholder="Name" id="email" onblur="checkEmail(this.value)">
-                                            </div>
-                                            <label id="error_email" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;"></label>
-                                            <button class="btn btn-success" type="button" onclick="checkCustomer();"><span>Xác nhận</span></button>
-                                        </form>
-                                    </div>
+                    <div id="modalAddCustomer" class="modal fade" role="dialog" style="z-index: 2000;">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title"><strong>THÊM KHÁCH HÀNG</strong></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/createCustomer" method="POST" id="autopass">
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Tên khách hàng</label>
+                                            <input name="customerName" id="customerName" type="text" onblur="checkCustomerName(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_customerName" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Tên người dùng:<br><i style="color: green;">Mỗi tài khoản chỉ gồm 1 username duy nhất và không trùng lặp</i></label>
+                                            <input name="username" id="username" type="text" onblur="checkUsername(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_username" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Mật khẩu:</label>
+                                            <input name="password" type="text" id="passwordA" onblur="checkPassword(this.value)" class="txtEdit" ></div>
+                                        <label id="error_password" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Nhập lại mật khẩu:</label>
+                                            <input name="re-password" id="re-password" type="text" onblur="checkConfirmPassword(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_repassword" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Địa chỉ:</label>
+                                            <input name="address" id="address" type="text" onblur="checkAddress(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_address" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Số điện thoại:<br><i style="color: green;">Các số điện thoại hiện hành tại VN gồm 10 số và bắt đầu từ 0</i></label>
+                                            <input name="phone" id="phoneA" type="text" onblur="checkPhone(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_phone" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Email:</label>
+                                            <input name="email" id="email" type="email" id="email" onblur="checkEmail(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_email" class="error-label"></label>
+                                        <button class="btnModal" type="button" onclick="checkCustomer();"><span>Xác nhận</span></button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    </div>
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -141,6 +140,7 @@
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
+                                    <h4 class="modal-title"><strong>Chỉnh sửa thông tin KHÁCH HÀNG</strong></h4>
                                 </div>
                                 <div class="modal-body">
                                     <form action="editCustomer" style="margin: 20px;" id="formEdit" method="POST">
@@ -165,7 +165,7 @@
                                             <input name="email" class="txtEdit" id="edit_Email" type="text" onblur="checkEmailEdit(this.value)"><br>
                                             <label id="error_email_edit" style="text-transform: inherit;font-style: italic;color: red;font-size: 13px;font-weight: 400;"></label>
                                         </div><br>
-                                        <button onclick="checkEditCustomer();" class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px;">Xác nhận</button>
+                                        <button onclick="checkEditCustomer();" class="btnModal" id="btnEdit" type="button">Xác nhận</button>
                                     </form>
                                 </div>
                             </div>
@@ -190,9 +190,7 @@
                                         <th class="remove" style="width: 50px;">Xoá</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <% var i = 1%>
-                                     <% _uG.forEach(item => { %> <tr>
+                                <tbody> <% var i = 1%> <% _uG.forEach(item => { %> <tr>
                                         <td><strong><%= i %></strong></td>
                                         <td><%=item.customerID%></td>
                                         <td><strong><%=item.customerName%></strong></td>

@@ -89,7 +89,7 @@ xpopup
   top: 0;
   height: 100%;
   width: 100%;
-  background-color: rgba(94, 110, 141, 0.9);
+  background-color: rgba(0, 0, 0, 0.8);
   opacity: 0;
   visibility: hidden;
   -webkit-transition: opacity 0.3s 0s, visibility 0s 0.3s;
@@ -128,6 +128,7 @@ xpopup
   transition-duration: 0.3s;
 }
 .cd-popup-container p {
+  font-weight: bold;
   padding: 3em 1em;
 }
 .cd-popup-container .cd-buttons:after {
@@ -158,11 +159,11 @@ xpopup
   background-color: #fc8982;
 }
 .cd-popup-container .cd-buttons li:last-child a {
-  background: #b6bece;
+  background: #000;
   border-radius: 0 0 .25em 0;
 }
 .no-touch .cd-popup-container .cd-buttons li:last-child a:hover {
-  background-color: #c5ccd8;
+  background-color: rgba(0, 0, 0, 0.8);
 }
 .cd-popup-container .cd-popup-close {
   position: absolute;

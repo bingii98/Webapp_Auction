@@ -28,11 +28,12 @@ app.use(session({
 
 AWS.config.update({
     "region": "us-east-1",
-    "endpoint": "http://dynamodb.us-east-1.amazonaws.com",
+    "endpoint": "http://localhost:8000",
+    //"endpoint": "http://dynamodb.us-east-1.amazonaws.com"
 });
 
 var sess;
-const server = app.listen(3001, () => { console.log("Server running at port 3001!") });
+const server = app.listen(3000, () => { console.log("Server running at port 3000!") });
 const io = require('socket.io').listen(server);
 
 //SocketIO FUNCTION START
@@ -62,9 +63,7 @@ io.on("connection", (socket) => {
 
     //CHECK CATEGORY USER EXIST
     socket.on("Client_sent_data_category", function (categoryName) {
-        console.log(1);
         ctlAdmin.Check_Category(categoryName).then(data => {
-            console.log(2);
             if (data) {
                 socket.emit("Server_sent_data_category", true);
             } else {
@@ -409,20 +408,22 @@ app.post('/createproduct', (req, res) => {
 //Create Product BUSINESS
 app.post('/createproductbusiness', (req, res) => {
     if (sess.permission === "business") {
-        sess = req.session
-        const productName = req.body.productName;
-        const productDescribe = req.body.productDescribe;
-        const categoryName = req.body.categoryName;
-
-        const ObjectB = {
-            productName: productName,
-            productDescribe: productDescribe,
-        }
-
-        ctlBsn.add_Product(ObjectB, categoryName, sess.username).then(data => {
-            if (data) {
-                res.redirect("/quanlysanpham_doanhnghiep")
+        sess = req.session;
+        var form = new multiparty.Form();
+        form.parse(req, function (err, fields, files) {
+            const productName = String(fields.productName);
+            const productDescribe = String(fields.productDescribe);
+            const categoryName = String(fields.categoryName);
+            const ObjectB = {
+                productName: productName,
+                productDescribe: productDescribe,
+                productImage: files.productImage[0],
             }
+            ctlBsn.add_Product(ObjectB, categoryName, sess.username).then(data => {
+                if (data) {
+                    res.redirect("/quanlysanpham_doanhnghiep")
+                }
+            })
         })
     } else {
         res.redirect('/login')
@@ -751,7 +752,7 @@ app.get('/deleteauction', (req, res) => {
         businessID: businessID,
         owner: owner
     }
-    if (sess.permission === "admin") {
+    if (sess.permission === "admin" || sess.permission === "business") {
         ctlAdmin.delete_Auction(ObjectB, productID, res);
     } else {
         res.render('login');
@@ -780,27 +781,35 @@ app.post('/checkout', (req, res) => {
     var productID = req.body.productID;
     var ownerID = req.body.ownerID;
     var ownerName = req.body.ownerName;
-    ctlCtm.add_Order_Customer(sess.userID, productID);
     if (ownerID === "admin") {
         ctlAdmin.Get_Product(productID).then(data => {
-            if (data.auction.bids.length != 0) {
-                if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
-                    res.render('check-out', { _uG: data });
+            ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => {
+                if (data.auction.bids.length != 0) {
+                    if(data1){
+                        if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
+                            res.render('check-out', { _uG: data });
+                        } else {
+                            res.redirect("/");
+                        }
+                    }
                 } else {
                     res.redirect("/");
                 }
-            } else {
-                res.redirect("/");
-            }
+            });
         });
     } else {
         ctlBsn.Get_Product(productID, ownerID, ownerName).then(data => {
             if (data.auction.bids.length != 0) {
-                if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
-                    res.render('check-out', { _uG: data });
-                } else {
-                    res.redirect("/");
-                }
+                ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => {
+                    if(data1){
+                        if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
+                            res.render('check-out', { _uG: data });
+                        } else {
+                            res.redirect("/");
+                        }
+                    }
+                });
+                
             } else {
                 res.redirect("/");
             }

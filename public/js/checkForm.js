@@ -87,6 +87,7 @@ function checkproductDescribe(str) {
     return re.test(str);
 }
 
+
 function checkproductName_edit(str) {
     var re = /^((?![\^!@#$*~ <>?]).)((?![\^!@#$*~<>?]).){0,73}((?![\^!@#$*~ <>?]).)$/;
     if (!re.test(str)) {
