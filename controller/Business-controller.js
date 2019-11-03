@@ -376,6 +376,12 @@ async function QueryCreateProduct(ObjectB, username, categoryName) {
             Bucket: BUCKET,
             Body: fs.readFileSync(localImage),
             Key: ObjectB.productImage.originalFilename
+        },(err,data) => {
+            if (err) {
+                console.error("Error JSON:", JSON.stringify(err, null, 2));
+            } else {
+                console.log("Uploaded:", JSON.stringify(data, null, 2));
+            }
         })
     })
 }
