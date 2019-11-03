@@ -269,7 +269,6 @@ function add_Item_Business(ObjectB, location, res) {
                 if (err) {
                     console.error('Unable to add item. Error JSON:', JSON.stringify(err, null, 2));
                 } else {
-                    console.log('Added An Item', JSON.stringify(params));
                     res.redirect(location);
                 }
             });

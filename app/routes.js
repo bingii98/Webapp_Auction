@@ -145,7 +145,6 @@ io.on("connection", (socket) => {
     socket.on("BUSINESS_CHECK_INFO_CUSTOMER", function (customerID) {
         ctlCtm.get_Item_Customer_CustomerID(customerID).then(data => {
             socket.emit("BUSINESS_CHECK_INFO_CUSTOMER_SERVER", data[0].customerName,data[0].address,data[0].phone,data[0].email);
-            console.log(`${JSON.stringify(data,null,2)}`)
         })
     });
 });
@@ -424,7 +423,6 @@ app.post('/createproduct', (req, res) => {
                 productImage: files.productImage[0],
             }
             ctlAdmin.add_Product(ObjectB, categoryID, '/quanlysanpham', res);
-            console.log(files.productImage[0]);
         })
     } else {
         res.redirect('/login')
