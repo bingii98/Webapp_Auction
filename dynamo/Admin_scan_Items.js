@@ -19,7 +19,7 @@ function onScan(err, data) {
     if (err) {
         console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
     } else {
-        console.log(JSON.stringify(data));
+        console.log(JSON.stringify(data,null,2));
     }
 }
 var t1 = performance.now();

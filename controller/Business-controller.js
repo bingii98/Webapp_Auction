@@ -109,6 +109,7 @@ function getAll_Product_Business(ejs, res) {
     });
 }
 
+
 //Get listProduct of 1 BUSINESS
 function get_Items_Business_Key(id, name, location, res) {
     let params = {
@@ -151,6 +152,47 @@ function get_Items_Business_Key(id, name, location, res) {
             res.render(location, { _uG: productList });
         }
     });
+}
+
+//Get listProduct of 1 BUSINESS ORDER BY DATE
+async function get_Items_Business_Key_orderDate(id, name) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: 'Businesss',
+            Key: {
+                "businessID": id,
+                "businessName": name
+            },
+            FilterExpression: 'businessID = :businessID',
+            ExpressionAttributeValues: { ":businessID": id }
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                var productList = [];
+
+                data.Items.forEach(item => {
+                    item.category.forEach(cat => {
+                        cat.product.forEach(element => {
+                            let count = 0;
+                            for (var c in element.auction) {
+                                count = count + 1;
+                            }
+                            var obj = Object.assign(element, { ownerName: name }, { id: id }, { loai: cat.categoryName }, { count: count });
+                            productList.push(obj);
+                        });
+                    });
+                });
+
+                productList.sort(function (a, b) {
+                    var dateA = new Date(a.auction.startDate), dateB = new Date(b.auction.startDate)
+                    return dateA - dateB //sort by date ascending
+                });
+                resolve(productList);
+            }
+        });
+    })
 }
 
 //Update Business isStatus = false
@@ -336,13 +378,6 @@ async function QueryCreateProduct(ObjectB, username, categoryName) {
             Body: fs.readFileSync(localImage),
             Key: ObjectB.productImage.originalFilename
         })
-            .promise()
-            .then(response => {
-                console.log(`Done! - `, response);
-            })
-            .catch(err => {
-                console.log('failed:', err)
-            })
     })
 }
 
@@ -793,4 +828,5 @@ module.exports = {
     get_ListProduct_Business_Username: get_ListProduct_Business_Username,
     Get_Final_Bid: Get_Final_Bid,
     Get_Product: Get_Product,
+    get_Items_Business_Key_orderDate: get_Items_Business_Key_orderDate,
 };

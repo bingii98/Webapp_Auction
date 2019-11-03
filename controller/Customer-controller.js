@@ -173,6 +173,24 @@ function edit_Item_Customer(ObjectB, location, res) {
     });
 }
 
+async function get_Item_Customer_CustomerID(customerID) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: "Customers",
+            Key: {
+                'customerID' : customerID
+            }
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                resolve(data.Items);
+            }
+        });
+    });
+}
+
 async function get_Item_Customer_Username(username) {
     return new Promise((resolve, reject) => {
         let params = {
@@ -289,4 +307,5 @@ module.exports = {
     add_Order_Customer: add_Order_Customer,
     update_Order_Customer: update_Order_Customer,
     check_Username: check_Username,
+    get_Item_Customer_CustomerID: get_Item_Customer_CustomerID,
 };

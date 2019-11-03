@@ -134,6 +134,21 @@ io.on("connection", (socket) => {
             })
         }
     });
+
+    //BUSINESS CHECK INFOR PRODUCT
+    socket.on("BUSINESS_CHECK_INFO_PRODUCT", function (productID, businessID, businessName) {
+        ctlBsn.Get_Product(productID, businessID, businessName).then(data => {
+            socket.emit("BUSINESS_CHECK_INFO_PRODUCT_SERVER", data);
+        })
+    });
+
+    //BUSINESS CHECK INFOR CUSTOMER
+    socket.on("BUSINESS_CHECK_INFO_CUSTOMER", function (customerID) {
+        ctlCtm.get_Item_Customer_CustomerID(customerID).then(data => {
+            socket.emit("BUSINESS_CHECK_INFO_CUSTOMER_SERVER", data[0].customerName,data[0].address,data[0].phone,data[0].email);
+            console.log(`${JSON.stringify(data,null,2)}`)
+        })
+    });
 });
 
 
@@ -307,6 +322,18 @@ app.get('/quanlydoanhnghiep_sanpham', (req, res) => {
 });
 
 //Order Manager Admin Page
+app.get('/quanlyhoadon_doanhnghiep', (req, res) => {
+    sess = req.session
+    if (sess.permission === "business") {
+        ctlBsn.get_Items_Business_Key_orderDate(sess.userID, sess.userName).then(data => {
+            res.render('quanlyhoadon_doanhnghiep', { _uG: data, businessID: sess.userID, businessName: sess.userName });
+        })
+    } else {
+        res.render('login');
+    }
+});
+
+//Order Manager Business Page
 app.get('/quanlyhoadon', (req, res) => {
     sess = req.session
     if (sess.permission === "admin") {
@@ -448,6 +475,14 @@ app.get('/deleteProduct', (req, res) => {
                         for (let x = 0; x < data.Items[i].category.length; x++) {
                             for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
                                 if (data.Items[i].category[x].product[z].productID === productID) {
+                                    //DELETE IMAGE TO S3 SERVICE - AWS\
+                                    var s3 = new AWS.S3();
+                                    var params1 = { Bucket: 'abctestsdsd', Key: data.Items[i].category[x].product[z].productImage };
+                                    s3.deleteObject(params1, function (err, data) {
+                                        if (err) console.log(err, err.stack);  // error
+                                        else console.log();                 // deleted
+                                    });
+                                    //DELETE OBJECT TO DYNAMO SERVICE - AWS\
                                     let params = {
                                         TableName: "Admins",
                                         Key: {
@@ -491,6 +526,13 @@ app.get('/deleteProduct', (req, res) => {
                         for (let x = 0; x < data.Items[i].category.length; x++) {
                             for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
                                 if (data.Items[i].category[x].product[z].productID === productID) {
+                                    var s3 = new AWS.S3();
+                                    var params1 = { Bucket: 'abctestsdsd', Key: data.Items[i].category[x].product[z].productImage };
+
+                                    s3.deleteObject(params1, function (err, data) {
+                                        if (err) console.log(err, err.stack);  // error
+                                        else console.log();                 // deleted
+                                    });
                                     let params = {
                                         TableName: "Businesss",
                                         Key: {
@@ -784,8 +826,9 @@ app.post('/checkout', (req, res) => {
     if (ownerID === "admin") {
         ctlAdmin.Get_Product(productID).then(data => {
             ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => {
+                ctlAdmin.Update_Auction(ownerID, ownerName, productID, data.auction.bids[data.auction.bids.length - 1].user)
                 if (data.auction.bids.length != 0) {
-                    if(data1){
+                    if (data1) {
                         if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
                             res.render('check-out', { _uG: data });
                         } else {
@@ -799,9 +842,10 @@ app.post('/checkout', (req, res) => {
         });
     } else {
         ctlBsn.Get_Product(productID, ownerID, ownerName).then(data => {
+            ctlAdmin.Update_Auction(ownerID, ownerName, productID, data.auction.bids[data.auction.bids.length - 1].user)
             if (data.auction.bids.length != 0) {
                 ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => {
-                    if(data1){
+                    if (data1) {
                         if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
                             res.render('check-out', { _uG: data });
                         } else {
@@ -809,7 +853,7 @@ app.post('/checkout', (req, res) => {
                         }
                     }
                 });
-                
+
             } else {
                 res.redirect("/");
             }

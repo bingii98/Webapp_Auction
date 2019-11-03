@@ -222,13 +222,6 @@ function add_Product(ObjectB, categoryID, location, res) {
             Body: fs.readFileSync(localImage),
             Key: ObjectB.productImage.originalFilename
         })
-            .promise()
-            .then(response => {
-                console.log(`Done! - `, response)
-            })
-            .catch(err => {
-                console.log('failed:', err)
-            })
     });
 }
 
@@ -374,6 +367,87 @@ function add_Auction(ObjectB, productID, res) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                     } else {
                                         res.redirect('/quanlysanpham_doanhnghiep');
+                                    }
+                                });
+                                break
+                            }
+                        }
+                    }
+                }
+            };
+        });
+    }
+}
+
+//Update Winner Auction for Product
+function Update_Auction(ownerID,ownerName,productID,winner) {
+    if (ownerID === "admin") {
+        let params = {
+            TableName: 'Admins'
+        };
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                for (let i = 0; i < data.Items.length; i++) {
+                    for (let x = 0; x < data.Items[i].category.length; x++) {
+                        for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                            if (data.Items[i].category[x].product[z].productID === productID) {
+                                let params = {
+                                    TableName: "Admins",
+                                    Key: {
+                                        "adminID": "admin",
+                                        "adminName": "admin"
+                                    },
+                                    UpdateExpression: "set category[" + x + "].product[" + z + "].auction.winner =:auc",
+                                    ExpressionAttributeValues: {
+                                        ":auc": winner
+                                    },
+                                    ReturnValues: "UPDATED_NEW"
+                                };
+                                docClient.update(params, function (err, data) {
+                                    if (err) {
+                                        console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                                    }
+                                });
+                                break
+                            }
+                        }
+                    }
+                }
+            };
+        });
+    } else {
+        let params = {
+            TableName: 'Businesss',
+            Key: {
+                businessID: ownerID,
+                businessName: ownerName,
+            }
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                for (let i = 0; i < data.Items.length; i++) {
+                    for (let x = 0; x < data.Items[i].category.length; x++) {
+                        for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
+                            if (data.Items[i].category[x].product[z].productID === productID) {
+                                let params = {
+                                    TableName: "Businesss",
+                                    Key: {
+                                        "businessID": ObjectB.businessID,
+                                        "businessName": ObjectB.owner
+                                    },
+                                    UpdateExpression: "set category[" + x + "].product[" + z + "].auction.winner =:auc",
+                                    ExpressionAttributeValues: {
+                                        ":auc": winner
+                                    },
+                                    ReturnValues: "UPDATED_NEW"
+                                };
+                                docClient.update(params, function (err, data) {
+                                    if (err) {
+                                        console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                     }
                                 });
                                 break
@@ -851,4 +925,5 @@ module.exports = {
     Get_Final_Bid: Get_Final_Bid,
     Get_Product: Get_Product,
     Get_all_Category_admin: Get_all_Category_admin,
+    Update_Auction: Update_Auction,
 };
