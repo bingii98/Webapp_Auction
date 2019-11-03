@@ -212,10 +212,7 @@ function add_Product(ObjectB, categoryID, location, res) {
         //UPLOAD IMAGE TO S3 SERVICE - AWS\
         const BUCKET = 'abctestsdsd'
         const localImage = ObjectB.productImage.path;
-        AWS.config.update({
-            "region": "us-east-1",
-            "endpoint": "http://s3.us-east-1.amazonaws.com",
-        });
+        AWS.config.update({"endpoint": "http://s3.us-east-1.amazonaws.com"});
         s3.putObject({
             Bucket: BUCKET,
             Body: fs.readFileSync(localImage),

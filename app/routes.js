@@ -476,6 +476,7 @@ app.get('/deleteProduct', (req, res) => {
                             for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
                                 if (data.Items[i].category[x].product[z].productID === productID) {
                                     //DELETE IMAGE TO S3 SERVICE - AWS\
+                                    AWS.config.update({"endpoint": "http://s3.us-east-1.amazonaws.com"});
                                     var s3 = new AWS.S3();
                                     var params1 = { Bucket: 'abctestsdsd', Key: data.Items[i].category[x].product[z].productImage };
                                     s3.deleteObject(params1, function (err, data) {
@@ -528,7 +529,7 @@ app.get('/deleteProduct', (req, res) => {
                                 if (data.Items[i].category[x].product[z].productID === productID) {
                                     var s3 = new AWS.S3();
                                     var params1 = { Bucket: 'abctestsdsd', Key: data.Items[i].category[x].product[z].productImage };
-
+                                    AWS.config.update({"endpoint": "http://s3.us-east-1.amazonaws.com"});
                                     s3.deleteObject(params1, function (err, data) {
                                         if (err) console.log(err, err.stack);  // error
                                         else console.log();                 // deleted
