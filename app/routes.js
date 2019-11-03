@@ -856,7 +856,6 @@ app.post('/checkout', (req, res) => {
                         }
                     }
                 });
-
             } else {
                 res.redirect("/");
             }
@@ -865,7 +864,6 @@ app.post('/checkout', (req, res) => {
 })
 
 app.post('/lichsudaugia', (req, res) => {
-    sess = req.session
     sess = req.session
     if (sess.permission === "customer") {
         ctlCtm.get_Item_Customer_Username(sess.username).then(data => {

@@ -276,7 +276,7 @@ function get_Item_Product(id, owner, productID, userID, res) {
 
 //Push Auction for Product
 function add_Auction(ObjectB, productID, res) {
-    if (ObjectB.permission === "admin") {
+    if (ObjectB.businessID === "admin") {
         let params = {
             TableName: 'Admins'
         }

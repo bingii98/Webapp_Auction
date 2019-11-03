@@ -174,7 +174,7 @@
                                             <label id="error_AuctionName" class="error-label"></label>
                                         </div>
                                         <div class="input-wrapper">
-                                                <label class="labelEdit">Thời gian khởi động đấu giá: <br><i style="color: green;">(Định dạng: mm/dd/yyyy hh:mm - hoặc Chọn ngày)</i></label>
+                                            <label class="labelEdit">Thời gian khởi động đấu giá: <br><i style="color: green;">(Định dạng: mm/dd/yyyy hh:mm và không quá 30 ngày)</i></label>
                                             <div class="form-group">
                                                 <div class="input-group date" id="datetimepicker1">
                                                     <input type="text" class="form-control txtEdit" name="startDate" id="startDate" class="txtEdit" onblur="checkAuctionDate(this.value)" />
@@ -186,12 +186,12 @@
                                             <label id="error_AuctionDate" class="error-label"></label>
                                         </div>
                                         <div class="input-wrapper">
-                                                <label class="labelEdit">Nhập giá: <br><i style="color: green;">(Giá trị khởi đầu buổi đấu giá)</i></label>
+                                            <label class="labelEdit">Nhập giá: <br><i style="color: green;">(Giá trị khởi đầu buổi đấu giá nhỏ hơn 100.000.000 VNĐ)</i></label>
                                             <input type="text" name="startPrice" id="startPrice" class="txtEdit" onblur="checkAuctionPrice(this.value)">
                                             <label id="error_AuctionPrice" class="error-label"></label>
                                         </div>
                                         <div class="input-wrapper">
-                                                <label class="labelEdit">Hạn chạy đấu giá: <br><i style="color: green;">(Tính bằng giây)</i></label>
+                                            <label class="labelEdit">Hạn chạy đấu giá: <br><i style="color: green;">(Tính bằng giây lớn hơn 30 giây và nhỏ hơn 3600 giây)</i></label>
                                             <input type="text" name="timeRun" id="timeRun" class="txtEdit" onblur="checkAuctionTimeRun(this.value)">
                                             <label id="error_AuctionTimeRun" class="error-label"></label>
                                         </div>
@@ -317,10 +317,14 @@
                     var date = new Date($("#startDate").val());
                     var nowdate = new Date();
                     var time = Number($("#timeRun").val());
-                    if (((date.getTime() - nowdate.getTime()) - 30) > 0) {
-                        $("#formAddAuction").submit();
+                    if(Number($("#timeRun").val()) > 3600 || Number($("#timeRun").val()) < 30 ){
+                        $('#error_AuctionTimeRun').text("Thời gian chạy không nằm trong giới hạn quy định");
+                    }else if(Number($("#startPrice").val()) > 100000000 || Number($("#startPrice").val()) < 0){
+                        $('#error_AuctionPrice').text("Giá tiền không nằm trong giới hạn quy định!");
+                    }else if ((date.getTime() - nowdate.getTime()) < 0 || (date.getTime() - nowdate.getTime()) > (1000*60*60*24*30)) { 
+                        $('#error_AuctionDate').text('Giới hạn ngày không phù hợp!');
                     } else {
-                        $('#error_AuctionDate').text('Ngày phải lớn hơn thời điểm hiện tại 30 giây!');
+                        $("#formAddAuction").submit();
                     }
                 }
             });
