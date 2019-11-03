@@ -303,10 +303,6 @@ async function add_Product(ObjectB, categoryName, username) {
 //QUERY CREATE PRODUCT
 async function QueryCreateProduct(ObjectB, username, categoryName) {
     return new Promise((resolve, reject) => {
-        AWS.config.update({
-            "region": "us-east-1",
-            "endpoint": "http://s3.us-east-1.amazonaws.com",
-        });
         let params = {
             TableName: 'Businesss',
             IndexName: 'username_index',
@@ -372,6 +368,10 @@ async function QueryCreateProduct(ObjectB, username, categoryName) {
         //UPLOAD IMAGE TO S3 SERVICE - AWS\
         const BUCKET = 'abctestsdsd'
         const localImage = ObjectB.productImage.path;
+        AWS.config.update({
+            "region": "us-east-1",
+            "endpoint": "http://s3.us-east-1.amazonaws.com",
+        });
         s3.putObject({
             Bucket: BUCKET,
             Body: fs.readFileSync(localImage),
