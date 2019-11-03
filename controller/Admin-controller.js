@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk'),
-    s3 = new AWS.S3(),
     fs = require('fs'),
     ctlCtm = require('../controller/Customer-controller');
 
@@ -213,6 +212,7 @@ function add_Product(ObjectB, categoryID, location, res) {
         const BUCKET = 'abctestsdsd'
         const localImage = ObjectB.productImage.path;
         AWS.config.update({"endpoint": "http://s3.us-east-1.amazonaws.com"});
+        const s3 = new AWS.S3();
         s3.putObject({
             Bucket: BUCKET,
             Body: fs.readFileSync(localImage),
