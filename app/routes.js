@@ -481,7 +481,7 @@ app.get('/deleteProduct', (req, res) => {
                                     var params1 = { Bucket: 'abctestsdsd', Key: data.Items[i].category[x].product[z].productImage };
                                     s3.deleteObject(params1, function (err, data) {
                                         if (err) console.log(err, err.stack);  // error
-                                        else console.log();                 // deleted
+                                        else console.log("Deleted image!");                 // deleted
                                     });
                                     //DELETE OBJECT TO DYNAMO SERVICE - AWS\
                                     let params = {
@@ -532,7 +532,7 @@ app.get('/deleteProduct', (req, res) => {
                                     AWS.config.update({"endpoint": "http://s3.us-east-1.amazonaws.com"});
                                     s3.deleteObject(params1, function (err, data) {
                                         if (err) console.log(err, err.stack);  // error
-                                        else console.log();                 // deleted
+                                        else console.log("Deleted image!");        // deleted
                                     });
                                     let params = {
                                         TableName: "Businesss",
