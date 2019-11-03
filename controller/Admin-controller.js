@@ -46,7 +46,7 @@ function getAll_Product_Admin(ejs, userID, booleanB, res) {
                         if (cat.product.length) {
                             cat.product.forEach(element => {
                                 let count = 0; for (var c in element.auction) { count = count + 1; }
-                                var obj = Object.assign(element, { ownerName: item.businessName }, { id: item.businessID }, { loai: cat.categoryName }, { count: count });
+                                var obj = Object.assign(element, { ownerName: item.businessName }, { id: item.businessID }, { loai: cat.categoryName }, { count: count }, { ownerID: item.businessID });
                                 productList.push(obj);
                             });
                         }
@@ -276,7 +276,7 @@ function get_Item_Product(id, owner, productID, userID, res) {
 
 //Push Auction for Product
 function add_Auction(ObjectB, productID, res) {
-    if (ObjectB.owner === "admin") {
+    if (ObjectB.permission === "admin") {
         let params = {
             TableName: 'Admins'
         }
@@ -314,7 +314,11 @@ function add_Auction(ObjectB, productID, res) {
                                     if (err) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                     } else {
-                                        res.redirect('/quanlydaugia');
+                                        if(ObjectB.permission === 'admin'){
+                                            res.redirect('/quanlydaugia');
+                                        }else{
+                                            res.redirect('/quanlysanpham_doanhnghiep');
+                                        }
                                     }
                                 });
                                 break
@@ -329,7 +333,7 @@ function add_Auction(ObjectB, productID, res) {
             TableName: 'Businesss',
             Key: {
                 businessID: ObjectB.businessID,
-                businessName: ObjectB.userName,
+                businessName: ObjectB.businessName,
             }
         }
         docClient.scan(params, (err, data) => {
@@ -343,8 +347,8 @@ function add_Auction(ObjectB, productID, res) {
                                 let params = {
                                     TableName: "Businesss",
                                     Key: {
-                                        "businessID": ObjectB.businessID,
-                                        "businessName": ObjectB.userName
+                                        businessID: ObjectB.businessID,
+                                        businessName: ObjectB.businessName,
                                     },
                                     UpdateExpression: "set category[" + x + "].product[" + z + "].auction =:auc",
                                     ExpressionAttributeValues: {
@@ -366,7 +370,11 @@ function add_Auction(ObjectB, productID, res) {
                                     if (err) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                     } else {
-                                        res.redirect('/quanlysanpham_doanhnghiep');
+                                        if(ObjectB.permission === 'admin'){
+                                            res.redirect('/quanlydaugia');
+                                        }else{
+                                            res.redirect('/quanlysanpham_doanhnghiep');
+                                        }
                                     }
                                 });
                                 break
@@ -436,8 +444,8 @@ function Update_Auction(ownerID,ownerName,productID,winner) {
                                 let params = {
                                     TableName: "Businesss",
                                     Key: {
-                                        "businessID": ObjectB.businessID,
-                                        "businessName": ObjectB.owner
+                                        "businessID": ownerID,
+                                        "businessName": ownerName
                                     },
                                     UpdateExpression: "set category[" + x + "].product[" + z + "].auction.winner =:auc",
                                     ExpressionAttributeValues: {
@@ -491,7 +499,11 @@ function delete_Auction(ObjectB, productID, res) {
                                     if (err) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                     } else {
-                                        res.redirect('/quanlydaugia');
+                                        if(ObjectB.permission === "admin"){
+                                            res.redirect('/quanlydaugia');
+                                        }else{
+                                            res.redirect('/quanlydaugia_doanhnghiep');
+                                        }
                                     }
                                 });
                                 break
@@ -534,7 +546,11 @@ function delete_Auction(ObjectB, productID, res) {
                                     if (err) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                     } else {
-                                        res.redirect('/quanlydaugia_doanhnghiep');
+                                        if(ObjectB.permission === "admin"){
+                                            res.redirect('/quanlydaugia');
+                                        }else{
+                                            res.redirect('/quanlydaugia_doanhnghiep');
+                                        }
                                     }
                                 });
                                 break

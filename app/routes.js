@@ -462,6 +462,7 @@ app.get('/deleteProduct', (req, res) => {
     sess = req.session
     if (sess.permission === "admin" || sess.permission === "business") {
         var owner = req.query.owner;
+        var ownerID = req.query.ownerID;
         var productID = req.query.productID;
         if (owner === "admin") {
             let params = {
@@ -514,8 +515,8 @@ app.get('/deleteProduct', (req, res) => {
             let params = {
                 TableName: 'Businesss',
                 Key: {
-                    "businessID": sess.userID,
-                    "businessName": sess.userName
+                    "businessID": ownerID,
+                    "businessName": owner
                 }
             }
             docClient.scan(params, (err, data) => {
@@ -536,8 +537,8 @@ app.get('/deleteProduct', (req, res) => {
                                     let params = {
                                         TableName: "Businesss",
                                         Key: {
-                                            "businessID": sess.userID,
-                                            "businessName": sess.userName
+                                            "businessID": ownerID,
+                                            "businessName": owner
                                         },
                                         UpdateExpression: "REMOVE category[" + x + "].product[" + z + "]",
                                         ReturnValues: "UPDATED_NEW"
@@ -622,8 +623,8 @@ app.get('/editProduct', (req, res) => {
             let params = {
                 TableName: 'Businesss',
                 Key: {
-                    "businessID": sess.userID,
-                    "businessName": sess.userName
+                    "businessID": req.query.id,
+                    "businessName": req.query.owner
                 }
             }
             docClient.scan(params, (err, data) => {
@@ -637,8 +638,8 @@ app.get('/editProduct', (req, res) => {
                                     let params = {
                                         TableName: "Businesss",
                                         Key: {
-                                            "businessID": sess.userID,
-                                            "businessName": sess.userName
+                                            "businessID": req.query.id,
+                                            "businessName": req.query.owner
                                         },
                                         UpdateExpression: "set category[" + x + "].product[" + z + "].productName =:n, category[" + x + "].product[" + z + "].productDescribe =:d",
                                         ExpressionAttributeValues: {
@@ -767,14 +768,15 @@ app.post('/createauction', (req, res) => {
     const startPrice = req.body.startPrice;
     const productID = req.body.productID;
     const businessID = req.body.businessID;
+    const businessName = req.body.businessName;
     const ObjectB = {
         auctionName: auctionName,
         startDate: startDate,
         timeRun: timeRun,
         startPrice: startPrice,
         businessID: businessID,
-        owner: sess.permission,
-        userName: sess.userName,
+        businessName: businessName,
+        permission: sess.permission,
     }
     if (sess.permission === "admin" || sess.permission === "business") {
         ctlAdmin.add_Auction(ObjectB, productID, res);
@@ -792,7 +794,8 @@ app.get('/deleteauction', (req, res) => {
 
     const ObjectB = {
         businessID: businessID,
-        owner: owner
+        owner: owner,
+        permission: sess.permission,
     }
     if (sess.permission === "admin" || sess.permission === "business") {
         ctlAdmin.delete_Auction(ObjectB, productID, res);

@@ -167,13 +167,14 @@
                                     <form action="/createauction" style="padding: 20px;" method="POST" id="formAddAuction">
                                         <input type="hidden" id="productID_addAuc" name="productID">
                                         <input type="hidden" id="businessID_addAuc" name="businessID">
+                                        <input type="hidden" id="businessName_addAuc" name="businessName">
                                         <div class="input-wrapper">
                                             <label class="labelEdit">Tên phiên đấu giá:</label>
                                             <input type="text" name="auctionName" id="auctionName" class="txtEdit" onblur="checkAuctionName(this.value)">
                                             <label id="error_AuctionName" class="error-label"></label>
                                         </div>
                                         <div class="input-wrapper">
-                                            <label class="labelEdit">Thời gian khởi động đấu giá:</label>
+                                                <label class="labelEdit">Thời gian khởi động đấu giá: <br><i style="color: green;">(Định dạng: mm/dd/yyyy hh:mm - hoặc Chọn ngày)</i></label>
                                             <div class="form-group">
                                                 <div class="input-group date" id="datetimepicker1">
                                                     <input type="text" class="form-control txtEdit" name="startDate" id="startDate" class="txtEdit" onblur="checkAuctionDate(this.value)" />
@@ -185,12 +186,12 @@
                                             <label id="error_AuctionDate" class="error-label"></label>
                                         </div>
                                         <div class="input-wrapper">
-                                            <label class="labelEdit">Nhập giá:</label>
+                                                <label class="labelEdit">Nhập giá: <br><i style="color: green;">(Giá trị khởi đầu buổi đấu giá)</i></label>
                                             <input type="text" name="startPrice" id="startPrice" class="txtEdit" onblur="checkAuctionPrice(this.value)">
                                             <label id="error_AuctionPrice" class="error-label"></label>
                                         </div>
                                         <div class="input-wrapper">
-                                            <label class="labelEdit">Hạn chạy đấu giá:</label>
+                                                <label class="labelEdit">Hạn chạy đấu giá: <br><i style="color: green;">(Tính bằng giây)</i></label>
                                             <input type="text" name="timeRun" id="timeRun" class="txtEdit" onblur="checkAuctionTimeRun(this.value)">
                                             <label id="error_AuctionTimeRun" class="error-label"></label>
                                         </div>
@@ -232,12 +233,13 @@
                                         <td>
                                             <p class="cart-stock word-break_break-all"><%=product.productDescribe%></p>
                                         </td>
-                                        <td><% if(product.count == 0){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#modalAddAuction" onclick="addAutionBtn('<%=product.productID%>','<%= product.id %>')"><i class="zmdi zmdi-plus"></i></button><% }else{ %><i class="zmdi zmdi-check"></i><% }; %></td> <% let count = 0; %> <%for (var c in product.auction) { count = count + 1; } %> <% if(count > 0){ %><% var date = new Date(product.auction.startDate); %><% } %> <% var nowdate = new Date(); %> <% if(count > 0){ %> <% if ((nowdate.getTime() - date.getTime()) < 0) { %> <% if (product.auction.bids.length == 0) { %> <td></td>
-                                        <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% } %> <% }else{ %> <% if (product.auction.bids.length == 0) { %> <td></td>
-                                        <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% }else{ %> <td></td>
+                                        <td><% if(product.count == 0){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#modalAddAuction" onclick="addAutionBtn('<%=product.productID%>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-plus"></i></button><% }else{ %><i class="zmdi zmdi-check"></i><% }; %></td> <% let count = 0; %> <%for (var c in product.auction) { count = count + 1; } %> <% if(count > 0){ %><% var date = new Date(product.auction.startDate); %><% } %> <% var nowdate = new Date(); %> <% if(count > 0){ %> <% if ((nowdate.getTime() - date.getTime()) < 0) { %> <% if (product.auction.bids.length == 0) { %> <td></td>
+                                        <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&ownerID=<%= product.id %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% } %> <% }else{ %> <% if (product.auction.bids.length == 0) { %> <td></td>
+                                        <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&ownerID=<%= product.id %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% }else{ %> <td></td>
                                         <td></td> <% } %> <% } %> <% }else{ %> <td><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setProductEdit_Input('<%= product.productID %>','<%= product.productName %>','<%=product.productDescribe%>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-edit"></i></button></td>
-                                        <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% } %>
-                                    </tr> <% i++;%> <% }); %> </tbody>
+                                        <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&ownerID=<%= product.id %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% } %>
+                                    </tr> <% i++;%> <% }); %> 
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -324,9 +326,10 @@
             });
         });
 
-        function addAutionBtn(productID_addAuc, businessID_addAuc) {
+        function addAutionBtn(productID_addAuc, businessID_addAuc,businessName_addAuc) {
             document.getElementById("productID_addAuc").value = productID_addAuc;
             document.getElementById("businessID_addAuc").value = businessID_addAuc;
+            document.getElementById("businessName_addAuc").value = businessName_addAuc;
         }
 
     </script>

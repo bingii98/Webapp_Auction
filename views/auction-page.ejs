@@ -331,10 +331,12 @@
                                         <a class="pro-img-popup" href="#"><i class="zmdi zmdi-search"></i></a>
                                     </div>
                                     <div style="padding: 10px;">
+                                        <h5><i>Tên sản phẩm:</i></h5>
                                         <h4><strong><%= _uG.productName %></strong></h4>
-                                        <h5><strong>Sở hữu: <p style="text-transform: uppercase;">
-                                                    <i><%= _uG.owner %></i></p></strong></h5>
-                                        <p><%= _uG.productDescribe %></p>
+                                        <h5><i>Doanh nghiệp sở hữu:</i></h5>
+                                        <h5><strong><p style="text-transform: uppercase;"><%= _uG.owner %></p></strong></h5>
+                                        <h5><i>Mô tả sản phẩm:</i></h5>
+                                        <p style="word-wrap: break-word;"><%= _uG.productDescribe %></p>
                                         <input type="hidden" id="clientOwnerID" value="<%= _uG.id %>">
                                         <input type="hidden" id="clientOwnerName" value="<%= _uG.owner %>">
                                         <input type="hidden" id="clientProductID" value="<%= _uG.productID %>">

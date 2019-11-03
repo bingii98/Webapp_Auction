@@ -21,14 +21,44 @@
     <link rel="stylesheet" href="css/import.css">
     <!-- Style CSS -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/addNews.css">
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="css/responsive.css">
     <link href="css/color/color-1.css" rel="stylesheet">
     <link rel="stylesheet" href="css/addNews.css">
     <link rel="stylesheet" href="css/swiper.css">
+    <script src='js/jquery.min.js'></script>
     <link rel="stylesheet" href="css/swiper.min.css">
+    <script src="socket.io/socket.io.js"></script>
+    <script> var socket = io('http://localhost:3000'); </script>
+    <script>
+        $(document).ready(function () {
+            $("#addProductBtn").click(function () {
+                socket.emit("Client_sent_data_list_category");
+                socket.on("Server_sent_data_list_category", function (data) {
+                    var count = 0;
+                    data.forEach(item => {
+                        if (item.isStatus == true)
+                            count++;
+                    });
+                    if (count == 0) {
+                        $("#formADD").replaceWith("<h3><strong style='color:red;'>Chưa có loại sản phẩm nào tồn tại!</strong></h3><br><p>Đợi người quản trị thêm loại sản phẩm để thêm sản phẩm!</p>");
+                    } else {
+                        var html = $("#listCaterory").val();
+                        if (html == null) {
+                            data.forEach(element => {
+                                $("#listCaterory").append("<option id=" + element.categoryID + ">" + element.categoryName + "</option>");
+                            });
+                        }
+                    }
+                });
+            })
+        });
+    </script>
     <!-- Modernizer JS -->
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    <!-- Delete CSS -->
+    <link rel="stylesheet" href="css/styleDel.css">
 </head>
 
 <body>
@@ -49,53 +79,179 @@
     <div class="wrapper bg-white fix">
         <h1>Sản phẩm của doanh nghiệp</h1>
         <!-- Header 4 --> <% include element/header %>
-        <!-- Cart Area --> <% var formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }); %> <div class="cart-area pb-90 pt-90 mt-100">
+        <!-- Cart Area --> <% var formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }); %> <div class="cart-area pt-90 mt-100">
             <div class="container">
-                <div class="row" style="margin-top: 20px;">
-                    <div class="col-xs-12">
-                        <div class="cart-table table-responsive mb-50">
-                            <table class="table text-center">
-                                <thead>
-                                    <tr>
-                                        <th class="product">Sản phẩm</th>
-                                        <th class="price">Giá KĐ</th>
-                                        <th class="stock">TG bắt đầu</th>
-                                        <th class="qty">Hạn</th>
-                                        <th class="remove">Chỉnh sửa</th>
-                                        <th class="remove">Xoá</th>
-                                    </tr>
-                                </thead>
-                                <tbody> <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %> <% _uG.forEach((item) => { %> <% var index = 0;%> <%let current_datetime = new Date(item.auction.startDate);%> <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%> <tr>
-                                        <td>
-                                            <div class="cart-product text-left fix">
-                                                <img src="img/product/2.jpg" alt="" />
-                                                <div class="details fix">
-                                                    <a href="#"> <%=item.productName%></a>
-                                                    <p><%=item.productid%></p>
-                                                    <p>Loại : Đồ cổ</p>
+                <div class="row">
+                    <div class="procced-checkout col-md-12 col-xs-12">
+                        <button class="btn btn-open checkout-link" data-toggle="modal" data-target="#modalAddCategory" id="addProductBtn"><span>Thêm sản phẩm đấu giá</span></button>
+                    </div>
+                    <div id="modalAddCategory" class="modal fade" role="dialog" style="z-index: 2000;">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title"><strong>THÊM SẢN PHẨM</strong></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="/createproductbusiness" id="formADD" enctype="multipart/form-data">
+                                        <input type='hidden' name='categoryID' id='categoryID_txt'>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Tên sản phẩm</label>
+                                            <input name="productName" id="productName_txt" type="text" onblur="checkproductName(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_productName" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Chọn loại sản phẩm</label>
+                                            <select name="categoryName" id="listCaterory" class="txtEdit"></select>
+                                        </div>
+                                        <div class="input-wrapper" style="padding-top: 25px;">
+                                            <label class="labelEdit">Mô tả<br><i style="color: green;">Mô tả ngắn về xuất xứ, tình trạng sản phẩm</i></label>
+                                            <input name="productDescribe" id="productDescribe_txt" type="text" onblur="checkproductDescribe(this.value)" class="txtEdit">
+                                        </div>
+                                        <label id="error_productDescribe" class="error-label"></label>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Chọn hình ảnh <br><i style="color: green;">Các file có đuôi gif|jpg|jpeg|tiff|png và kích thước nhỏ hơn 2MB</i></label>
+                                            <input id="productImage" type="file" class="txtEdit" name="productImage" accept="image/x-png,image/gif,image/jpeg" class="txtEdit">
+                                        </div>
+                                        <label id="error_productImage" class="error-label"></label>
+                                        <button class="btnModal" type="button" id="submitAddProduct" style="margin-top: 30px;"><span>Xác nhận</span></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal EDIT -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="z-index: 2000;">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/editProduct" style="margin: 20px;" id="formEdit">
+                                        <input name="owner" id="businessNameEdit" type="hidden">
+                                        <input name="id" id="businessIDEdit" type="hidden">
+                                        <input name="productID" id="productIDEdit" type="hidden">
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Tên:</label>
+                                            <input name="productName" class="txtEdit" id="edit_bnPhone" type="text" onblur="checkproductName_edit(this.value)">
+                                            <label id="error_productName_edit" class="error-label"></label>
+                                        </div>
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Mô tả:</label>
+                                            <input name="productDescribe" class="txtEdit" id="edit_bnEmail" type="text" onblur="checkproductDescribe_edit(this.value)"><br>
+                                            <label id="error_productDescribe_edit" class="error-label"></label>
+                                        </div><br>
+                                        <button onclick="checkEditProduct();" class="btn btn-warning" id="btnEdit" type="button" style="padding: 5px;">Xác nhận</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal -->
+                    <div id="modalAddAuction" class="modal fade" role="dialog" style="z-index: 2000;">
+                        <div class="modal-dialog">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title"><strong>THÊM PHIÊN ĐẤU GIÁ</strong></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/createauction" style="padding: 20px;" method="POST" id="formAddAuction">
+                                        <input type="hidden" id="productID_addAuc" name="productID">
+                                        <input type="hidden" id="businessID_addAuc" name="businessID">
+                                        <input type="hidden" id="businessName_addAuc" name="businessName">
+                                        <div class="input-wrapper">
+                                            <label class="labelEdit">Tên phiên đấu giá:</label>
+                                            <input type="text" name="auctionName" id="auctionName" class="txtEdit" onblur="checkAuctionName(this.value)">
+                                            <label id="error_AuctionName" class="error-label"></label>
+                                        </div>
+                                        <div class="input-wrapper">
+                                                <label class="labelEdit">Thời gian khởi động đấu giá: <br><i style="color: green;">(Định dạng: mm/dd/yyyy hh:mm - hoặc Chọn ngày)</i></label>
+                                            <div class="form-group">
+                                                <div class="input-group date" id="datetimepicker1">
+                                                    <input type="text" class="form-control txtEdit" name="startDate" id="startDate" class="txtEdit" onblur="checkAuctionDate(this.value)" />
+                                                    <span class="input-group-addon">
+                                                        <span class="">Chọn ngày</span>
+                                                    </span>
                                                 </div>
                                             </div>
+                                            <label id="error_AuctionDate" class="error-label"></label>
+                                        </div>
+                                        <div class="input-wrapper">
+                                                <label class="labelEdit">Nhập giá: <br><i style="color: green;">(Giá trị khởi đầu buổi đấu giá)</i></label>
+                                            <input type="text" name="startPrice" id="startPrice" class="txtEdit" onblur="checkAuctionPrice(this.value)">
+                                            <label id="error_AuctionPrice" class="error-label"></label>
+                                        </div>
+                                        <div class="input-wrapper">
+                                                <label class="labelEdit">Hạn chạy đấu giá: <br><i style="color: green;">(Tính bằng giây)</i></label>
+                                            <input type="text" name="timeRun" id="timeRun" class="txtEdit" onblur="checkAuctionTimeRun(this.value)">
+                                            <label id="error_AuctionTimeRun" class="error-label"></label>
+                                        </div>
+                                        <button class="btnModal" type="button" id="CheckFormAddAuction">Xác nhận</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <% var formatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }); %> <div class="row" style="margin-top: 20px;">
+                    <div class="col-xs-12">
+                        <div class="cart-table table-responsive mb-50">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="id" style="padding-left: 10px;"> #</th>
+                                        <th class="id">ID</th>
+                                        <th class="price">Hình ảnh</th>
+                                        <th class="stock">Tên</th>
+                                        <th class="mota">Mô tả</th>
+                                        <th class="remove" style="width: 50px;">Thêm PĐG</th>
+                                        <th class="remove" style="width: 50px;">Sửa</th>
+                                        <th class="remove" style="width: 50px;">Xoá</th>
+                                    </tr>
+                                </thead><% var i = 1%> <tbody> <% function formatNumber(num) { return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')  + " VNĐ"} %> <% _uG.forEach((product) => { %> <%let current_datetime = new Date(product.auction.startDate);%> <%let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();%> <tr>
+                                        <td><strong><%= i %></strong></td>
+                                        <td>
+                                            <div class="cart-stock idTag"><%=product.productID%></div>
                                         </td>
                                         <td>
-                                            <p class="cart-price"><%= formatter.format(item.auction.startPrice);%></p>
+                                            <p class="cart-product text-left fix"><img src="https://abctestsdsd.s3.amazonaws.com/<%=product.productImage%>" alt="" />
+                                            </p>
                                         </td>
                                         <td>
-                                            <p class="cart-stock"><%=formatted_date%></p>
+                                            <strong>
+                                                <p class="cart-stock"><%=product.productName%></p>
+                                            </strong>
                                         </td>
                                         <td>
-                                            <p class="cart-stock"><%=item.auction.timeRun%> giây</p>
+                                            <p class="cart-stock word-break_break-all"><%=product.productDescribe%></p>
                                         </td>
-                                        <td><a href="/deleteproduct?businessid=<%=item.businessID%>&businessname=<%=item.businessName%>&index=<%=index%>"><button class="cart-pro-remove"><i class="zmdi zmdi-edit"></i></button></a>
-                                        </td>
-                                        <td><a href="/deleteproduct?businessid=<%=item.businessID%>&businessname=<%=item.businessName%>&index=<%=index%>"><button class="cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a>
-                                        </td>
-                                        </td>
-                                    </tr> <% index++;%> <% }); %> </tbody>
+                                        <td><% if(product.count == 0){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#modalAddAuction" onclick="addAutionBtn('<%=product.productID%>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-plus"></i></button><% }else{ %><i class="zmdi zmdi-check"></i><% }; %></td> <% let count = 0; %> <%for (var c in product.auction) { count = count + 1; } %> <% if(count > 0){ %><% var date = new Date(product.auction.startDate); %><% } %> <% var nowdate = new Date(); %> <% if(count > 0){ %> <% if ((nowdate.getTime() - date.getTime()) < 0) { %> <% if (product.auction.bids.length == 0) { %> <td></td>
+                                            <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&ownerID=<%= product.id %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% } %> <% }else{ %> <% if (product.auction.bids.length == 0) { %> <td></td>
+                                            <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&ownerID=<%= product.id %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% }else{ %> <td></td>
+                                            <td></td> <% } %> <% } %> <% }else{ %> <td><button class="cart-pro-remove" data-toggle="modal" data-target="#exampleModalCenter" onclick="setProductEdit_Input('<%= product.productID %>','<%= product.productName %>','<%=product.productDescribe%>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-edit"></i></button></td>
+                                            <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&ownerID=<%= product.id %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% } %>
+                                    </tr> <% i++;%> <% }); %> </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="cd-popup" role="alert">
+                <div class="cd-popup-container">
+                    <p>Thay đổi trạng thái sản phẩm <br>Bạn có muốn tiếp tục hành động này?</p>
+                    <ul class="cd-buttons">
+                    </ul>
+                    <a class="cd-popup-close img-replace"></a>
+                </div> <!-- cd-popup-container -->
+            </div> <!-- cd-popup -->
         </div>
         <!--Footer--> <% include element/footer %>
     </div>
@@ -103,7 +259,6 @@
     <!-- JS -->
     <!-- jQuery JS -->
     <!-- partial -->
-    <script src='js/jquery.min.js'></script>
     <script src='js/moment-with-locales.js'></script>
     <script src='js/bootstrap-datetimepicker.js'></script>
     <!-- Bootstrap JS -->
@@ -117,10 +272,58 @@
     <script src="js/addNews.js"></script>
     <script src="js/swiper.js"></script>
     <script src="js/swiper.min.js"></script>
+    <script src="js/checkForm.js"></script>
     <script>
         $(function () {
             $('#datetimepicker1').datetimepicker();
         });</script>
+    <script>
+        $(document).ready(function () {
+            $(".menu_sanpham").addClass("active");
+            $("#submitAddProduct").click(function () {
+                $("#categoryID_txt").val($(listCaterory).children(":selected").attr("id"));
+                var name = $("#productName_txt").val();
+                var des = $("#productDescribe_txt").val()
+                if (checkproductName(name) && checkproductDescribe(des)) {
+                    if ($('#productImage').get(0).files.length === 0) {
+                        $('#error_productImage').text("Chưa chọn ảnh!");
+                    } else if (!(/\.(gif|jpg|jpeg|tiff|png)$/i).test($("#productImage").val())) {
+                        $('#error_productImage').text("Chỉ được chọn tập tin là hình ảnh! (gif|jpg|jpeg|tiff|png)");
+                    } else if ($('#productImage')[0].files[0].size > 2097152) {
+                        $('#error_productImage').text("Chỉ chấp nhận kích thước ảnh nhỏ hơn 2MB!");
+                    } else {
+                        $('#formADD').submit();
+                        $('#error_productImage').text("");
+                    }
+                }
+            });
+
+            $("#CheckFormAddAuction").click(function () {
+                var name = checkAuctionName($("#auctionName").val());
+                var date = checkAuctionDate($("#startDate").val());
+                var price = checkAuctionPrice($("#startPrice").val());
+                var timerun = checkAuctionTimeRun($("#timeRun").val());
+                if (name && date && price && timerun) {
+                    var date = new Date($("#startDate").val());
+                    var nowdate = new Date();
+                    var time = Number($("#timeRun").val());
+                    if (((date.getTime() - nowdate.getTime()) - 30) > 0) {
+                        $("#formAddAuction").submit();
+                    } else {
+                        $('#error_AuctionDate').text('Ngày phải lớn hơn thời điểm hiện tại 30 giây!');
+                    }
+                }
+            });
+        });
+
+        function addAutionBtn(productID_addAuc, businessID_addAuc,businessName_addAuc) {
+            document.getElementById("productID_addAuc").value = productID_addAuc;
+            document.getElementById("businessID_addAuc").value = businessID_addAuc;
+            document.getElementById("businessName_addAuc").value = businessName_addAuc;
+        }
+
+    </script>
+    <script src="js/scriptDel.js"></script>
 </body>
 
 </html>
