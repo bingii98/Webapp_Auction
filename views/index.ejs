@@ -483,7 +483,7 @@
                             <% _uG.forEach((item) => { %>
                             <% var date = new Date(item.auction.startDate); %>
                             <% var nowdate = new Date(); %>
-                            <% if((nowdate.getTime() - date.getTime()) < item.auction.timeRun*1000){ %>
+                            <% if((nowdate.getTime() + 1000*60*60*7 ) - date.getTime()  < item.auction.timeRun*1000){ %>
                             <div class="sin-list-product clearfix">
                                 <div class="pro-image col-md-3 col-sm-5 col-xs-12">
                                     <a href="#" class="image fix">
@@ -495,7 +495,7 @@
                                     </div>
                                 </div>
                                 <div class="list-pro-details col-md-9 col-sm-7 col-xs-12">
-                                    <% if((date.getTime() - nowdate.getTime()) > 0){ %>
+                                    <% if((date.getTime() - (nowdate.getTime() + 1000*60*60*7)) > 0){ %>
                                     <div class="top fix">
                                         <div style="color:green;">
                                             <a href="/sanphamdaugia?sanpham=<%=item.productID%>&owner=<%=item.ownerName%>&ownerid=<%=item.id%>"
@@ -612,7 +612,7 @@
                                         </div>
                                         <p class="pro-ratting float-right">
                                             <span class="timer"
-                                                data-seconds-left="<%= item.auction.timeRun - ((nowdate.getTime() - date.getTime())/1000) %>">Còn&nbsp;</span>
+                                                data-seconds-left="<%= item.auction.timeRun - (((nowdate.getTime() + 1000*60*60*7) - date.getTime())/1000) %>">Còn&nbsp;</span>
                                         </p>
                                     </div>
                                     <div class="list-pro-dec">

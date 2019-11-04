@@ -240,7 +240,7 @@
                                         <td>
                                             <p class="cart-stock word-break_break-all"><%=product.productDescribe%></p>
                                         </td>
-                                        <td><% if(product.count == 0){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#modalAddAuction" onclick="addAutionBtn('<%=product.productID%>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-plus"></i></button><% }else{ %><i class="zmdi zmdi-check"></i><% }; %></td> <% let count = 0; %> <%for (var c in product.auction) { count = count + 1; } %> <% if(count > 0){ %><% var date = new Date(product.auction.startDate); %><% } %> <% var nowdate = new Date(); %> <% if(count > 0){ %> <% if ((nowdate.getTime() - date.getTime()) < 0) { %> <% if (product.auction.bids.length == 0) { %> <td></td>
+                                        <td><% if(product.count == 0){ %><button class="cart-pro-remove" data-toggle="modal" data-target="#modalAddAuction" onclick="addAutionBtn('<%=product.productID%>','<%= product.id %>','<%= product.ownerName %>')"><i class="zmdi zmdi-plus"></i></button><% }else{ %><i class="zmdi zmdi-check"></i><% }; %></td> <% let count = 0; %> <%for (var c in product.auction) { count = count + 1; } %> <% if(count > 0){ %><% var date = new Date(product.auction.startDate); %><% } %> <% var nowdate = new Date(); %> <% if(count > 0){ %> <% if (((nowdate.getTime() + 1000*60*60*7) - date.getTime()) < 0) { %> <% if (product.auction.bids.length == 0) { %> <td></td>
                                         <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&ownerID=<%= product.ownerID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% } %> <% }else{ %> <% if (product.auction.bids.length == 0) { %> <td></td>
                                         <td><% if(product.count == 0){ %><a onclick="setHrefDel('/deleteProduct?productID=<%= product.productID %>&ownerID=<%= product.ownerID %>&owner=<%= product.ownerName %>&id=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% }; %></td> <% }else{ %> <td></td>
                                         <td></td> <% } %> <% } %> <% }else{ %> 
@@ -328,7 +328,7 @@
                         $('#error_AuctionTimeRun').text("Thời gian chạy không nằm trong giới hạn quy định");
                     }else if(Number($("#startPrice").val()) > 100000000 || Number($("#startPrice").val()) < 0){
                         $('#error_AuctionPrice').text("Giá tiền không nằm trong giới hạn quy định!");
-                    }else if ((date.getTime() - nowdate.getTime()) < 0 || (date.getTime() - nowdate.getTime()) > (1000*60*60*24*30)) { 
+                    }else if ((date.getTime() - (nowdate.getTime() + 1000*60*60*7)) < 0 || (date.getTime() - (nowdate.getTime() + 1000*60*60*7)) > (1000*60*60*24*30)) { 
                         $('#error_AuctionDate').text('Giới hạn ngày không phù hợp!');
                     } else {
                         $("#formAddAuction").submit();

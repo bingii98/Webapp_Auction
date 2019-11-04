@@ -153,7 +153,7 @@
                                         </td>
                                         <td>
                                             <p class="cart-stock"><% if(product.auction.isRunning){ %> ON <%}else{%> OFF <% } %></p>
-                                        </td> <% var date = new Date(product.auction.startDate); %> <% var nowdate = new Date(); %> <td><% if ((nowdate.getTime() - date.getTime() < 0) || (((nowdate.getTime() - date.getTime()) + product.auction.timeRun > 0) && product.auction.bids.length === 0)) { %> <a onclick="setHrefDel('/deleteauction?productID=<%= product.productID %>&owner=<%= product.ownerName %>&businessID=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% } %></td>
+                                        </td> <% var date = new Date(product.auction.startDate); %> <% var nowdate = new Date(); %> <td><% if (((nowdate.getTime() + 1000*60*60*7) - date.getTime() < 0) || ((((nowdate.getTime() + 1000*60*60*7) - date.getTime()) + product.auction.timeRun > 0) && product.auction.bids.length === 0)) { %> <a onclick="setHrefDel('/deleteauction?productID=<%= product.productID %>&owner=<%= product.ownerName %>&businessID=<%= product.id %>')"><button class="cd-popup-trigger cart-pro-remove"><i class="zmdi zmdi-close"></i></button></a><% } %></td>
                                     </tr> <% i++;%> <% }; %> <% }); %> </tbody>
                             </table>
                         </div>
