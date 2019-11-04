@@ -346,8 +346,8 @@
                                             <a href="/sanphamdaugia?sanpham=<%=item.productID%>&owner=<%=item.ownerName%>&ownerid=<%=item.id%>"
                                                 class="action-btn wishlist"><i class="zmdi zmdi-mouse"></i></a>
                                         </div>
-                                            <br>1. Năm HT: <%= nowdate.getFullYear() %>/<%= nowdate.getMonth() %>/<%= nowdate.getDate() %> - <%= nowdate.getHours() %>/<%= nowdate.getMinutes() %>
-                                            <br>2. Năm DG: <%= date.getFullYear() %>/<%= date.getMonth() %>/<%= date.getDate() %> - <%= date.getHours() %>/<%= date.getMinutes() %>
+                                            <br>1. Năm HT: <%= nowdate.getUTCFullYear() %>/<%= nowdate.getUTCMonth() %>/<%= nowdate.getUTCDate() %> - <%= nowdate.getUTCHours() %>/<%= nowdate.getUTCMinutes() %>
+                                            <br>2. Năm DG: <%= date.getUTCFullYear() %>/<%= date.getUTCMonth() %>/<%= date.getUTCDate() %> - <%= date.getUTCHours() %>/<%= date.getUTCMinutes() %>
                                     </div>
                                     <div class="pro-details text-center">
                                         <% if((date.getTime() - nowdate.getTime() + 1000*60*60*24 ) > 0){ %>
