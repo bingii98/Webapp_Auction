@@ -332,9 +332,9 @@
                         <div class="product-tab tab-pane active" id="grid-view">
                             <!--START Content PAGE PRODUCT-->
                             <% _uG.forEach((item) => { %>
-                            <% var date = new Date(item.auction.startDate); %>
                             <% var nowdate = new Date(); %>
-                            <% if(nowdate.getTime() - date.getTime() + 1000*60*60*24 < item.auction.timeRun*1000){ %>
+                            <% var date = new Date(item.auction.startDate); %>
+                            <% if(nowdate.getTime() - date.getTime() < item.auction.timeRun*1000){ %>
                             <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="sin-product">
                                     <div class="pro-image fix">
@@ -347,7 +347,7 @@
                                                 class="action-btn wishlist"><i class="zmdi zmdi-mouse"></i></a>
                                         </div>
                                             <br>1. Năm HT: <%= nowdate.getFullYear() %> Tháng: <%= nowdate.getMonth() %> Ngày: <%= nowdate.getDate() %> Giờ: <%= nowdate.getDate() %> Phút: <%= nowdate.getDate() %>
-                                            <br>Năm DG: <%= date.getFullYear() %> Tháng: <%= date.getMonth() %> Ngày: <%= date.getDate() %> Giờ: <%= nowdate.getDate() %> Phút: <%= nowdate.getDate() %>
+                                            <br>Năm DG: <%= date.getFullYear() %> Tháng: <%= date.getMonth() %> Ngày: <%= date.getDate() %> Giờ: <%= date.getDate() %> Phút: <%= date.getDate() %>
                                     </div>
                                     <div class="pro-details text-center">
                                         <% if((date.getTime() - nowdate.getTime() + 1000*60*60*24 ) > 0){ %>
