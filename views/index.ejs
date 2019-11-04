@@ -348,7 +348,7 @@
                                         </div>
                                             <br>1. Năm HT: <%= nowdate.getUTCFullYear() %>/<%= nowdate.getUTCMonth() %>/<%= nowdate.getUTCDate() %> - <%= nowdate.getUTCHours() %>/<%= nowdate.getUTCMinutes() %>
                                             <br>2. Năm DG: <%= date.getUTCFullYear() %>/<%= date.getUTCMonth() %>/<%= date.getUTCDate() %> - <%= date.getUTCHours() %>/<%= date.getUTCMinutes() %>
-                                            <br>3. Tru: <%= nowdate.getTime() - date.getTime() %>
+                                            <br>3. Tru: <%= date.getTime() - (nowdate.getTime() + 1000*60*60*7 )%>
                                     </div>
                                     <div class="pro-details text-center">
                                         <% if((date.getTime() - (nowdate.getTime() + 1000*60*60*7)) > 0){ %>
