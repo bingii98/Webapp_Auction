@@ -346,8 +346,8 @@
                                             <a href="/sanphamdaugia?sanpham=<%=item.productID%>&owner=<%=item.ownerName%>&ownerid=<%=item.id%>"
                                                 class="action-btn wishlist"><i class="zmdi zmdi-mouse"></i></a>
                                         </div>
-                                            <br>1. Năm HT: <%= nowdate.getFullYear() %> Tháng: <%= nowdate.getMonth() %> Ngày: <%= nowdate.getDate() %> Giờ: <%= nowdate.getDate() %> Phút: <%= nowdate.getDate() %>
-                                            <br>Năm DG: <%= date.getFullYear() %> Tháng: <%= date.getMonth() %> Ngày: <%= date.getDate() %> Giờ: <%= date.getDate() %> Phút: <%= date.getDate() %>
+                                            <br>1. Năm HT: <%= nowdate.getFullYear() %> Tháng: <%= nowdate.getMonth() %> Ngày: <%= nowdate.getDate() %> Giờ: <%= nowdate.getHours() %> Phút: <%= nowdate.getMinutes() %>
+                                            <br>2. Năm DG: <%= date.getFullYear() %> Tháng: <%= date.getMonth() %> Ngày: <%= date.getDate() %> Giờ: <%= date.getHours() %> Phút: <%= date.getMinutes() %>
                                     </div>
                                     <div class="pro-details text-center">
                                         <% if((date.getTime() - nowdate.getTime() + 1000*60*60*24 ) > 0){ %>
