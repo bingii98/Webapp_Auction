@@ -462,7 +462,7 @@
                                             <p class="pro-cat float-left">Xe</p>
                                             <p class="pro-ratting float-right">
                                                 <span class="timer"
-                                                    data-seconds-left="<%= item.auction.timeRun - ((nowdate.getTime() - date.getTime())/1000) %>">Còn&nbsp;</span>
+                                                    data-seconds-left="<%= item.auction.timeRun - (((nowdate.getTime() + 1000*60*60*7 ) - date.getTime())/1000) %>">Còn&nbsp;</span>
                                             </p>
                                         </div>
                                         <div style="color:red;">
