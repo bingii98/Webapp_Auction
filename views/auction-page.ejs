@@ -321,7 +321,7 @@
         <!-- Home Slider -->
         <div class="single-product-area pb-90 pt-90">
             <div class="container"> <% var date = new Date(_uG.auction.startDate); %> <% var nowdate = new Date(); %>
-                <% if((nowdate.getTime() - date.getTime()) > 0){ %> <div class="row">
+                <% if(((nowdate.getTime() + 1000*60*60*7) - date.getTime()) > 0){ %> <div class="row">
                     <div class="col-xs-12">
                         <div class="single-product-wrap border">
                             <div class="single-product-image">
@@ -348,7 +348,7 @@
                                 <h3 class="single-pro-title"><%= _uG.auction.auctionName %></h3>
                                 <div class="single-product-price-ratting fix">
                                     <p class="pro-ratting float-left"><span class="timer1"
-                                            data-seconds-left="<%= _uG.auction.timeRun - ((nowdate.getTime() - date.getTime())/1000) %>">Còn&nbsp;</span>
+                                            data-seconds-left="<%= _uG.auction.timeRun - (((nowdate.getTime() + 1000*60*60*7) - date.getTime())/1000) %>">Còn&nbsp;</span>
                                     </p>
                                 </div>
                                 <div class="single-product-price-ratting fix">
