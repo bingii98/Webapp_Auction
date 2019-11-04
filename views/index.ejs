@@ -334,7 +334,8 @@
                             <% _uG.forEach((item) => { %>
                             <% var date = new Date(item.auction.startDate); %>
                             <% var nowdate = new Date(); %>
-                            Năm: <%= nowdate.getFullYear() %> Tháng: <%= nowdate.getMonth() %> Ngày: <%= nowdate.getDate() %>
+                            1. Năm: <%= nowdate.getFullYear() %> Tháng: <%= nowdate.getMonth() %> Ngày: <%= nowdate.getDate() %>
+                            2. Năm: <%= date.getFullYear() %> Tháng: <%= date.getMonth() %> Ngày: <%= date.getDate() %>
                             <% if(nowdate.getTime() - date.getTime() < item.auction.timeRun*1000){ %>
                             <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="sin-product">
