@@ -334,7 +334,7 @@
                             <% _uG.forEach((item) => { %>
                             <% var nowdate = new Date(); %>
                             <% var date = new Date(item.auction.startDate); %>
-                            <% if(nowdate.getTime() - date.getTime() + 1000*60*60*7  < item.auction.timeRun*1000){ %>
+                            <% if((nowdate.getTime() + 1000*60*60*7 ) - date.getTime()  < item.auction.timeRun*1000){ %>
                             <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="sin-product">
                                     <div class="pro-image fix">
@@ -351,7 +351,7 @@
                                             <br>3. Tru: <%= nowdate.getTime() - date.getTime() %>
                                     </div>
                                     <div class="pro-details text-center">
-                                        <% if((date.getTime() - nowdate.getTime() + 1000*60*60*7 ) > 0){ %>
+                                        <% if((date.getTime() - (nowdate.getTime() + 1000*60*60*7)) > 0){ %>
                                         <div class="top fix">
                                             <p class="pro-cat float-left">Xe</p>
                                             <p class="pro-ratting float-right">
