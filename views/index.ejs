@@ -334,7 +334,7 @@
                             <% _uG.forEach((item) => { %>
                             <% var date = new Date(item.auction.startDate); %>
                             <% var nowdate = new Date(); %>
-                            <% if(nowdate.getTime() - date.getTime() < item.auction.timeRun*1000){ %>
+                            <% if(nowdate.getTime() - date.getTime() + 1000*60*60*24 < item.auction.timeRun*1000){ %>
                             <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="sin-product">
                                     <div class="pro-image fix">
@@ -346,8 +346,8 @@
                                             <a href="/sanphamdaugia?sanpham=<%=item.productID%>&owner=<%=item.ownerName%>&ownerid=<%=item.id%>"
                                                 class="action-btn wishlist"><i class="zmdi zmdi-mouse"></i></a>
                                         </div>
-                                        1. Năm HT: <%= nowdate.getFullYear() %> Tháng: <%= nowdate.getMonth() %> Ngày: <%= nowdate.getDate() %>
-                                        2. Năm DG: <%= date.getFullYear() %> Tháng: <%= date.getMonth() %> Ngày: <%= date.getDate() %>
+                                        <br>1. Năm HT: <%= nowdate.getFullYear() %> Tháng: <%= nowdate.getMonth() %> Ngày: <%= nowdate.getDate() %>
+                                        <br>Năm DG: <%= date.getFullYear() %> Tháng: <%= date.getMonth() %> Ngày: <%= date.getDate() %>
                                     </div>
                                     <div class="pro-details text-center">
                                         <% if((date.getTime() - nowdate.getTime()) > 0){ %>
