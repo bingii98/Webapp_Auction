@@ -825,9 +825,9 @@ app.post('/checkout', (req, res) => {
     var ownerName = req.body.ownerName;
     if (ownerID === "admin") {
         ctlAdmin.Get_Product(productID).then(data => {
-            ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => {
-                ctlAdmin.Update_Auction(ownerID, ownerName, productID, data.auction.bids[data.auction.bids.length - 1].user)
-                if (data.auction.bids.length != 0) {
+            ctlAdmin.Update_Auction(ownerID, ownerName, productID, data.auction.bids[data.auction.bids.length - 1].user)
+            if (data.auction.bids.length != 0) {
+                ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => {
                     if (data1) {
                         if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
                             res.render('check-out', { _uG: data });
@@ -835,10 +835,10 @@ app.post('/checkout', (req, res) => {
                             res.redirect("/");
                         }
                     }
-                } else {
-                    res.redirect("/");
-                }
-            });
+                });
+            } else {
+                res.redirect("/");
+            }
         });
     } else {
         ctlBsn.Get_Product(productID, ownerID, ownerName).then(data => {
