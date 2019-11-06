@@ -53,6 +53,8 @@
         <div class="cart-area pb-90 pt-90 mt-100">
             <div class="container">
                 <div class="row">
+                    <i>Click vào <strong>Mã Khách Hàng</strong> để xem thông tin khách hàng!</i>
+                    <i>Click vào <strong>Mã Sản Phẩm</strong> để xem thông tin chi tiết sản phẩm!</i>
                     <div class="col-xs-12">
                         <div class="cart-table table-responsive mb-50">
                             <table class="table">
@@ -66,7 +68,8 @@
                                 </thead>
                                 <tbody> <% var i = 0 %> <% if(_uG.length > 0){ %> <% _uG.forEach(item => { %> <tr>
                                         <% if(item.auction.bids.length > 0){ %> <th scope="row"><%= i %></th>
-                                        <td><a href="#" class="checkInfoProduct" data-toggle="modal" data-target="#exampleModal"><strong><%= item.productID %></strong></a>
+                                        <td><a href="#" class="checkInfoProduct" data-toggle="modal"
+                                                data-target="#exampleModal"><strong><%= item.productID %></strong></a>
                                         </td>
                                         <td><a href="" class="checkInfoCustomer" data-toggle="modal"
                                                 data-target="#modalCheckCustomer"><strong><%= item.auction.bids[item.auction.bids.length - 1].user %></strong></a>
