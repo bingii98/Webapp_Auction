@@ -143,7 +143,7 @@ io.on("connection", (socket) => {
     //BUSINESS CHECK INFOR CUSTOMER
     socket.on("BUSINESS_CHECK_INFO_CUSTOMER", function (customerID) {
         ctlCtm.get_Item_Customer_CustomerID(customerID).then(data => {
-            socket.emit("BUSINESS_CHECK_INFO_CUSTOMER_SERVER", data[0].customerName,data[0].address,data[0].phone,data[0].email);
+            socket.emit("BUSINESS_CHECK_INFO_CUSTOMER_SERVER", data[0].customerName, data[0].address, data[0].phone, data[0].email);
         })
     });
 });
@@ -473,7 +473,7 @@ app.get('/deleteProduct', (req, res) => {
                             for (let z = 0; z < data.Items[i].category[x].product.length; z++) {
                                 if (data.Items[i].category[x].product[z].productID === productID) {
                                     //DELETE IMAGE TO S3 SERVICE - AWS\
-                                    AWS.config.update({"endpoint": "http://s3.us-east-1.amazonaws.com"});
+                                    AWS.config.update({ "endpoint": "http://s3.us-east-1.amazonaws.com" });
                                     var s3 = new AWS.S3();
                                     var params1 = { Bucket: 'abctestsdsd', Key: data.Items[i].category[x].product[z].productImage };
                                     s3.deleteObject(params1, function (err, data) {
@@ -526,7 +526,7 @@ app.get('/deleteProduct', (req, res) => {
                                 if (data.Items[i].category[x].product[z].productID === productID) {
                                     var s3 = new AWS.S3();
                                     var params1 = { Bucket: 'abctestsdsd', Key: data.Items[i].category[x].product[z].productImage };
-                                    AWS.config.update({"endpoint": "http://s3.us-east-1.amazonaws.com"});
+                                    AWS.config.update({ "endpoint": "http://s3.us-east-1.amazonaws.com" });
                                     s3.deleteObject(params1, function (err, data) {
                                         if (err) console.log(err, err.stack);  // error
                                         else console.log("Deleted image!");        // deleted
@@ -810,10 +810,10 @@ app.post('/updateorder', (req, res) => {
     } else {
         note = req.body.note
     }
-    if(ctlCtm.update_Order_Customer(sess.userID, req.body.productID, note, res).then(data => {
-        if(data){
+    if (ctlCtm.update_Order_Customer(sess.userID, req.body.productID, note, res).then(data => {
+        if (data) {
             res.redirect("/");
-        }else{
+        } else {
             res.render('404');
         }
     }));
@@ -833,16 +833,18 @@ app.post('/checkout', (req, res) => {
         ctlAdmin.Get_Product(productID).then(data => {
             ctlAdmin.Update_Auction(ownerID, ownerName, productID, data.auction.bids[data.auction.bids.length - 1].user)
             if (data.auction.bids.length != 0) {
-                ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => {
-                    if (data1) {
-                        console.log("ID PRODUCT: " + data.auction.bids[data.auction.bids.length - 1].user + "_____ID USER: " + sess.userID);
-                        if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
-                            res.render('check-out', { _uG: data });
-                        } else {
+                console.log("ID PRODUCT: " + data.auction.bids[data.auction.bids.length - 1].user + "_____ID USER: " + sess.userID);
+                if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
+                    ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => { 
+                        if(data1){
+                            res.render('check-out', { _uG: data }); 
+                        }else{
                             res.redirect("/");
                         }
-                    }
-                });
+                    })
+                } else {
+                    res.redirect("/");
+                }
             } else {
                 res.redirect("/");
             }
@@ -851,16 +853,18 @@ app.post('/checkout', (req, res) => {
         ctlBsn.Get_Product(productID, ownerID, ownerName).then(data => {
             ctlAdmin.Update_Auction(ownerID, ownerName, productID, data.auction.bids[data.auction.bids.length - 1].user)
             if (data.auction.bids.length != 0) {
-                ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => {
-                    console.log("ID PRODUCT: " + data.auction.bids[data.auction.bids.length - 1].user + "_____ID USER: " + sess.userID);
-                    if (data1) {
-                        if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
-                            res.render('check-out', { _uG: data });
-                        } else {
+                console.log("ID PRODUCT: " + data.auction.bids[data.auction.bids.length - 1].user + "_____ID USER: " + sess.userID);
+                if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
+                    ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => { 
+                        if(data1){
+                            res.render('check-out', { _uG: data }); 
+                        }else{
                             res.redirect("/");
                         }
-                    }
-                });
+                    })
+                } else {
+                    res.redirect("/");
+                }
             } else {
                 res.redirect("/");
             }
