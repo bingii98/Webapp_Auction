@@ -829,13 +829,14 @@ app.post('/checkout', (req, res) => {
     var productID = req.body.productID;
     var ownerID = req.body.ownerID;
     var ownerName = req.body.ownerName;
+    var customerID = sess.userID;
     if (ownerID === "admin") {
         ctlAdmin.Get_Product(productID).then(data => {
             ctlAdmin.Update_Auction(ownerID, ownerName, productID, data.auction.bids[data.auction.bids.length - 1].user)
             if (data.auction.bids.length != 0) {
-                console.log("ID PRODUCT: " + data.auction.bids[data.auction.bids.length - 1].user + "_____ID USER: " + sess.userID);
-                if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
-                    ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => { 
+                console.log("ID PRODUCT: " + data.auction.bids[data.auction.bids.length - 1].user + "_____ID USER: " + customerID);
+                if (data.auction.bids[data.auction.bids.length - 1].user === customerID) {
+                    ctlCtm.add_Order_Customer(customerID, data).then(data1 => { 
                         if(data1){
                             res.render('check-out', { _uG: data }); 
                         }else{
@@ -853,9 +854,9 @@ app.post('/checkout', (req, res) => {
         ctlBsn.Get_Product(productID, ownerID, ownerName).then(data => {
             ctlAdmin.Update_Auction(ownerID, ownerName, productID, data.auction.bids[data.auction.bids.length - 1].user)
             if (data.auction.bids.length != 0) {
-                console.log("ID PRODUCT: " + data.auction.bids[data.auction.bids.length - 1].user + "_____ID USER: " + sess.userID);
-                if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
-                    ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => { 
+                console.log("ID PRODUCT: " + data.auction.bids[data.auction.bids.length - 1].user + "_____ID USER: " + customerID);
+                if (data.auction.bids[data.auction.bids.length - 1].user === customerID {
+                    ctlCtm.add_Order_Customer(customerID, data).then(data1 => { 
                         if(data1){
                             res.render('check-out', { _uG: data }); 
                         }else{
