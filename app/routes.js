@@ -247,7 +247,7 @@ app.post('/createCustomer', (req, res) => {
 //Home Manager Admin Page
 app.get('/', (req, res) => {
     sess = req.session
-    if (sess.permission === "admin" || sess.permission === "business" || sess.permission === "customer") {
+    if (sess.permission === "customer") {
         ctlAdmin.getAll_Product_Admin('index', sess.userID, true, res);
     } else {
         ctlAdmin.getAll_Product_Admin('index', "null", false, res);
@@ -870,11 +870,6 @@ app.post('/lichsudaugia', (req, res) => {
         res.redirect('/');
     }
 });
-
-
-app.get('/checkout', (req, res) => {
-    res.render('check-out1')
-})
 
 //404 PAGE
 app.use((req, res) => {
