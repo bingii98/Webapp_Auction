@@ -65,7 +65,7 @@
                                     <tr>
                                         <th scope="col" style="text-align: left;"> #</th>
                                         <th scope="col" style="text-align: left;">Mã SP</th>
-                                        <th scope="col" style="text-align: left;"><strong>ID KH</strong></th>
+                                        <th scope="col" style="text-align: left;">ID KH</th>
                                         <th scope="col" style="text-align: left;">Khách hàng</th>
                                         <th scope="col" style="text-align: left;">PT Giao hàng</th>
                                         <th scope="col" style="text-align: left;">PT Thanh toán</th>
@@ -79,7 +79,7 @@
                                     <tr>
                                         <th scope="row"><%= i %></th>
                                         <td><%= item.productID %></td>
-                                        <td><a href="#" class="checkInfoCustomer" data-toggle="modal" data-target="#modalCheckCustomer"><%= element.customerID %></a></td>
+                                        <td><strong><a href="#" class="checkInfoCustomer" data-toggle="modal" data-target="#modalCheckCustomer"><%= element.customerID %></a></strong></td>
                                         <td><%= element.customerName %></td>
                                         <td><%= item.deliverMethod %></a></td>
                                         <td><%= item.paymentMethod %></a></td>

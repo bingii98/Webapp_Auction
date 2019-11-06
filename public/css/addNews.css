@@ -555,3 +555,8 @@ h3 {
   font-size: 13px;
   font-weight: 400;
 }
+
+.checkInfoCustomer{
+  font-weight: bold;
+  color: #ff9900;
+}
