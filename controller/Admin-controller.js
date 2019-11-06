@@ -84,6 +84,7 @@ function getAll_Product_Admin(ejs, userID, booleanB, res) {
     });
 }
 
+
 //get Product (not S)
 function getItem_Product_Admin(customerID, productID, ownerID, ownerName, ejs, res) {
     if (ownerID === "admin") {
@@ -211,13 +212,13 @@ function add_Product(ObjectB, categoryID, location, res) {
         //UPLOAD IMAGE TO S3 SERVICE - AWS\
         const BUCKET = 'abctestsdsd'
         const localImage = ObjectB.productImage.path;
-        AWS.config.update({"endpoint": "http://s3.us-east-1.amazonaws.com"});
+        AWS.config.update({ "endpoint": "http://s3.us-east-1.amazonaws.com" });
         const s3 = new AWS.S3();
         s3.putObject({
             Bucket: BUCKET,
             Body: fs.readFileSync(localImage),
             Key: ObjectB.productImage.originalFilename
-        },(err,data) => {
+        }, (err, data) => {
             if (err) {
                 console.error("Error JSON:", JSON.stringify(err, null, 2));
             } else {
@@ -316,9 +317,9 @@ function add_Auction(ObjectB, productID, res) {
                                     if (err) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                     } else {
-                                        if(ObjectB.permission === 'admin'){
+                                        if (ObjectB.permission === 'admin') {
                                             res.redirect('/quanlydaugia');
-                                        }else{
+                                        } else {
                                             res.redirect('/quanlysanpham_doanhnghiep');
                                         }
                                     }
@@ -372,9 +373,9 @@ function add_Auction(ObjectB, productID, res) {
                                     if (err) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                     } else {
-                                        if(ObjectB.permission === 'admin'){
+                                        if (ObjectB.permission === 'admin') {
                                             res.redirect('/quanlydaugia');
-                                        }else{
+                                        } else {
                                             res.redirect('/quanlysanpham_doanhnghiep');
                                         }
                                     }
@@ -390,7 +391,7 @@ function add_Auction(ObjectB, productID, res) {
 }
 
 //Update Winner Auction for Product
-function Update_Auction(ownerID,ownerName,productID,winner) {
+function Update_Auction(ownerID, ownerName, productID, winner) {
     if (ownerID === "admin") {
         let params = {
             TableName: 'Admins'
@@ -501,9 +502,9 @@ function delete_Auction(ObjectB, productID, res) {
                                     if (err) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                     } else {
-                                        if(ObjectB.permission === "admin"){
+                                        if (ObjectB.permission === "admin") {
                                             res.redirect('/quanlydaugia');
-                                        }else{
+                                        } else {
                                             res.redirect('/quanlydaugia_doanhnghiep');
                                         }
                                     }
@@ -548,9 +549,9 @@ function delete_Auction(ObjectB, productID, res) {
                                     if (err) {
                                         console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                                     } else {
-                                        if(ObjectB.permission === "admin"){
+                                        if (ObjectB.permission === "admin") {
                                             res.redirect('/quanlydaugia');
-                                        }else{
+                                        } else {
                                             res.redirect('/quanlydaugia_doanhnghiep');
                                         }
                                     }

@@ -254,6 +254,7 @@ app.get('/', (req, res) => {
     }
 });
 
+
 //Product Manager Admin Page
 app.get('/admin', (req, res) => {
     sess = req.session
