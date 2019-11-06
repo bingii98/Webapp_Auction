@@ -177,7 +177,7 @@ async function get_Item_Customer_CustomerID(customerID) {
         let params = {
             TableName: "Customers",
             Key: {
-                'customerID' : customerID
+                'customerID': customerID
             }
         }
         docClient.scan(params, (err, data) => {
@@ -246,53 +246,56 @@ async function add_Order_Customer(customerID, product) {
 }
 
 
-function update_Order_Customer(customerID, productID, note, res) {
-    let params = {
-        TableName: 'Customers',
-        Key: {
-            "customerID": customerID,
-        },
-    }
-    docClient.scan(params, (err, data) => {
-        if (err) {
-            console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
-        } else {
-            data.Items.forEach(item => {
-                item.orders.forEach(order => {
-                    if (order.productID === productID) {
-                        let params = {
-                            TableName: 'Customers',
-                            Key: {
-                                "customerID": customerID,
-                            },
-                            UpdateExpression: "SET orders[" + (item.orders.length - 1) + "] = :order",
-                            ExpressionAttributeValues: {
-                                ':order':
-                                {
-                                    'productID': productID,
-                                    'deliverMethod': "Giao hành nhanh",
-                                    'paymentMethod': "Thanh toán khi nhận hàng",
-                                    'Note': note,
-                                    'amount': order.amount,
-                                    'product': {
-                                        'productName': order.product.productName,
-                                        'productImage': order.product.productImage,
-                                    }
-                                }
-                            },
-                            ReturnValues: "UPDATED_NEW"
-                        }
-                        docClient.update(params, function (err, data) {
-                            if (err) {
-                                console.log(`${JSON.stringify(err, null, 2)}`);
-                            } else {
-                                return res.redirect('/');
-                            }
-                        });
-                    }
-                })
-            })
+async function update_Order_Customer(customerID, productID, note, res) {
+    return new Promise((resolve, reject) => {
+        let params = {
+            TableName: 'Customers',
+            Key: {
+                "customerID": customerID,
+            },
         }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                console.error('Unable to scan the table. Error JSON:', JSON.stringify(err, null, 2));
+            } else {
+                data.Items.forEach(item => {
+                    item.orders.forEach(order => {
+                        if (order.productID === productID) {
+                            let params = {
+                                TableName: 'Customers',
+                                Key: {
+                                    "customerID": customerID,
+                                },
+                                UpdateExpression: "SET orders[" + (item.orders.length - 1) + "] = :order",
+                                ExpressionAttributeValues: {
+                                    ':order':
+                                    {
+                                        'productID': productID,
+                                        'deliverMethod': "Giao hành nhanh",
+                                        'paymentMethod': "Thanh toán khi nhận hàng",
+                                        'Note': note,
+                                        'amount': order.amount,
+                                        'product': {
+                                            'productName': order.product.productName,
+                                            'productImage': order.product.productImage,
+                                        }
+                                    }
+                                },
+                                ReturnValues: "UPDATED_NEW"
+                            }
+                            docClient.update(params, function (err, data) {
+                                if (err) {
+                                    resolve(false);
+                                    console.log(`${JSON.stringify(err, null, 2)}`);
+                                } else {
+                                    resolve(true);
+                                }
+                            });
+                        }
+                    })
+                })
+            }
+        });
     });
 };
 

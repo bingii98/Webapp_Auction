@@ -810,7 +810,13 @@ app.post('/updateorder', (req, res) => {
     } else {
         note = req.body.note
     }
-    ctlCtm.update_Order_Customer(sess.userID, req.body.productID, note, res);
+    if(ctlCtm.update_Order_Customer(sess.userID, req.body.productID, note, res).then(data => {
+        if(data){
+            res.redirect("/");
+        }else{
+            res.render('404');
+        }
+    }));
 });
 
 app.get('/contact', (req, res) => {
