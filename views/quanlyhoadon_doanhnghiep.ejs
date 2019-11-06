@@ -10,7 +10,8 @@
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i"
+        rel="stylesheet">
     <!-- CSS -->
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -63,10 +64,15 @@
                                         <th scope="col" style="text-align: left;">Giá đấu thành công</th>
                                     </tr>
                                 </thead>
-                                <tbody> <% var i = 0 %> <% if(_uG.length > 0){ %> <% _uG.forEach(item => { %> <tr> <% if(item.auction.bids.length > 0){ %> <th scope="row"><%= i %></th>
-                                        <td><a href="#" class="checkInfoProduct" data-toggle="modal" data-target="#exampleModal"><strong><%= item.productID %></strong></a></td>
-                                        <td><a href="" class="checkInfoCustomer" data-toggle="modal" data-target="#modalCheckCustomer"><strong><%= item.auction.bids[item.auction.bids.length - 1].user %></strong></a></td>
-                                        <td><%= item.auction.bids[item.auction.bids.length - 1].amount %></a></td> <% } %>
+                                <tbody> <% var i = 0 %> <% if(_uG.length > 0){ %> <% _uG.forEach(item => { %> <tr>
+                                        <% if(item.auction.bids.length > 0){ %> <th scope="row"><%= i %></th>
+                                        <td><a href="#" class="checkInfoProduct" data-toggle="modal" data-target="#exampleModal"><strong><%= item.productID %></strong></a>
+                                        </td>
+                                        <td><a href="" class="checkInfoCustomer" data-toggle="modal"
+                                                data-target="#modalCheckCustomer"><strong><%= item.auction.bids[item.auction.bids.length - 1].user %></strong></a>
+                                        </td>
+                                        <td><%= item.auction.bids[item.auction.bids.length - 1].amount %></a></td>
+                                        <% } %>
                                     </tr> <% i++ %> <% }) %> <% } %> </tbody>
                             </table>
                         </div>
@@ -75,7 +81,8 @@
             </div>
         </div>
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 2000;">
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true" style="z-index: 2000;">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -100,28 +107,29 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="modalCheckCustomer" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 2000;">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title"><strong>THÔNG TIN KHÁCH HÀNG</strong></h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body" style="text-align: center;">
-                            <h5><i>Tên khách hàng</i></h5>
-                            <h4><strong id="modalCustomerName"></strong></h4>
-                            <h5 style="padding-top: 20px;"><i>Địa chỉ</i></h5>
-                            <h4><strong id="modalCustomerAddress"></strong></h4>
-                            <h5 style="padding-top: 20px;"><i>Số điện thoại</i></h5>
-                            <h4><strong id="modalCustomerPhone"></strong></h4>
-                            <h5 style="padding-top: 20px;"><i>Email</i></h5>
-                            <h4><strong id="modalCustomerEmail"></strong></h4>
-                        </div>
+        <div class="modal fade" id="modalCheckCustomer" tabindex="-1" role="dialog" aria-hidden="true"
+            style="z-index: 2000;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><strong>THÔNG TIN KHÁCH HÀNG</strong></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="text-align: center;">
+                        <h5><i>Tên khách hàng</i></h5>
+                        <h4><strong id="modalCustomerName"></strong></h4>
+                        <h5 style="padding-top: 20px;"><i>Địa chỉ</i></h5>
+                        <h4><strong id="modalCustomerAddress"></strong></h4>
+                        <h5 style="padding-top: 20px;"><i>Số điện thoại</i></h5>
+                        <h4><strong id="modalCustomerPhone"></strong></h4>
+                        <h5 style="padding-top: 20px;"><i>Email</i></h5>
+                        <h4><strong id="modalCustomerEmail"></strong></h4>
                     </div>
                 </div>
             </div>
+        </div>
         <!--Footer--> <% include element/footer %>
     </div>
     <!-- Body main wrapper end -->
@@ -139,10 +147,10 @@
     <script>
         $(document).ready(function () {
             $(".menu_hoadon").addClass("active");
-            $(".checkInfoProduct").click(function(){
+            $(".checkInfoProduct").click(function () {
                 socket.emit("BUSINESS_CHECK_INFO_PRODUCT", $(this).text(), '<%= businessID %>', '<%= businessName %>');
             })
-            $(".checkInfoCustomer").click(function(){
+            $(".checkInfoCustomer").click(function () {
                 socket.emit("BUSINESS_CHECK_INFO_CUSTOMER", $(this).text());
             })
             socket.on("BUSINESS_CHECK_INFO_PRODUCT_SERVER", function (product) {
@@ -152,7 +160,7 @@
                 $("#modalPrice").text(product.auction.bids[product.auction.bids.length - 1].amount);
             })
 
-            socket.on("BUSINESS_CHECK_INFO_CUSTOMER_SERVER", function (name,address,phone,email) {
+            socket.on("BUSINESS_CHECK_INFO_CUSTOMER_SERVER", function (name, address, phone, email) {
                 $("#modalCustomerName").text(name);
                 $("#modalCustomerAddress").text(address);
                 $("#modalCustomerPhone").text(phone);

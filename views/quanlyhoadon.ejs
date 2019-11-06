@@ -27,7 +27,9 @@
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="css/responsive.css">
     <link href="css/color/color-1.css" rel="stylesheet">
-
+    <!--SOCKETIO for Sign up-->
+    <script src="socket.io/socket.io.js"></script>
+    <script> var socket = io('http://3.86.166.71:3000'); </script>
     <!-- Modernizer JS -->
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
@@ -72,22 +74,74 @@
                                 <tbody>
                                     <% var i = 0 %>
                                     <% _uG.forEach(element => { %>
-                                        <% element.orders.forEach(item => { %>
-                                            <tr>
-                                                <th scope="row"><%= i %></th>
-                                                <td><%= item.productID %></td>
-                                                <td><%= element.customerID %></td>
-                                                <td><%= element.customerName %></td>
-                                                <td><%= item.deliverMethod %></a></td>
-                                                <td><%= item.paymentMethod %></a></td>
-                                                <td><%= item.Note %></td>
-                                            </tr>
-                                            <% i++ %>
-                                        <% }) %>
+                                    <% element.orders.forEach(item => { %>
+                                    <tr>
+                                        <th scope="row"><%= i %></th>
+                                        <td><a href="" class="checkInfoCustomer" data-toggle="modal"
+                                                data-target="#modalCheckCustomer"></a><%= item.productID %></td>
+                                        <td><a href="#" class="checkInfoProduct" data-toggle="modal"
+                                                data-target="#exampleModal"></a><%= element.customerID %></a></td>
+                                        <td><%= element.customerName %></td>
+                                        <td><%= item.deliverMethod %></a></td>
+                                        <td><%= item.paymentMethod %></a></td>
+                                        <td><%= item.Note %></td>
+                                    </tr>
+                                    <% i++ %>
+                                    <% }) %>
                                     <% }) %>
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true" style="z-index: 2000;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><strong>THÔNG TIN SẢN PHẨM</strong></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="text-align: center;">
+                        <div class="tab-pane active" id="pro-img-1">
+                            <img id="modalImage" alt="" />
+                        </div>
+                        <h5 style="padding-top: 20px;"><i>Tên phiên đấu giá</i></h5>
+                        <h2><strong id="modalProductName"></strong></h2>
+                        <h5 style="padding-top: 20px;"><i>Tên sản phẩm</i></h5>
+                        <h4><strong id="modalAuctionName"></strong></h4>
+                        <h5 style="padding-top: 20px;"><i>Giá cuối cùng</i></h5>
+                        <h4 style="color: red;"><strong id="modalPrice"></strong></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalCheckCustomer" tabindex="-1" role="dialog" aria-hidden="true"
+            style="z-index: 2000;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><strong>THÔNG TIN KHÁCH HÀNG</strong></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="text-align: center;">
+                        <h5><i>Tên khách hàng</i></h5>
+                        <h4><strong id="modalCustomerName"></strong></h4>
+                        <h5 style="padding-top: 20px;"><i>Địa chỉ</i></h5>
+                        <h4><strong id="modalCustomerAddress"></strong></h4>
+                        <h5 style="padding-top: 20px;"><i>Số điện thoại</i></h5>
+                        <h4><strong id="modalCustomerPhone"></strong></h4>
+                        <h5 style="padding-top: 20px;"><i>Email</i></h5>
+                        <h4><strong id="modalCustomerEmail"></strong></h4>
                     </div>
                 </div>
             </div>
@@ -112,6 +166,30 @@
     <script>
         $(document).ready(function () {
             $(".menu_hoadon").addClass("active");
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".menu_hoadon").addClass("active");
+            $(".checkInfoProduct").click(function () {
+                socket.emit("BUSINESS_CHECK_INFO_PRODUCT", $(this).text(), '<%= businessID %>', '<%= businessName %>');
+            })
+            $(".checkInfoCustomer").click(function () {
+                socket.emit("BUSINESS_CHECK_INFO_CUSTOMER", $(this).text());
+            })
+            socket.on("BUSINESS_CHECK_INFO_PRODUCT_SERVER", function (product) {
+                document.getElementById("modalImage").src = "https://abctestsdsd.s3.amazonaws.com/" + product.productImage;
+                $("#modalProductName").text(product.productName);
+                $("#modalAuctionName").text(product.auction.auctionName);
+                $("#modalPrice").text(product.auction.bids[product.auction.bids.length - 1].amount);
+            })
+
+            socket.on("BUSINESS_CHECK_INFO_CUSTOMER_SERVER", function (name, address, phone, email) {
+                $("#modalCustomerName").text(name);
+                $("#modalCustomerAddress").text(address);
+                $("#modalCustomerPhone").text(phone);
+                $("#modalCustomerEmail").text(email);
+            })
         });
     </script>
 </body>
