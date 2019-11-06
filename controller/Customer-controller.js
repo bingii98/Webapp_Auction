@@ -286,7 +286,7 @@ function update_Order_Customer(customerID, productID, note, res) {
                             if (err) {
                                 console.log(`${JSON.stringify(err, null, 2)}`);
                             } else {
-                                res.redirect('/');
+                                return res.redirect('/');
                             }
                         });
                     }
