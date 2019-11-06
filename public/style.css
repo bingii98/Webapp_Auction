@@ -6646,3 +6646,8 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 .card_ready{
     background: #E9E9E9;
 }
+
+.checkInfoCustomer{
+    font-weight: bold;
+    color: #ff9900;
+  }
