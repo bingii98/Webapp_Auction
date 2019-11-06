@@ -77,10 +77,8 @@
                                     <% element.orders.forEach(item => { %>
                                     <tr>
                                         <th scope="row"><%= i %></th>
-                                        <td><a href="" class="checkInfoCustomer" data-toggle="modal"
-                                                data-target="#modalCheckCustomer"></a><%= item.productID %></td>
-                                        <td><a href="#" class="checkInfoProduct" data-toggle="modal"
-                                                data-target="#exampleModal"></a><%= element.customerID %></a></td>
+                                        <td><a href="" class="checkInfoCustomer" data-toggle="modal" data-target="#modalCheckCustomer"></a><%= item.productID %></td>
+                                        <td><%= element.customerID %></td>
                                         <td><%= element.customerName %></td>
                                         <td><%= item.deliverMethod %></a></td>
                                         <td><%= item.paymentMethod %></a></td>
@@ -171,17 +169,8 @@
     <script>
         $(document).ready(function () {
             $(".menu_hoadon").addClass("active");
-            $(".checkInfoProduct").click(function () {
-                socket.emit("BUSINESS_CHECK_INFO_PRODUCT", $(this).text(), '<%= businessID %>', '<%= businessName %>');
-            })
             $(".checkInfoCustomer").click(function () {
                 socket.emit("BUSINESS_CHECK_INFO_CUSTOMER", $(this).text());
-            })
-            socket.on("BUSINESS_CHECK_INFO_PRODUCT_SERVER", function (product) {
-                document.getElementById("modalImage").src = "https://abctestsdsd.s3.amazonaws.com/" + product.productImage;
-                $("#modalProductName").text(product.productName);
-                $("#modalAuctionName").text(product.auction.auctionName);
-                $("#modalPrice").text(product.auction.bids[product.auction.bids.length - 1].amount);
             })
 
             socket.on("BUSINESS_CHECK_INFO_CUSTOMER_SERVER", function (name, address, phone, email) {
