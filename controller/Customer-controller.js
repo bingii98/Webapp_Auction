@@ -236,8 +236,8 @@ async function add_Order_Customer(customerID, product) {
         }
         docClient.update(params, function (err, data) {
             if (err) {
-                resolve(false);
                 console.log(`${JSON.stringify(err, null, 2)}`);
+                resolve(false);
             } else {
                 resolve(true);
             }

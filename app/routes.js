@@ -829,6 +829,7 @@ app.post('/checkout', (req, res) => {
             if (data.auction.bids.length != 0) {
                 ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => {
                     if (data1) {
+                        console.log("ID PRODUCT: " + data.auction.bids[data.auction.bids.length - 1].user + "_____ID USER: " + sess.userID);
                         if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
                             res.render('check-out', { _uG: data });
                         } else {
@@ -845,6 +846,7 @@ app.post('/checkout', (req, res) => {
             ctlAdmin.Update_Auction(ownerID, ownerName, productID, data.auction.bids[data.auction.bids.length - 1].user)
             if (data.auction.bids.length != 0) {
                 ctlCtm.add_Order_Customer(sess.userID, data).then(data1 => {
+                    console.log("ID PRODUCT: " + data.auction.bids[data.auction.bids.length - 1].user + "_____ID USER: " + sess.userID);
                     if (data1) {
                         if (data.auction.bids[data.auction.bids.length - 1].user === sess.userID) {
                             res.render('check-out', { _uG: data });
