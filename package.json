@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/bingii98/Webapp_Auction#readme",
   "dependencies": {
-    "aws-sdk": "^2.555.0",
+    "aws-sdk": "^2.814.0",
     "babel-cli": "^6.26.0",
     "babel-node": "0.0.1-security",
     "bcrypt": "^3.0.6",
